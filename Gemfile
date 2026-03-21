@@ -46,6 +46,9 @@ group :development, :test do
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
+
+  # Model Context Protocol (MCP) server
+  gem "rails-mcp-server", "~> 1.5.1"
 end
 
 group :development do

@@ -44,6 +44,7 @@ This project is a Ruby on Rails 8.1.1 application for managing bread orders.
 
 To enhance your AI-first workflow, you can add MCP servers to your AI tools (Antigravity or Claude Code). Recommended servers for this project:
 
-- **SQLite MCP**: Allows the AI to query your database directly for debugging or reporting.
-  - Recommended: `sqlite-mcp` or `@modelcontextprotocol/server-sqlite`
+- **Rails MCP Server (Ruby)**: Provides comprehensive Rails context (routes, models, schema).
+  - Setup: Point your AI client to `bundle exec rails-mcp-server`.
+  - Gem: Add `gem "rails-mcp-server"` to your Gemfile.
 - **Memory/Knowledge MCP**: Useful for long-term project context.
