@@ -1,0 +1,31 @@
+<section class="stack">
+  <h2 class="section-title">Your Order</h2>
+  
+  <% if order&.order_items&.any? %>
+    <table class="responsive-table">
+      <tbody>
+        <% order.order_items.includes(:event_product).each do |item| %>
+          <tr>
+            <td data-label="Product"><strong><%= item.event_product.name %></strong></td>
+            <td data-label="Quantity">
+              <div class="group items-center" style="gap: 0.5rem;">
+                <%= button_to "-", storefront_order_item_path(store.slug, item), method: :patch, params: {order_item: {quantity: item.quantity - 1}}, class: "button small" %>
+                <span><%= item.quantity %></span>
+                <%= button_to "+", storefront_order_item_path(store.slug, item), method: :patch, params: {order_item: {quantity: item.quantity + 1}}, class: "button small" %>
+              </div>
+            </td>
+            <td data-label="Price"><%= item.event_product.price_formatted %></td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2"><strong>Total</strong></td>
+          <td><strong><%= number_to_currency(order.total_price) %></strong></td>
+        </tr>
+      </tfoot>
+    </table>
+  <% else %>
+    <p class="text-muted">No items in your order yet. Add something from the list!</p>
+  <% end %>
+</section>

@@ -1,79 +1,28 @@
-<h1><%= @event.name %></h1>
+<%= render "storefront/store_hero", store: @store, show_back_link: true %>
 
-<p><%= @event.description %></p>
+<div class="stack">
+  <%= render "storefront/event_details", event: @event %>
 
-<p>Pickup: <%= nice_date(@event.pickup_at) %></p>
-
-<hr>
-
-<h2>Products</h2>
-
-<ul>
-  <% @products.each do |product| %>
-    <li>
-      <div class="group items-center">
-        <strong><%= product.name %></strong>
-        (<%= number_to_currency(product.price_cents.to_f / 100) %>)
-
-        <% if product.available? %>
-          <%= form_with url: storefront_event_order_items_path(@store.slug, @event, event_product_id: product.id), method: :post do %>
-            <button>Add (<%= product.remaining %> left)</button>
-          <% end %>
-        <% else %>
-          <span style="color: red;">(Sold out)</span>
+  <div class="grid grid-cols-1 md:grid-cols-2" style="align-items: start; gap: 2rem;">
+    <!-- Products Column -->
+    <section class="stack">
+      <h2 class="section-title">Products Available</h2>
+      <div class="grid grid-cols-1">
+        <% @products.each do |product| %>
+          <%= render "storefront/product_card", product: product, store: @store, event: @event %>
         <% end %>
       </div>
-    </li>
-  <% end %>
-</ul>
+    </section>
 
-<% if @order&.order_items.present? %>
-  <section class="order-summary">
-    <h2>Your Order</h2>
+    <!-- Order Summary Column -->
+    <aside>
+      <%= render "storefront/order_summary", order: @order, store: @store %>
+    </aside>
+  </div>
+</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Quantity</th>
-          <th>Price</th>
-          <th>Subtotal</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @order.order_items.includes(:event_product).each do |item| %>
-          <tr>
-            <td><%= item.event_product.name %></td>
-            <td>
-              <div class="group items-center">
-                <%= button_to "-", storefront_order_item_path(@store.slug, item), method: :patch, params: {order_item: {quantity: item.quantity - 1}} %>
-                <span><%= item.quantity %></span>
-                <%= button_to "+", storefront_order_item_path(@store.slug, item), method: :patch, params: {order_item: {quantity: item.quantity + 1}} %>
-              </div>
-            </td>
-            <td><%= item.event_product.price_formatted %></td>
-            <td><%= number_to_currency((item.quantity * item.unit_price_cents).to_f / 100) %></td>
-            <td></td>
-          </tr>
-        <% end %>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="3"><strong>Total items:</strong></td>
-          <td><%= @order.order_items.sum(:quantity) %></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td colspan="3"><strong>Order Total:</strong></td>
-          <td><%= number_to_currency(@order.total_price_cents.to_f / 100) %></td>
-          <td></td>
-        </tr>
-      </tfoot>
-    </table>
-  </section>
-<% else %>
-  <p>No items in your order yet.</p>
-<% end %>
-
-<p><a href="<%= storefront_path(@store.slug) %>">Back to store</a></p>
+<style>
+  @media (min-width: 768px) {
+    .md\:grid-cols-2 { grid-template-columns: 1fr 350px; }
+  }
+</style>

@@ -18,8 +18,11 @@ This project is a Ruby on Rails 8.1.1 application for managing bread orders.
 ## Project Ethos
 
 - **Simple UI**: The UI should be as bare bones as possible, utilizing standard HTML elements.
-- **Web Standards**: Prioritize native browser features over custom components or complex JavaScript.
-- **No Dropdowns**: Avoid complex UI patterns like dropdowns that require extra JavaScript for "click outside" behavior. Keep navigation simple and direct.
+- **Mobile First**: All layouts and design decisions must prioritize mobile users and small screens.
+- **Web Standards**: Prioritize native browser features (Flexbox, CSS Grid) over custom components or complex JavaScript.
+- **Minimal CSS**: Keep styling lean and work within the constraints of native CSS. Avoid heavy customization in favor of sane defaults and structured layouts.
+- **Modular Design**: Leverage Rails partials to keep the UI consistent and easy to maintain as individual components.
+- **No Dropdowns**: Avoid complex UI patterns like dropdowns that require extra JavaScript.
 
 ## Coding Conventions
 

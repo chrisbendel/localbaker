@@ -1,0 +1,17 @@
+<a href="<%= storefront_event_path(store.slug, event) %>" class="card stack" style="text-decoration: none; color: inherit;">
+  <div class="group justify-between items-center">
+    <h3 style="margin: 0;"><%= event.name %></h3>
+    <box-icon name="chevron-right"></box-icon>
+  </div>
+  
+  <div class="group text-muted" style="gap: 1.5rem; font-size: 0.85rem;">
+    <div class="group items-center" style="gap: 0.25rem;">
+      <box-icon name="calendar" size="xs"></box-icon>
+      <%= nice_date(event.pickup_at) %>
+    </div>
+    <div class="group items-center" style="gap: 0.25rem;">
+      <box-icon name="time-five" size="xs"></box-icon>
+      Orders close <%= nice_date(event.orders_close_at) %>
+    </div>
+  </div>
+</a>

@@ -33,9 +33,8 @@ class EventProductTest < ActiveSupport::TestCase
   test "calculates sold, remaining and availability" do
     product = @event.event_products.create!(name: "Bread", price: 10, quantity: 10)
     customer = User.create!(email: "customer-#{SecureRandom.hex(4)}@example.com")
-    order = Order.create!(user: customer, event: @event)
-
     # Sell 3 items
+    order = Order.create!(user: customer, event: @event)
     order.order_items.create!(event_product: product, quantity: 3, unit_price_cents: 1000)
 
     assert_equal 3, product.sold

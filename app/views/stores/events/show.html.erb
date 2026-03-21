@@ -18,7 +18,7 @@
 <h3>Products Available</h3>
 
 <% if @event.event_products.any? %>
-  <table>
+  <table class="responsive-table">
     <thead>
     <tr>
       <th>Name</th>
@@ -33,16 +33,18 @@
     <tbody>
     <% @event.event_products.each do |product| %>
       <tr>
-        <td><strong><%= product.name %></strong></td>
-        <td><%= product.quantity %></td>
-        <td><%= product.price_formatted %></td>
+        <td data-label="Name"><strong><%= product.name %></strong></td>
+        <td data-label="Qty"><%= product.quantity %></td>
+        <td data-label="Price"><%= product.price_formatted %></td>
 
         <% if authenticated? && current_user == @store.user %>
           <td class="items-baseline group justify-end">
-            <%= link_to "Edit", edit_event_product_path(product) %>
+            <%= link_to "Edit", edit_event_product_path(product), class: "button-link" %>
             <%= link_to "Delete",
                         event_product_path(product),
-                        data: { turbo_method: :delete, turbo_confirm: "Delete this product?" } %>
+                        data: { turbo_method: :delete, turbo_confirm: "Delete this product?" },
+                        class: "button-link",
+                        style: "color: red;" %>
           </td>
         <% end %>
       </tr>

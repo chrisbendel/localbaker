@@ -58,7 +58,7 @@
     <% if @orders.any? %>
       <section class="stack">
         <h4>Your Orders</h4>
-        <table>
+        <table class="responsive-table">
           <thead>
             <tr>
               <th>Store</th>
@@ -71,13 +71,13 @@
           <tbody>
             <% @orders.each do |order| %>
               <tr>
-                <td>
+                <td data-label="Store">
                   <%= link_to order.event.store.name, storefront_path(order.event.store.slug) %>
                 </td>
-                <td><%= order.event.name %></td>
-                <td><%= pickup_datetime(order.event.pickup_at) %></td>
-                <td><%= number_to_currency(order.total_price) %></td>
-                <td><%= nice_date(order.created_at) %></td>
+                <td data-label="Event"><%= order.event.name %></td>
+                <td data-label="Pickup Date"><%= pickup_datetime(order.event.pickup_at) %></td>
+                <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
+                <td data-label="Placed On"><%= nice_date(order.created_at) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -88,7 +88,6 @@
   </div>
 <% else %>
   <section class="stack align-center text-center" style="padding: 4rem 2rem; border: 2px dashed #ccc; border-radius: 8px;">
-    <h2>Welcome to Bread Orders!</h2>
     <p>This is your dashboard where you can see orders you've placed or manage your own bakery.</p>
     <div style="margin-top: 2rem;">
       <p>Want to sell your own bread?</p>

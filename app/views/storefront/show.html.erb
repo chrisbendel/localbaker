@@ -1,31 +1,29 @@
 <%= content_for(:title, @store.name) %>
 
-<div class="group justify-between items-center">
-  <h4><%= @store.name %></h4>
+<%= render "storefront/store_hero", store: @store %>
 
-  <% if @notification.present? %>
-    <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "group items-center", title: "Unsubscribe from email updates" do %>
-      <box-icon name="bell-off" size="sm"></box-icon>
-      <span class="font-medium">Unsubscribe</span>
+<section class="stack">
+  <div class="group justify-between items-center">
+    <h2 class="section-title">Upcoming Bakes</h2>
+    
+    <% if @notification.present? %>
+      <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "button small secondary", title: "Unsubscribe from email updates" do %>
+        Unsubscribe
+      <% end %>
+    <% else %>
+      <%= button_to storefront_notification_path(@store.slug), method: :post, class: "button small secondary", title: "Subscribe to email updates" do %>
+        Subscribe
+      <% end %>
     <% end %>
-  <% else %>
-    <%= button_to storefront_notification_path(@store.slug), method: :post, class: "group items-center", title: "Subscribe to email updates" do %>
-      <box-icon name="bell" size="sm"></box-icon>
-      <span class="font-medium">Subscribe</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2">
+    <% @events.each do |event| %>
+      <%= render "storefront/event_list_item", event: event, store: @store %>
     <% end %>
+  </div>
+  
+  <% if @events.empty? %>
+    <p class="text-muted">No upcoming events scheduled right now. Check back soon!</p>
   <% end %>
-</div>
-
-<% if @store.description.present? %>
-  <pre><%= @store.description %></pre>
-<% end %>
-
-<h4>Upcoming Events</h4>
-<ul>
-  <% @store.events.published.each do |event| %>
-    <li>
-      <a href="<%= storefront_event_path(@store.slug, event) %>"><%= event.name %></a>
-      – <%= nice_date(event.pickup_at) %>
-    </li>
-  <% end %>
-</ul>
+</section>
