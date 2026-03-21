@@ -2,14 +2,12 @@
 
 <p>
   A new event has opened for orders.
-  View it here:
-  <!-- TODO this should point to storefront_event_url -->
-  <%= link_to "View Event", storefront_url(@store.slug, @event.id) %>
+  <%= link_to "View Event", storefront_event_url(@store.slug, @event) %>
 </p>
 
 <hr>
 
 <p style="font-size: 12px; color: #666;">
-  Don’t want these updates?
+  Don't want these updates?
   <%= link_to "Unsubscribe", @unsubscribe_url %>
 </p>

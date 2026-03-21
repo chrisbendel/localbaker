@@ -1,32 +1,31 @@
 <%= form_with model: event_product.new_record? ? [event, event_product] : event_product, local: true do |f| %>
   <% if event_product.errors.any? %>
-    <div style="color: red; margin-bottom: 1rem;">
-      <h3 style="margin-top: 0; font-size: 1rem;">Please fix the errors below:</h3>
+    <div class="panel text-danger">
+      Please fix the errors below before saving.
     </div>
   <% end %>
 
   <div>
-    <%= f.label :name %><br>
+    <%= f.label :name %>
     <%= f.text_field :name, required: true %>
     <% if event_product.errors[:name].any? %>
-      <div style="color: red; font-size: 0.875rem;"><%= event_product.errors[:name].join(", ") %></div>
+      <p class="field-error"><%= event_product.errors[:name].join(", ") %></p>
     <% end %>
   </div>
 
   <div>
-    <%= f.label :quantity %><br>
+    <%= f.label :quantity %>
     <%= f.number_field :quantity, required: true, min: 0 %>
     <% if event_product.errors[:quantity].any? %>
-      <div style="color: red; font-size: 0.875rem;"><%= event_product.errors[:quantity].join(", ") %></div>
+      <p class="field-error"><%= event_product.errors[:quantity].join(", ") %></p>
     <% end %>
   </div>
 
   <div>
     <%= f.label :price, "Price ($)" %>
-    <br/>
     <%= f.number_field :price, step: 0.01, min: 0, required: true %>
     <% if event_product.errors[:price].any? %>
-      <div style="color: red; font-size: 0.875rem;"><%= event_product.errors[:price].join(", ") %></div>
+      <p class="field-error"><%= event_product.errors[:price].join(", ") %></p>
     <% end %>
   </div>
 

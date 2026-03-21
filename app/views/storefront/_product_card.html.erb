@@ -1,14 +1,14 @@
-<div class="card stack">
+<div class="card stack-sm">
   <div class="group justify-between items-baseline">
-    <h3 style="margin: 0;"><%= product.name %></h3>
+    <h3><%= product.name %></h3>
     <span class="badge <%= product.available? ? 'available' : 'sold-out' %>">
       <%= product.available? ? "#{product.remaining} left" : "Sold Out" %>
     </span>
   </div>
 
   <div class="group justify-between items-center">
-    <span style="font-size: 1.25rem; font-weight: 600;"><%= product.price_formatted %></span>
-    
+    <span class="text-lg"><%= product.price_formatted %></span>
+
     <% if product.available? %>
       <%= form_with url: storefront_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
         <button class="primary small">Add to Order</button>

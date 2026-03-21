@@ -1,10 +1,8 @@
 <header>
   <div class="flex items-center justify-between">
-    <%= link_to dashboard_path, class: "flex items-center", style: "text-decoration: none; color: inherit;" do %>
-      <box-icon size="lg" name="baguette"></box-icon>
-    <% end %>
+    <%= link_to "bread orders", dashboard_path, style: "text-decoration: none; font-weight: 700;" %>
 
-    <nav class="group" style="align-items: center; gap: 1.5rem;">
+    <nav class="group items-center group-lg">
       <% if authenticated? %>
         <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
       <% else %>

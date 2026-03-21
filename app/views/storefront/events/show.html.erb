@@ -3,26 +3,18 @@
 <div class="stack">
   <%= render "storefront/event_details", event: @event %>
 
-  <div class="grid grid-cols-1 md:grid-cols-2" style="align-items: start; gap: 2rem;">
-    <!-- Products Column -->
+  <div class="grid grid-sidebar">
     <section class="stack">
       <h2 class="section-title">Products Available</h2>
-      <div class="grid grid-cols-1">
+      <div class="stack-sm">
         <% @products.each do |product| %>
           <%= render "storefront/product_card", product: product, store: @store, event: @event %>
         <% end %>
       </div>
     </section>
 
-    <!-- Order Summary Column -->
     <aside>
-      <%= render "storefront/order_summary", order: @order, store: @store %>
+      <%= render "storefront/order_summary", order: @order, store: @store, event: @event %>
     </aside>
   </div>
 </div>
-
-<style>
-  @media (min-width: 768px) {
-    .md\:grid-cols-2 { grid-template-columns: 1fr 350px; }
-  }
-</style>

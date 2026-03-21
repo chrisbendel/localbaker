@@ -1,55 +1,45 @@
 <% content_for :title, "Dashboard" %>
 
 <% if @user.store || @orders.any? %>
-  <div class="stack justify-between" style="gap: 2rem;">
-    
+  <div class="stack-lg">
+
     <% if @user.store %>
       <section class="stack">
-        <h4>Store Management</h4>
-        <div class="group">
-          <%= link_to storefront_path(@user.store.slug), class: "group items-center button" do %>
-            <box-icon name="store" size="sm"></box-icon>
-            View Storefront
-          <% end %>
-
-          <%= link_to store_path, class: "group items-center button" do %>
-            <box-icon name="cog" size="sm"></box-icon>
-            Manage Store
-          <% end %>
+        <div class="group justify-between items-baseline">
+          <h3>Your Store</h3>
+          <div class="group">
+            <%= link_to "Storefront", storefront_path(@user.store.slug) %>
+            <%= link_to "Manage", store_path %>
+          </div>
         </div>
-      </section>
-
-      <section class="stack">
-        <h4>Upcoming Events</h4>
 
         <% if @user.store.events.published.any? %>
           <table>
             <thead>
-            <tr>
-              <th>Name</th>
-              <th>Orders Close</th>
-              <th>Pickup</th>
-              <th></th>
-            </tr>
+              <tr>
+                <th>Event</th>
+                <th>Orders Close</th>
+                <th>Pickup</th>
+                <th></th>
+              </tr>
             </thead>
             <tbody>
-            <% @user.store.events.published.each do |event| %>
-              <tr>
-                <td><%= event.name %></td>
-                <td><%= nice_date(event.orders_close_at) %></td>
-                <td><%= pickup_datetime(event.pickup_at) %></td>
-                <td>
-                  <%= link_to "Manage", event_path(event) %>
-                </td>
-              </tr>
-            <% end %>
+              <% @user.store.events.published.each do |event| %>
+                <tr>
+                  <td><%= event.name %></td>
+                  <td><%= nice_date(event.orders_close_at) %></td>
+                  <td><%= pickup_datetime(event.pickup_at) %></td>
+                  <td><%= link_to "Manage", event_path(event) %></td>
+                </tr>
+              <% end %>
             </tbody>
           </table>
-          <%= link_to "Create Event", new_store_event_path %>
         <% else %>
-          <div class="panel">
-            <p>No active events.</p>
-            <%= link_to "Create Event", new_store_event_path %>
+          <div class="nudge">
+            <span>
+              No active events.
+              <%= link_to "Create one", new_store_event_path %> to start taking orders.
+            </span>
           </div>
         <% end %>
       </section>
@@ -57,7 +47,7 @@
 
     <% if @orders.any? %>
       <section class="stack">
-        <h4>Your Orders</h4>
+        <h3>Your Orders</h3>
         <table class="responsive-table">
           <thead>
             <tr>
@@ -65,7 +55,7 @@
               <th>Event</th>
               <th>Pickup Date</th>
               <th>Total</th>
-              <th>Placed On</th>
+              <th>Placed</th>
             </tr>
           </thead>
           <tbody>
@@ -77,7 +67,7 @@
                 <td data-label="Event"><%= order.event.name %></td>
                 <td data-label="Pickup Date"><%= pickup_datetime(order.event.pickup_at) %></td>
                 <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
-                <td data-label="Placed On"><%= nice_date(order.created_at) %></td>
+                <td data-label="Placed"><%= nice_date(order.created_at) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -87,11 +77,9 @@
 
   </div>
 <% else %>
-  <section class="stack align-center text-center" style="padding: 4rem 2rem; border: 2px dashed #ccc; border-radius: 8px;">
-    <p>This is your dashboard where you can see orders you've placed or manage your own bakery.</p>
-    <div style="margin-top: 2rem;">
-      <p>Want to sell your own bread?</p>
-      <%= link_to "Create your Store", new_store_path, class: "button" %>
-    </div>
-  </section>
+  <div class="empty-state stack-sm">
+    <p>This is your dashboard. You'll see orders you've placed and manage your bakery from here.</p>
+    <p class="text-muted">Want to sell your own bread?</p>
+    <%= link_to "Create your Store", new_store_path %>
+  </div>
 <% end %>

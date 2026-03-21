@@ -1,9 +1,11 @@
-<header class="stack" style="margin-bottom: 2rem;">
+<header class="stack-sm" style="margin-bottom: var(--sp-xl);">
   <div class="group justify-between items-baseline">
     <h1><%= store.name %></h1>
     <% if local_assigns[:show_back_link] %>
-      <%= link_to "Back to Store", storefront_path(store.slug), class: "text-muted" %>
+      <%= link_to "Back", storefront_path(store.slug), class: "text-muted" %>
     <% end %>
   </div>
-  <p class="text-muted"><%= store.description %></p>
+  <% if store.description.present? %>
+    <p class="text-muted"><%= store.description %></p>
+  <% end %>
 </header>

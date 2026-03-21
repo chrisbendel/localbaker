@@ -1,32 +1,37 @@
-<h1>Events for <%= @store.name %></h1>
+<div class="group justify-between items-baseline">
+  <h1>Events</h1>
+  <%= link_to "+ New Event", new_store_event_path %>
+</div>
 
-<p>
-  <%= link_to "Create Event", new_store_event_path %>
-</p>
-
-<table>
-  <thead>
-  <tr>
-    <th>Name</th>
-
-    <th>Closes</th>
-    <th>Pickup</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @events.each do |event| %>
-    <tr>
-      <td><%= link_to event.name, event_path(event) %></td>
-      <td><%= nice_date(event.orders_close_at) %></td>
-      <td><%= nice_date(event.pickup_at) %></td>
-      <td>
-        <%= link_to edit_event_path(event) do %>
-          <box-icon name="pencil" size="xs"></box-icon>
-          Edit
-        <% end %>
-      </td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<% if @events.any? %>
+  <table class="responsive-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Orders Close</th>
+        <th>Pickup</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @events.each do |event| %>
+        <tr>
+          <td data-label="Name">
+            <%= link_to event.name, event_path(event) %>
+            <% if event.draft? %>
+              <span class="badge draft">Draft</span>
+            <% end %>
+          </td>
+          <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
+          <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+          <td><%= link_to "Edit", edit_event_path(event) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="empty-state stack-sm">
+    <p class="text-muted">No events yet.</p>
+    <%= link_to "Create your first event", new_store_event_path %>
+  </div>
+<% end %>

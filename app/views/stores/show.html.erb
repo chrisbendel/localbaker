@@ -1,12 +1,60 @@
-<h3><%= @store.name %> (<%= @store.slug %>)</h3>
+<div class="stack">
+  <div>
+    <h2><%= @store.name %></h2>
+    <p class="text-muted text-sm">bread-orders.com/s/<%= @store.slug %></p>
+  </div>
 
-<% if @store.description.present? %>
-  <pre><%= @store.description %></pre>
-<% end %>
+  <% if @store.description.present? %>
+    <pre><%= @store.description %></pre>
+  <% end %>
 
-<%= link_to "Events", store_events_path %>
+  <div class="group">
+    <%= link_to "View Storefront", storefront_path(@store.slug) %>
+    <%= link_to "Edit Store", edit_store_path %>
+    <%= button_to "Delete Store", store_path,
+        form: { data: { turbo_confirm: "Are you sure? This cannot be undone." } },
+        method: :delete,
+        class: "button-link text-danger" %>
+  </div>
 
-<div class="group">
-  <%= link_to "Edit store", edit_store_path %> |
-  <%= button_to "Delete store", store_path, form: { data: { turbo_confirm: "Are you sure?" } }, method: :delete %>
+  <hr style="border: none; border-top: 1px solid var(--border);">
+
+  <div class="group justify-between items-baseline">
+    <h3>Events</h3>
+    <%= link_to "+ New Event", new_store_event_path %>
+  </div>
+
+  <% if @store.events.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Pickup</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @store.events.order(pickup_at: :desc).each do |event| %>
+          <tr>
+            <td>
+              <%= link_to event.name, event_path(event) %>
+              <% if event.draft? %>
+                <span class="badge draft">Draft</span>
+              <% end %>
+            </td>
+            <td><%= nice_date(event.pickup_at) %></td>
+            <td><%= link_to "Manage", event_path(event) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <div class="nudge">
+      <span>
+        Your store is set up! Next,
+        <%= link_to "create your first event", new_store_event_path %>
+        to start accepting orders.
+      </span>
+    </div>
+  <% end %>
 </div>

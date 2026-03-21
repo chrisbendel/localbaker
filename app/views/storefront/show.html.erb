@@ -17,7 +17,7 @@
     <% end %>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2">
+  <div class="grid grid-cols-2">
     <% @events.each do |event| %>
       <%= render "storefront/event_list_item", event: event, store: @store %>
     <% end %>

@@ -1,19 +1,15 @@
-<section class="card stack" style="border-left: 4px solid #111;">
+<section class="card-accent stack-sm">
   <div class="group justify-between items-center">
-    <h2 style="margin: 0;"><%= event.name %></h2>
+    <h2><%= event.name %></h2>
     <span class="badge available"><%= event.published? ? "Open for Orders" : "Draft" %></span>
   </div>
-  
-  <p><%= event.description %></p>
-  
-  <div class="group text-muted" style="gap: 2rem;">
-    <div>
-      <strong>Pickup:</strong>
-      <%= pickup_datetime(event.pickup_at) %>
-    </div>
-    <div>
-      <strong>Orders Close:</strong>
-      <%= nice_date(event.orders_close_at) %>
-    </div>
+
+  <% if event.description.present? %>
+    <p><%= event.description %></p>
+  <% end %>
+
+  <div class="group-lg text-muted text-sm">
+    <span><strong>Pickup:</strong> <%= pickup_datetime(event.pickup_at) %></span>
+    <span><strong>Orders close:</strong> <%= nice_date(event.orders_close_at) %></span>
   </div>
 </section>
