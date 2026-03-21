@@ -2,8 +2,12 @@
 
 ## Setup
 
-- bundle install
-- bin/rails db:prepare
+- `brew install rbenv`
+- `rbenv install`
+- `rbenv init`
+- `rbenv global <version>`
+- `bundle install`
+- `bin/rails db:prepare`
 
 ## Run
 
