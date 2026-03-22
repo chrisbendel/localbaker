@@ -29,7 +29,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_path
 
     assert_response :success
-    assert_select "h4", "Your Orders"
+    assert_select "h3", "Your Orders"
     assert_select "td", "Bakery"
     assert_select "td", "Weekly Bake"
   end
