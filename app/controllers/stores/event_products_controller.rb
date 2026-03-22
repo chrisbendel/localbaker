@@ -65,6 +65,6 @@ class Stores::EventProductsController < ApplicationController
 
   def event_product_params
     params.require(:event_product)
-      .permit(:name, :quantity, :description, :price)
+      .permit(:name, :quantity, :description, :price, :image)
   end
 end

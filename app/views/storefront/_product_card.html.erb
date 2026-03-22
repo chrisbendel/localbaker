@@ -1,4 +1,7 @@
 <div class="card stack-sm">
+  <% if product.image.attached? %>
+    <%= image_tag product.image.variant(resize_to_limit: [600, 400]), style: "width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius, 4px);" %>
+  <% end %>
   <div class="group justify-between items-baseline">
     <h3><%= product.name %></h3>
     <span class="badge <%= product.available? ? 'available' : 'sold-out' %>">
@@ -10,8 +13,12 @@
     <span class="text-lg"><%= product.price_formatted %></span>
 
     <% if product.available? %>
-      <%= form_with url: storefront_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
-        <button class="primary small">Add to Order</button>
+      <% if authenticated? %>
+        <%= form_with url: storefront_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
+          <button class="primary small">Add to Order</button>
+        <% end %>
+      <% else %>
+        <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary small" %>
       <% end %>
     <% else %>
       <button disabled>Unavailable</button>

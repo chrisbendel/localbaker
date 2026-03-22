@@ -1,16 +1,25 @@
 <% content_for :title, "Sign in" %>
 
 <div class="stack">
-  <p>Sign in with your email address. We'll send you a code to sign in.</p>
+  <div class="stack-sm">
+    <h2>Community bread ordering, simplified.</h2>
+    <p>Run pre-orders for your cottage bakery, CSA, or community bread program — no spreadsheets required.</p>
+  </div>
 
-  <%= form_with url: session_path, method: :post, local: true do |f| %>
-    <div>
-      <%= f.label :email %><br>
-      <%= f.email_field :email, required: true, autofocus: true %>
-    </div>
+  <div class="stack-sm">
+    <p>Sign in with your email. We'll send you a one-time code — no password needed.</p>
 
-    <div>
-      <%= f.submit "Send login code" %>
-    </div>
-  <% end %>
+    <%= form_with url: session_path, method: :post, local: true do |f| %>
+      <div>
+        <%= f.label :email %>
+        <%= f.email_field :email, required: true, autofocus: true %>
+      </div>
+
+      <div>
+        <%= f.submit "Send login code" %>
+      </div>
+    <% end %>
+  </div>
+
+  <p><small>Just browsing? Storefronts are publicly viewable — ask your baker for their link.</small></p>
 </div>

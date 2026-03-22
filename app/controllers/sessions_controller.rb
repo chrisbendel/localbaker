@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   def new
     redirect_to dashboard_path if authenticated?
+    session[:return_to] = params[:return_to] if params[:return_to].present?
   end
 
   # POST /session (send code)
@@ -50,7 +51,7 @@ class SessionsController < ApplicationController
     if login_code&.verify(code)
       sign_in(user)
       session.delete(:login_email)
-      redirect_to root_path, notice: "Signed in!"
+      redirect_to after_sign_in_path, notice: "Signed in!"
     else
       flash.now[:alert] = "Invalid code or expired. Request a new code if needed."
       @prefill_email = email

@@ -47,7 +47,14 @@
     <tbody>
       <% @event.event_products.each do |product| %>
         <tr>
-          <td data-label="Name"><strong><%= product.name %></strong></td>
+          <td data-label="Name">
+            <div class="group items-center" style="gap: var(--sp-sm);">
+              <% if product.image.attached? %>
+                <%= image_tag product.image.variant(resize_to_limit: [40, 40]), style: "width: 40px; height: 40px; object-fit: cover; border-radius: 4px; flex-shrink: 0;" %>
+              <% end %>
+              <strong><%= product.name %></strong>
+            </div>
+          </td>
           <td data-label="Qty"><%= product.quantity %></td>
           <td data-label="Price"><%= product.price_formatted %></td>
           <% if authenticated? && current_user == @store.user %>
