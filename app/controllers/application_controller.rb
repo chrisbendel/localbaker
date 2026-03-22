@@ -21,8 +21,10 @@ class ApplicationController < ActionController::Base
   end
 
   def sign_in(user)
+    return_to = session[:return_to]
     reset_session
     session[:user_id] = user.id
+    session[:return_to] = return_to if return_to.present?
   end
 
   def sign_out

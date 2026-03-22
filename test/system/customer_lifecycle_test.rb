@@ -17,7 +17,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
       pickup_at: 7.days.from_now
     )
     @sourdough = @event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1400)
-    @focaccia  = @event.event_products.create!(name: "Focaccia",  quantity: 8,  price_cents: 1200)
+    @focaccia = @event.event_products.create!(name: "Focaccia", quantity: 8, price_cents: 1200)
     @event.publish!
 
     @customer = User.create!(email: "customer@example.com")

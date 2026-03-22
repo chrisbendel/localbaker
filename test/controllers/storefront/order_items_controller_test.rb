@@ -14,8 +14,8 @@ module Storefront
 
     test "should require authentication" do
       post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
-      assert_redirected_to root_path
-      assert_equal "You must sign in to access that.", flash[:alert]
+      assert_redirected_to new_session_path
+      assert_equal "Sign in to continue.", flash[:alert]
     end
 
     test "should create order item for authenticated user" do

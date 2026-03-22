@@ -7,7 +7,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   test "redirects when not authenticated" do
     get dashboard_path
-    assert_redirected_to root_path
+    assert_redirected_to new_session_path
   end
 
   test "renders dashboard when signed in" do

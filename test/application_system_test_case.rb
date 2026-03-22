@@ -6,7 +6,7 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
   # Capybara starts its own Puma instance (ignores config/puma.rb).
   # 1 thread ensures it always uses the same DB connection as the test thread,
   # which is required for transactional tests to work with system tests.
-  Capybara.server = :puma, { threads: "1:1" }
+  Capybara.server = :puma, {threads: "1:1"}
 
   # Signs in via a test-only POST endpoint that bypasses OTP entirely.
   # The email/OTP flow is covered by SessionsController unit tests.

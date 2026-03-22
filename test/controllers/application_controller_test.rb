@@ -3,8 +3,8 @@ require "test_helper"
 class ApplicationControllerTest < ActionDispatch::IntegrationTest
   test "require_authentication! redirects when not signed in" do
     get dashboard_path
-    assert_redirected_to root_path
-    assert_equal "You must sign in to access that.", flash[:alert]
+    assert_redirected_to new_session_path
+    assert_equal "Sign in to continue.", flash[:alert]
   end
 
   test "authenticated user can access dashboard" do

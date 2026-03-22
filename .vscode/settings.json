@@ -1,8 +1,7 @@
 {
-  "editor.formatOnSave": true,
-  "standard.autoFixOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.standard": "explicit"
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.formatOnSave": true
   },
-  "ruby.lsp": "standard"
+  "rubyLsp.formatter": "standard"
 }

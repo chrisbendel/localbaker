@@ -51,6 +51,47 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal user.id, session[:user_id]
   end
 
+  test "confirm redirects to return_to path after sign in" do
+    user = User.create!(email: "returnto@example.com")
+
+    ActionMailer::Base.deliveries.clear
+    get new_session_path, params: {return_to: "/s/some-bakery"}
+    post session_path, params: {email: user.email}
+    mail = ActionMailer::Base.deliveries.last
+    body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
+    code = body_text[/\b\d{6}\b/]
+
+    post confirm_session_path, params: {email: user.email, code: code}
+    assert_redirected_to "/s/some-bakery"
+  end
+
+  test "confirm falls back to root when no return_to" do
+    user = User.create!(email: "noreturn@example.com")
+
+    ActionMailer::Base.deliveries.clear
+    post session_path, params: {email: user.email}
+    mail = ActionMailer::Base.deliveries.last
+    body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
+    code = body_text[/\b\d{6}\b/]
+
+    post confirm_session_path, params: {email: user.email, code: code}
+    assert_redirected_to root_path
+  end
+
+  test "confirm ignores external return_to to prevent open redirect" do
+    user = User.create!(email: "security@example.com")
+
+    ActionMailer::Base.deliveries.clear
+    get new_session_path, params: {return_to: "https://evil.com"}
+    post session_path, params: {email: user.email}
+    mail = ActionMailer::Base.deliveries.last
+    body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
+    code = body_text[/\b\d{6}\b/]
+
+    post confirm_session_path, params: {email: user.email, code: code}
+    assert_redirected_to root_path
+  end
+
   test "confirm fails with wrong code" do
     user = User.create!(email: "nope@example.com")
 
