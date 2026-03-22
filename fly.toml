@@ -35,18 +35,6 @@ console_command = '/rails/bin/rails console'
     [http_service.checks.headers]
       X-Forwarded-Proto = 'https'
 
-  [[http_service.checks]]
-    interval = '10s'
-    timeout = '2s'
-    grace_period = '5s'
-    method = 'GET'
-    path = '/up'
-    protocol = 'http'
-    tls_skip_verify = false
-
-    [http_service.checks.headers]
-      X-Forwarded-Proto = 'https'
-
 [[vm]]
   memory = '512mb'
   cpu_kind = 'shared'
