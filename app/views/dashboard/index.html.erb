@@ -6,38 +6,31 @@
     <% if @user.store %>
       <section class="stack">
         <div class="group justify-between items-baseline">
-          <h3>Your Store</h3>
-          <div class="group">
-            <%= link_to "Storefront", storefront_path(@user.store.slug) %>
-            <%= link_to "Manage", store_path %>
-          </div>
+          <h3>Events</h3>
+          <%= link_to "+ New Event", new_store_event_path %>
         </div>
 
-        <% if @user.store.events.published.any? %>
-          <table>
-            <thead>
-              <tr>
-                <th>Event</th>
-                <th>Orders Close</th>
-                <th>Pickup</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <% @user.store.events.published.each do |event| %>
-                <tr>
-                  <td><%= event.name %></td>
-                  <td><%= nice_date(event.orders_close_at) %></td>
-                  <td><%= pickup_datetime(event.pickup_at) %></td>
-                  <td><%= link_to "Manage", event_path(event) %></td>
-                </tr>
+        <% events = @user.store.events.order(pickup_at: :desc) %>
+        <% if events.any? %>
+          <div class="stack-sm">
+            <% events.each do |event| %>
+              <%= link_to event_path(event), class: "card", style: "text-decoration: none; color: inherit;" do %>
+                <div class="group justify-between items-center">
+                  <strong><%= event.name %></strong>
+                  <% if event.draft? %>
+                    <span class="badge draft">Draft</span>
+                  <% end %>
+                </div>
+                <p class="text-muted text-sm">
+                  Pickup <%= nice_date(event.pickup_at) %> &middot; Orders close <%= nice_date(event.orders_close_at) %>
+                </p>
               <% end %>
-            </tbody>
-          </table>
+            <% end %>
+          </div>
         <% else %>
           <div class="nudge">
             <span>
-              No active events.
+              No events yet.
               <%= link_to "Create one", new_store_event_path %> to start taking orders.
             </span>
           </div>
@@ -48,30 +41,19 @@
     <% if @orders.any? %>
       <section class="stack">
         <h3>Your Orders</h3>
-        <table class="responsive-table">
-          <thead>
-            <tr>
-              <th>Store</th>
-              <th>Event</th>
-              <th>Pickup Date</th>
-              <th>Total</th>
-              <th>Placed</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @orders.each do |order| %>
-              <tr>
-                <td data-label="Store">
-                  <%= link_to order.event.store.name, storefront_path(order.event.store.slug) %>
-                </td>
-                <td data-label="Event"><%= order.event.name %></td>
-                <td data-label="Pickup Date"><%= pickup_datetime(order.event.pickup_at) %></td>
-                <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
-                <td data-label="Placed"><%= nice_date(order.created_at) %></td>
-              </tr>
+        <div class="stack-sm">
+          <% @orders.each do |order| %>
+            <%= link_to storefront_event_path(order.event.store.slug, order.event), class: "card", style: "text-decoration: none; color: inherit;" do %>
+              <div class="group justify-between items-baseline">
+                <strong><%= order.event.store.name %></strong>
+                <span class="text-muted text-sm"><%= number_to_currency(order.total_price) %></span>
+              </div>
+              <p class="text-muted text-sm">
+                <%= order.event.name %> &middot; Pickup <%= nice_date(order.event.pickup_at) %>
+              </p>
             <% end %>
-          </tbody>
-        </table>
+          <% end %>
+        </div>
       </section>
     <% end %>
 

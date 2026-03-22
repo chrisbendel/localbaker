@@ -8,6 +8,7 @@ class Stores::EventsController < ApplicationController
   end
 
   def show
+    @orders = @event.orders.includes(user: [], order_items: [:event_product]).order(created_at: :asc)
   end
 
   def new

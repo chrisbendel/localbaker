@@ -25,7 +25,10 @@
 # Any libraries that use a connection pool or another resource pool should
 # be configured to provide at least as many connections as the number of
 # threads. This includes Active Record's `pool` parameter in `database.yml`.
-threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
+# In test, cap to 1 thread so Rails' shared DB connection (transactional tests)
+# is always used by the Puma server — prevents system tests from getting a
+# different pool connection that can't see test-transaction data.
+threads_count = ENV["RAILS_ENV"] == "test" ? 1 : ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.

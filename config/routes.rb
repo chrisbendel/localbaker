@@ -37,4 +37,9 @@ Rails.application.routes.draw do
   get "/dashboard", to: "dashboard#index", as: :dashboard
 
   root to: "sessions#new"
+
+  # Test-only: direct sign-in without OTP (used by system tests to bypass email auth)
+  if Rails.env.test?
+    get "/test/sign_in/:user_id", to: "test/auth#create", as: :test_sign_in
+  end
 end
