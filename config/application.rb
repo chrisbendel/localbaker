@@ -16,6 +16,8 @@ module LocalBaker
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
+    config.middleware.use Rack::Attack
+
     # Don't eager load test-only controllers in non-test environments
     Rails.autoloaders.main.ignore(Rails.root.join("app/controllers/test")) unless Rails.env.test?
 

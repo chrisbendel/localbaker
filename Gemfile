@@ -68,3 +68,5 @@ gem "standard"
 gem "dockerfile-rails", ">= 1.7", group: :development
 
 gem "resend", "~> 1.0"
+
+gem "rack-attack"
