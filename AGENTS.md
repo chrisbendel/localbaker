@@ -1,4 +1,4 @@
-# Project: Bread Orders (Rails 8.1.1)
+# Project: LocalBaker (Rails 8.1.1)
 
 A Ruby on Rails SaaS application for small home bakeries to manage pickup events and customer orders.
 
@@ -157,7 +157,7 @@ Every view sets a contextual `content_for :title`. Convention:
 - Public event: `Event Name — Store Name`
 - Baker management: `Store Name — Context` (e.g. `Morning Loaf — Events`)
 - Auth pages: `Sign in`
-- Fallback (layout default): `Bread Orders`
+- Fallback (layout default): `LocalBaker`
 
 ## Authentication
 

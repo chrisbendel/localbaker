@@ -16,7 +16,7 @@ jobs:
     concurrency: deploy-group
     environment:
       name: production
-      url: https://bread-orders.fly.dev
+      url: https://localbaker.app
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v6

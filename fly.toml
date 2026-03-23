@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for bread-orders on 2025-11-20T18:51:57-05:00
+# fly.toml app configuration file generated for localbaker on 2026-03-23
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'bread-orders'
+app = 'localbaker'
 primary_region = 'iad'
 console_command = '/rails/bin/rails console'
 

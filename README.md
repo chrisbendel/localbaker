@@ -1,4 +1,4 @@
-# Bread Orders — Quickstart
+# LocalBaker — Quickstart
 
 ## Setup
 
