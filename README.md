@@ -19,7 +19,9 @@
 
 ## Tests
 
-- bin/rails test # all tests
+- bin/validate # RECOMMENDED: all tests + lint
+- bin/rails test # unit + integration
+- bin/rails test:system # browser tests
 - bin/rails test test/models # models only
 
 ## Lint / Format

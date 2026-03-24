@@ -16,3 +16,9 @@ bundle exec standardrb
 ```bash
 bundle exec standardrb --fix
 ```
+
+3. **Full Validation** (RECOMMENDED: lint + all tests):
+// turbo
+```bash
+bin/validate
+```

@@ -33,7 +33,7 @@
     <%= f.label :image %>
     <% if event_product.image.attached? %>
       <div style="margin-bottom: var(--sp-sm);">
-        <%= image_tag event_product.image.variant(resize_to_limit: [200, 200], format: :webp), style: "max-width: 200px; display: block; margin-bottom: var(--sp-xs);" %>
+        <%= image_tag event_product.image.variant(resize_to_limit: [200, 200], format: :webp), style: "max-width: 200px; display: block; margin-bottom: 4px;" %>
         <label>
           <%= f.check_box :remove_image %> Remove current image
         </label>
@@ -46,6 +46,6 @@
   </div>
 
   <div>
-    <%= f.submit %>
+    <%= f.submit event_product.new_record? ? "Add Product" : "Save Changes" %>
   </div>
 <% end %>

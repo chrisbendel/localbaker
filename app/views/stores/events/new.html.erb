@@ -1,37 +1,38 @@
-<% content_for :title, "#{@store.name} — New Event" %>
+<%= render_breadcrumbs([
+  { name: @store.name, path: store_path },
+  { name: "New Event" }
+]) %>
+
 <h1>New Event</h1>
 
 <%= form_with model: [@store, @event], local: true do |form| %>
   <div>
-    <%= form.label :name %><br>
+    <%= form.label :name %>
     <%= form.text_field :name, required: true %>
   </div>
 
   <div>
-    <%= form.label :description %><br>
+    <%= form.label :description %>
     <%= form.text_area :description %>
   </div>
 
-  <div class="group">
-
-
-    <div>
-      <%= form.label :orders_close_at, "Orders close at" %><br>
-      <%= form.date_field :orders_close_at, required: true, min: Date.current %>
-    </div>
+  <div>
+    <%= form.label :orders_close_at, "Orders close at" %>
+    <%= form.date_field :orders_close_at, required: true, min: Date.current %>
   </div>
 
   <div>
-    <%= form.label :pickup_at, "Pickup date" %><br>
+    <%= form.label :pickup_at, "Pickup date" %>
     <%= form.date_field :pickup_at, required: true, min: Date.current %>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.label :repeat_interval, "Repeat cadence" %>
+    <%= form.select :repeat_interval, Event.repeat_intervals.keys.map { |k| [k.gsub("_", " ").humanize, k] } %>
+    <p class="text-muted text-sm">When published, a new draft will be created automatically for the next bake.</p>
+  </div>
+
+  <div style="margin-top: var(--sp-md);">
+    <%= form.submit "Create Event" %>
   </div>
 <% end %>
-
-
-<p>
-  <%= link_to "Back", store_events_path %>
-</p>

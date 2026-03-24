@@ -8,38 +8,47 @@
 
 <%= form_with model: [@event], local: true do |form| %>
   <div>
-    <%= form.label :name %><br>
+    <%= form.label :name %>
     <%= form.text_field :name, required: true %>
   </div>
 
   <div>
-    <%= form.label :description %><br>
+    <%= form.label :description %>
     <%= form.text_area :description %>
   </div>
 
-  <div class="group">
-
-    <div>
-      <%= form.label :orders_close_at, "Orders close at" %><br>
-      <%= form.date_field :orders_close_at, required: true, min: Date.current %>
-    </div>
+  <div>
+    <%= form.label :orders_close_at, "Orders close at" %>
+    <%= form.date_field :orders_close_at, required: true, min: Date.current %>
   </div>
 
   <div>
-    <%= form.label :pickup_at, "Pickup date" %><br>
+    <%= form.label :pickup_at, "Pickup date" %>
     <%= form.date_field :pickup_at, required: true, min: Date.current %>
   </div>
 
   <div>
-    <%= form.submit %>
+    <%= form.label :repeat_interval, "Repeat cadence" %>
+    <%= form.select :repeat_interval, Event.repeat_intervals.keys.map { |k| [k.gsub("_", " ").humanize, k] } %>
+    <p class="text-muted text-sm">When published, a new draft will be created automatically for the next bake.</p>
+  </div>
+
+  <div style="margin-top: var(--sp-md);">
+    <%= form.submit "Save Changes" %>
   </div>
 <% end %>
 
+<hr style="border: none; border-top: 1px solid var(--border); margin-block: var(--sp-lg);">
 
-<div class="group items-center justify-end" style="margin-top: var(--sp-2xl);">
-
-  <%= button_to "Delete Event", event_path(@event),
-      form: { data: { turbo_confirm: "Are you sure? This will delete all products belonging to this event." } },
-      method: :delete,
-      class: "button-link text-danger text-sm" %>
+<div class="stack-sm">
+  <p class="text-sm font-bold text-danger">Danger Zone</p>
+  <% if @event.orders.any? %>
+    <p class="text-muted text-sm">This event has <%= pluralize(@event.orders.count, "order") %>. Deleting it will also delete all associated orders.</p>
+  <% end %>
+  <div class="group">
+    <%= button_to "Delete Event", event_path(@event), 
+        method: :delete, 
+        class: "button danger small",
+        data: { turbo_confirm: "Are you sure? This will permanently delete the event and all associated orders." } %>
+  </div>
 </div>

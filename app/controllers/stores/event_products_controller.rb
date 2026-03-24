@@ -6,7 +6,11 @@ class Stores::EventProductsController < ApplicationController
   before_action :require_store_owner!
 
   def new
-    @event_product = @event.event_products.new
+    @event_product = @event.event_products.new(new_event_product_params)
+    @recent_products = EventProduct.joins(:event)
+      .where(events: {store_id: @store.id})
+      .order(created_at: :desc)
+      .to_a.uniq(&:name).first(10)
   end
 
   def create
@@ -68,6 +72,10 @@ class Stores::EventProductsController < ApplicationController
   def require_store_owner!
     return if current_user == @store.user
     redirect_to event_path(@event), alert: "Not allowed."
+  end
+
+  def new_event_product_params
+    params.fetch(:event_product, {}).permit(:name, :price)
   end
 
   def event_product_params

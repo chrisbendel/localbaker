@@ -66,7 +66,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Name", with: "Sourdough Loaf"
     fill_in "Quantity", with: "10"
     fill_in "Price ($)", with: "14.00"
-    click_on "Create Event product"
+    click_on "Add Product"
 
     assert_text "Product added"
     assert_text "Sourdough Loaf"
@@ -78,7 +78,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Name", with: "Olive Focaccia"
     fill_in "Quantity", with: "8"
     fill_in "Price ($)", with: "12.00"
-    click_on "Create Event product"
+    click_on "Add Product"
 
     assert_text "Product added"
     assert_text "Olive Focaccia"
@@ -103,11 +103,13 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Edit a product
     # ----------------------------------------------------------------
-    click_on "Edit", match: :first
+    within "table" do
+      click_on "Edit", match: :first
+    end
     assert_text "Edit Product"
 
     fill_in "Quantity", with: "12"
-    click_on "Update Event product"
+    click_on "Save Changes"
 
     assert_text "Product updated"
 
@@ -145,11 +147,11 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 10. Edit event
     # ----------------------------------------------------------------
     click_on "Saturday Bake"
-    click_on "Edit event"
+    click_on "Edit Event"
     assert_text "Edit Event"
 
     fill_in "Name", with: "Saturday Bake (Updated)"
-    click_on "Update Event"
+    click_on "Save Changes"
 
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
@@ -162,8 +164,93 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
-    # 12. Sign out
+    # 12. Duplicate event
     # ----------------------------------------------------------------
+    click_on "Saturday Bake (Updated)"
+
+    accept_confirm do
+      click_on "Duplicate"
+    end
+
+    assert_text "Event duplicated. Please verify dates."
+    assert_field "Name", with: "Copy of Saturday Bake (Updated)"
+
+    # Needs new dates
+    fill_in "Orders close at", with: 10.days.from_now.strftime("%Y-%m-%d")
+    fill_in "Pickup date", with: 14.days.from_now.strftime("%Y-%m-%d")
+    click_on "Save Changes"
+
+    assert_text "Event updated."
+    assert_text "Copy of Saturday Bake (Updated)"
+    assert_css ".badge.draft"
+
+    # Verify product was copied
+    within find("tr", text: "Sourdough Loaf") do
+      assert_text "12"
+      assert_text "$14.00"
+    end
+
+    # ----------------------------------------------------------------
+    # 13. Delete event
+    # ----------------------------------------------------------------
+    click_on "Edit Event"
+    accept_confirm do
+      click_on "Delete Event"
+    end
+
+    assert_text "Event deleted."
+    assert_no_text "Copy of Saturday Bake (Updated)"
+
+    # ----------------------------------------------------------------
+    # 14. Edit store with active orders
+    # ----------------------------------------------------------------
+    click_on "Manage"
+    click_on "Edit Store"
+    fill_in "Description", with: "Updated store description."
+    click_on "Save Changes"
+    assert_text "Store updated!"
+    assert_text "Updated store description."
+
+    # ----------------------------------------------------------------
+    # 15. Quick Add Product
+    # ----------------------------------------------------------------
+    click_on "+ New Event"
+    fill_in "Name", with: "Sunday Bake"
+    fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
+    fill_in "Pickup date", with: 7.days.from_now.strftime("%Y-%m-%d")
+    find("main [type='submit']").click
+
+    click_on "Add your first product"
+    assert_text "Quick add from past bakes"
+
+    click_on "+ Sourdough Loaf ($14.00)"
+
+    # Form should be pre-filled, so just submit it (after setting quantity)
+    fill_in "Quantity", with: "15"
+    click_on "Add Product"
+
+    assert_text "Product added"
+    within find("tr", text: "Sourdough Loaf") do
+      assert_text "15"
+      assert_text "$14.00"
+    end
+
+    # ----------------------------------------------------------------
+    # 16. Delete store
+    # ----------------------------------------------------------------
+    click_on "Manage"
+    click_on "Edit Store"
+    # 244: (no longer needs within row since it's grouped but we'll see)
+    accept_confirm do
+      click_on "Delete Store"
+    end
+    assert_text "Store removed."
+    assert_text "Create your Store"
+
+    # ----------------------------------------------------------------
+    # 17. Sign out
+    # ----------------------------------------------------------------
+    # (Since store is gone, we might be on dashboard or redirected)
     click_on "Sign out"
     assert_current_path root_path
     assert_no_link "Sign out"

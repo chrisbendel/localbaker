@@ -1,7 +1,7 @@
 class Stores::EventsController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate]
 
   def index
     @events = @store.events.order(pickup_at: :asc)
@@ -25,6 +25,11 @@ class Stores::EventsController < ApplicationController
     end
   end
 
+  def duplicate
+    new_event = @event.spawn_next_event
+    redirect_to edit_event_path(new_event), notice: "Event duplicated. Please verify dates."
+  end
+
   def publish
     @event.publish!
 
@@ -32,7 +37,9 @@ class Stores::EventsController < ApplicationController
       StoreMailer.new_event(@store, @event, notification).deliver_later
     end
 
-    redirect_to event_path(@event), notice: "Event published and notifications sent!"
+    notice = "Event published!"
+    notice += " Next draft spawned for repeating bake." if @event.repeat_interval.present? && !@event.no_repeat?
+    redirect_to event_path(@event), notice: notice
   rescue ActiveRecord::RecordInvalid
     redirect_to event_path(@event), alert: @event.errors.full_messages.to_sentence
   end
@@ -71,7 +78,8 @@ class Stores::EventsController < ApplicationController
       :name,
       :description,
       :orders_close_at,
-      :pickup_at
+      :pickup_at,
+      :repeat_interval
     )
   end
 end

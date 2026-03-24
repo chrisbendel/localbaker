@@ -25,7 +25,21 @@
           </td>
           <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
           <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
-          <td><%= link_to "Edit", edit_event_path(event) %></td>
+          <td>
+            <div class="group justify-end items-center" style="gap: var(--sp-md);">
+              <%= link_to "Edit", edit_event_path(event) %>
+              <%= button_to "Duplicate", duplicate_event_path(event), 
+                  method: :post, 
+                  class: "button-link text-muted text-sm",
+                  data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
+              <% if event.draft? || event.orders.empty? %>
+                <%= button_to "Delete", event_path(event), 
+                    method: :delete, 
+                    class: "button-link text-danger text-sm",
+                    data: { turbo_confirm: "Are you sure? This will permanently delete the event." } %>
+              <% end %>
+            </div>
+          </td>
         </tr>
       <% end %>
     </tbody>

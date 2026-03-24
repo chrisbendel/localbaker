@@ -17,7 +17,13 @@ bin/rails test
 bin/rails test:system
 ```
 
-3. **Everything** (recommended before merging):
+3. **Full Validation** (RECOMMENDED: lint + all tests):
+// turbo
+```bash
+bin/validate
+```
+
+4. **Everything** (all tests):
 // turbo
 ```bash
 bin/rails test:all

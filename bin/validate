@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Exit on error
+set -e
+
+echo "--- 🧼 Running Linter (StandardRB) ---"
+bundle exec standardrb
+
+echo "--- 🏗️ Preparing Database ---"
+bin/rails db:prepare
+
+echo "--- 🧪 Running Tests (Unit & Integration) ---"
+bin/rails test
+
+echo "--- 🌐 Running System Tests ---"
+bin/rails test:system
+
+echo "--- ✅ All checks passed! ---"

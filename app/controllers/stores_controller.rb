@@ -3,7 +3,6 @@ class StoresController < ApplicationController
   before_action :set_store
   before_action :ensure_no_store!, only: [:new, :create]
   before_action :ensure_store_exists!, only: [:show, :edit, :update, :destroy]
-  before_action :prevent_edit_when_locked, only: [:edit, :update, :destroy]
 
   def new
     @store = current_user.build_store
@@ -56,12 +55,6 @@ class StoresController < ApplicationController
 
   def ensure_store_exists!
     redirect_to new_store_path, alert: "Create your store first." unless @store
-  end
-
-  def prevent_edit_when_locked
-    if @store.active_orders?
-      redirect_to store_path, alert: "Store settings are locked while you have active orders."
-    end
   end
 
   def store_params
