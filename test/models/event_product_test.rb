@@ -49,4 +49,20 @@ class EventProductTest < ActiveSupport::TestCase
     assert_equal 0, product.remaining
     assert_not product.available?
   end
+
+  test "cannot be deleted if there are order items" do
+    product = @event.event_products.create!(name: "Bread", price: 10, quantity: 10)
+    customer = User.create!(email: "customer-delete-test@example.com")
+
+    order = Order.create!(user: customer, event: @event)
+    order.order_items.create!(event_product: product, quantity: 1, unit_price_cents: 1000)
+
+    assert_not product.destroy
+    assert_includes product.errors[:base], "Cannot delete record because dependent order items exist"
+  end
+
+  test "can be deleted if no order items exist" do
+    product = @event.event_products.create!(name: "Bread", price: 10, quantity: 10)
+    assert product.destroy
+  end
 end

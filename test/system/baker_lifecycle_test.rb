@@ -47,7 +47,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Description", with: "Sourdough and focaccia this week."
     fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
     fill_in "Pickup date", with: 7.days.from_now.strftime("%Y-%m-%d")
-    find("main [type='submit']").click
+    click_on "Create Event"
 
     assert_text "Event created"
     assert_text "Saturday Bake"
@@ -66,7 +66,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Name", with: "Sourdough Loaf"
     fill_in "Quantity", with: "10"
     fill_in "Price ($)", with: "14.00"
-    find("main [type='submit']").click
+    click_on "Create Event product"
 
     assert_text "Product added"
     assert_text "Sourdough Loaf"
@@ -78,7 +78,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Name", with: "Olive Focaccia"
     fill_in "Quantity", with: "8"
     fill_in "Price ($)", with: "12.00"
-    find("main [type='submit']").click
+    click_on "Create Event product"
 
     assert_text "Product added"
     assert_text "Olive Focaccia"
@@ -107,7 +107,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Edit Product"
 
     fill_in "Quantity", with: "12"
-    find("main [type='submit']").click
+    click_on "Update Event product"
 
     assert_text "Product updated"
 
@@ -121,10 +121,12 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     product_row_count_before = all("tbody tr").count
 
+    within find("tr", text: "Olive Focaccia") do
+      click_on "Edit"
+    end
+
     accept_confirm do
-      within find("tr", text: "Olive Focaccia") do
-        click_on "Delete"
-      end
+      click_on "Delete Product"
     end
 
     assert_text "Product removed"
@@ -147,21 +149,17 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Edit Event"
 
     fill_in "Name", with: "Saturday Bake (Updated)"
-    find("main [type='submit']").click
+    click_on "Update Event"
 
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
 
-    # ----------------------------------------------------------------
-    # 11. Header store nav works from any page
-    # ----------------------------------------------------------------
     click_on "Storefront"
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
     click_on "Manage"
     assert_text "Morning Loaf"
-    assert_link "View Storefront"
 
     # ----------------------------------------------------------------
     # 12. Sign out

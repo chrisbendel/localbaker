@@ -1,7 +1,8 @@
 class EventProduct < ApplicationRecord
   belongs_to :event
-  has_many :order_items
+  has_many :order_items, dependent: :restrict_with_error
   has_one_attached :image
+  attr_accessor :remove_image
 
   validates :name, presence: true, uniqueness: {scope: :event_id}
   validates :quantity, numericality: {greater_than_or_equal_to: 0}

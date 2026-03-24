@@ -4,6 +4,9 @@ class Store < ApplicationRecord
   has_many :notifications, class_name: "StoreNotification", dependent: :destroy
   has_many :orders, through: :events
 
+  has_one_attached :banner_image
+  attr_accessor :remove_banner_image
+
   validates :name, presence: true
   validates :slug,
     presence: true,

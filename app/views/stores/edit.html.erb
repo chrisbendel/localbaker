@@ -20,7 +20,32 @@
     <%= f.text_area :description %>
   </div>
 
+  <div data-controller="image-upload">
+    <%= f.label :banner_image, "Store Banner" %><br>
+    <% if @store.banner_image.attached? %>
+      <div style="margin-bottom: var(--sp-sm);">
+        <label>
+          <%= f.check_box :remove_banner_image %> Remove current banner
+        </label>
+      </div>
+    <% end %>
+    <div class="group items-center">
+      <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+      <button type="button" class="button small secondary" data-image-upload-target="cancelButton" data-action="image-upload#cancel" style="display: none;">Cancel</button>
+    </div>
+  </div>
+
   <div>
     <%= f.submit "Save changes" %>
   </div>
 <% end %>
+
+<hr style="margin-top: var(--sp-2xl); border: none; border-top: 1px dashed var(--border);">
+
+<div>
+  <h4 class="text-danger">Danger Zone</h4>
+  <%= button_to "Delete Store", store_path,
+      form: { data: { turbo_confirm: "Are you sure? This cannot be undone and will delete all events." } },
+      method: :delete,
+      class: "button danger small" %>
+</div>

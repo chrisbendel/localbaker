@@ -17,6 +17,14 @@
     <%= f.text_area :description %>
   </div>
 
+  <div data-controller="image-upload">
+    <%= f.label :banner_image, "Store Banner" %><br>
+    <div class="group items-center">
+      <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+      <button type="button" class="button small secondary" data-image-upload-target="cancelButton" data-action="image-upload#cancel" style="display: none;">Cancel</button>
+    </div>
+  </div>
+
   <div>
     <%= f.submit "Create Store" %>
   </div>

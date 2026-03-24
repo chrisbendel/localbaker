@@ -23,6 +23,10 @@ class Stores::EventProductsController < ApplicationController
   end
 
   def update
+    if params[:event_product][:remove_image] == "1"
+      @event_product.image.purge
+    end
+
     if @event_product.update(event_product_params)
       redirect_to event_path(@event), notice: "Product updated."
     else
@@ -31,8 +35,11 @@ class Stores::EventProductsController < ApplicationController
   end
 
   def destroy
-    @event_product.destroy
-    redirect_to event_path(@event), notice: "Product removed."
+    if @event_product.destroy
+      redirect_to event_path(@event), notice: "Product removed."
+    else
+      redirect_to event_path(@event), alert: "Cannot delete product: #{@event_product.errors.full_messages.to_sentence}"
+    end
   end
 
   private

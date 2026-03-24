@@ -10,12 +10,7 @@
   <% end %>
 
   <div class="group">
-    <%= link_to "View Storefront", storefront_path(@store.slug) %>
     <%= link_to "Edit Store", edit_store_path %>
-    <%= button_to "Delete Store", store_path,
-        form: { data: { turbo_confirm: "Are you sure? This cannot be undone." } },
-        method: :delete,
-        class: "button-link text-danger" %>
   </div>
 
   <hr style="border: none; border-top: 1px solid var(--border);">

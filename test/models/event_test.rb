@@ -43,4 +43,19 @@ class EventTest < ActiveSupport::TestCase
     refute @event.valid?
     assert_includes @event.errors[:orders_close_at], "must be before the pickup time"
   end
+
+  test "cannot be deleted if there are orders" do
+    @event.save!
+
+    customer = User.create!(email: "customer-test@example.com")
+    Order.create!(user: customer, event: @event)
+
+    assert_not @event.destroy
+    assert @event.errors.full_messages.join.downcase.include?("order")
+  end
+
+  test "can be deleted if no orders exist" do
+    @event.save!
+    assert @event.destroy
+  end
 end

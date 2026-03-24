@@ -9,8 +9,10 @@
         <% if (store = current_user.store)&.persisted? %>
           <%= link_to "Storefront", storefront_path(store.slug) %>
           <%= link_to "Manage", store_path %>
+          <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
+        <% else %>
+          <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
         <% end %>
-        <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
       <% else %>
         <%= link_to "Sign in", new_session_path %>
       <% end %>

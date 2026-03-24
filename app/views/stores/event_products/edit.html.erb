@@ -1,8 +1,18 @@
-<% content_for :title, "#{@event_product.name} — Edit Product" %>
+<%= render_breadcrumbs([
+  { name: @store.name, path: store_path },
+  { name: @event.name, path: event_path(@event) },
+  { name: @event_product.name, path: edit_event_product_path(@event_product) },
+  { name: "Edit" }
+]) %>
+
 <h2>Edit Product</h2>
 
-<div>
-  <%= link_to "Back to event", event_path(@event) %>
+<div class="group items-center justify-end" style="margin-bottom: var(--sp-lg);">
+
+  <%= button_to "Delete Product", event_product_path(@event_product),
+      form: { data: { turbo_confirm: "Are you sure you want to delete this product?" } },
+      method: :delete,
+      class: "button-link text-danger text-sm" %>
 </div>
 
 <%= render "form", event: @event_product.event, event_product: @event_product %>

@@ -29,14 +29,20 @@
     <% end %>
   </div>
 
-  <div>
+  <div data-controller="image-upload">
     <%= f.label :image %>
     <% if event_product.image.attached? %>
       <div style="margin-bottom: var(--sp-sm);">
-        <%= image_tag event_product.image.variant(resize_to_limit: [200, 200]), style: "max-width: 200px; display: block;" %>
+        <%= image_tag event_product.image.variant(resize_to_limit: [200, 200], format: :webp), style: "max-width: 200px; display: block; margin-bottom: var(--sp-xs);" %>
+        <label>
+          <%= f.check_box :remove_image %> Remove current image
+        </label>
       </div>
     <% end %>
-    <%= f.file_field :image, accept: "image/*" %>
+    <div class="group items-center">
+      <%= f.file_field :image, accept: "image/*", data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+      <button type="button" class="button small secondary" data-image-upload-target="cancelButton" data-action="image-upload#cancel" style="display: none;">Cancel</button>
+    </div>
   </div>
 
   <div>

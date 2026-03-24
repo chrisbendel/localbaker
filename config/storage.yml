@@ -14,6 +14,8 @@ cloudflare:
   bucket: localbaker-<%= Rails.env %>
   endpoint: https://<%= ENV["CLOUDFLARE_ACCOUNT_ID"] %>.r2.cloudflarestorage.com
   force_path_style: true
+  public: true
+  host: <%= ENV.fetch("CLOUDFLARE_PUBLIC_HOST", "https://cdn.localbaker.app") %>
 
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
