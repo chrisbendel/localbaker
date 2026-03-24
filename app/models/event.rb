@@ -12,6 +12,9 @@ class Event < ApplicationRecord
   scope :published, -> { where.not(published_at: nil) }
   scope :draft, -> { where(published_at: nil) }
 
+  attribute :repeat_interval, :integer
+  enum :repeat_interval, {no_repeat: 0, weekly: 1, biweekly: 2}, default: :no_repeat
+
   def published?
     published_at.present?
   end
@@ -21,7 +24,32 @@ class Event < ApplicationRecord
   end
 
   def publish!
-    update!(published_at: Time.current)
+    transaction do
+      update!(published_at: Time.current)
+      spawn_next_event if !no_repeat?
+    end
+  end
+
+  def spawn_next_event
+    interval_weeks = ((repeat_interval == "biweekly") ? 2 : 1)
+
+    new_event = dup
+    new_event.name = "Copy of #{name}"
+    new_event.published_at = nil
+    new_event.pickup_at = pickup_at + interval_weeks.weeks if pickup_at
+    new_event.orders_close_at = orders_close_at + interval_weeks.weeks if orders_close_at
+    new_event.save!(validate: false)
+
+    event_products.each do |ep|
+      new_ep = ep.dup
+      new_ep.event = new_event
+      if ep.image.attached?
+        new_ep.image.attach(ep.image.blob)
+      end
+      new_ep.save!
+    end
+
+    new_event
   end
 
   private

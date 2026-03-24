@@ -172,7 +172,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
       click_on "Duplicate"
     end
 
-    assert_text "Event duplicated. Please update your dates."
+    assert_text "Event duplicated. Please verify dates."
     assert_field "Name", with: "Copy of Saturday Bake (Updated)"
 
     # Needs new dates
@@ -240,6 +240,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     click_on "Manage"
     click_on "Edit Store"
+    # 244: (no longer needs within row since it's grouped but we'll see)
     accept_confirm do
       click_on "Delete Store"
     end

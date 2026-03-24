@@ -1,7 +1,7 @@
 <% content_for :title, "#{@store.name} — Store" %>
 <div class="stack">
   <div class="group justify-between items-start">
-    <div class="stack-xs">
+    <div class="stack-sm">
       <h2 style="margin: 0;"><%= @store.name %></h2>
       <p class="text-muted text-sm">localbaker.app/shop/<%= @store.slug %></p>
     </div>
@@ -18,35 +18,80 @@
 
   <hr style="border: none; border-top: 1px solid var(--border);">
 
-  <div class="group justify-between items-baseline">
+  <div class="group justify-between items-center">
     <h3>Events</h3>
-    <%= link_to "+ New Event", new_store_event_path %>
+    <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
   </div>
 
   <% if @store.events.any? %>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Pickup</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @store.events.order(pickup_at: :desc).each do |event| %>
-          <tr>
-            <td>
-              <%= link_to event.name, event_path(event) %>
-              <% if event.draft? %>
-                <span class="badge draft">Draft</span>
+    <div class="stack">
+      <% upcoming = @store.events.where("pickup_at >= ?", Date.current).order(pickup_at: :asc) %>
+      <% past = @store.events.where("pickup_at < ?", Date.current).order(pickup_at: :desc) %>
+
+      <% if upcoming.any? %>
+        <div class="stack-sm">
+          <h4 class="text-muted">Upcoming</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Pickup</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% upcoming.each do |event| %>
+                <tr>
+                  <td>
+                    <%= link_to event.name, event_path(event) %>
+                    <% if event.draft? %>
+                      <span class="badge draft">Draft</span>
+                    <% end %>
+                  </td>
+                  <td><%= nice_date(event.pickup_at) %></td>
+                  <td>
+                    <div class="group justify-end">
+                      <%= link_to "Manage", event_path(event), class: "button small secondary" %>
+                      <%= button_to "Duplicate", duplicate_event_path(event), params: { interval: 1 }, class: "button small secondary" %>
+                    </div>
+                  </td>
+                </tr>
               <% end %>
-            </td>
-            <td><%= nice_date(event.pickup_at) %></td>
-            <td><%= link_to "Manage", event_path(event) %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+
+      <% if past.any? %>
+        <details>
+          <summary class="text-muted text-sm">Past Events (<%= past.count %>)</summary>
+          <div class="stack-sm" style="margin-top: var(--sp-sm);">
+            <table class="text-sm">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Pickup</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% past.each do |event| %>
+                  <tr>
+                    <td class="text-muted"><%= link_to event.name, event_path(event) %></td>
+                    <td class="text-muted"><%= nice_date(event.pickup_at) %></td>
+                    <td>
+                      <div class="group justify-end">
+                        <%= button_to "Reuse", duplicate_event_path(event), params: { interval: 1 }, class: "button small secondary" %>
+                      </div>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      <% end %>
+    </div>
   <% else %>
     <div class="nudge">
       <span>

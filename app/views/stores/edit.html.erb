@@ -3,12 +3,12 @@
 
 <%= form_with model: @store, url: store_path do |f| %>
   <div>
-    <%= f.label :name %><br>
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
 
   <div>
-    <%= f.label :slug, "Store URL" %><br>
+    <%= f.label :slug, "Store URL" %>
     <%= f.text_field :slug, disabled: @store.active_orders? %>
     <% if @store.active_orders? %>
       <p>Slug cannot be changed while you have active orders.</p>
@@ -16,12 +16,12 @@
   </div>
 
   <div>
-    <%= f.label :description %><br>
+    <%= f.label :description %>
     <%= f.text_area :description %>
   </div>
 
   <div data-controller="image-upload">
-    <%= f.label :banner_image, "Store Banner" %><br>
+    <%= f.label :banner_image, "Store Banner" %>
     <% if @store.banner_image.attached? %>
       <div style="margin-bottom: var(--sp-sm);">
         <label>

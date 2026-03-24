@@ -69,12 +69,9 @@ select {
   --danger-border: #fecaca;
 
   /* Spacing */
-  --sp-xs: 0.25rem;
   --sp-sm: 0.5rem;
   --sp-md: 1rem;
-  --sp-lg: 1.5rem;
-  --sp-xl: 2rem;
-  --sp-2xl: 3rem;
+  --sp-lg: 2rem;
 
   /* Shape */
   --radius: 3px;
@@ -150,7 +147,7 @@ pre {
 .stack-lg {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-xl);
+  gap: var(--sp-lg);
 }
 
 /* Horizontal group */
@@ -266,7 +263,7 @@ pre {
 .card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: var(--sp-lg);
+  padding: var(--sp-md);
 }
 
 .card-accent {
@@ -281,14 +278,14 @@ pre {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: var(--sp-lg);
+  padding: var(--sp-md);
 }
 
 /* Empty state */
 .empty-state {
   border: 2px dashed var(--border);
   border-radius: var(--radius);
-  padding: var(--sp-2xl) var(--sp-xl);
+  padding: var(--sp-lg) var(--sp-md);
   text-align: center;
 }
 
@@ -347,14 +344,14 @@ pre {
 form {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-md);
+  gap: var(--sp-sm);
 }
 
 label {
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: var(--sp-xs);
+  margin-bottom: 2px;
 }
 
 input[type="text"],
@@ -391,13 +388,13 @@ textarea {
 .field-hint {
   font-size: 0.8rem;
   color: var(--text-muted);
-  margin-top: var(--sp-xs);
+  margin-top: 4px;
 }
 
 .field-error {
   font-size: 0.8rem;
   color: var(--danger);
-  margin-top: var(--sp-xs);
+  margin-top: 4px;
 }
 
 /* Rails error wrapper */
@@ -422,7 +419,7 @@ button,
 .button {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-xs);
+  gap: 4px;
   border: 1px solid var(--border-strong);
   background: var(--bg);
   color: var(--text);
@@ -501,7 +498,7 @@ button.danger,
 header {
   padding-block: var(--sp-md);
   border-bottom: 1px solid var(--border);
-  margin-bottom: var(--sp-xl);
+  margin-bottom: var(--sp-lg);
 }
 
 /* === TABLES === */
@@ -584,7 +581,7 @@ th:last-child {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-xs);
+  gap: var(--sp-sm);
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-bottom: var(--sp-sm);
@@ -601,7 +598,7 @@ th:last-child {
 
 .breadcrumbs .sep::before {
   content: "·";
-  padding-inline: var(--sp-xs);
+  padding-inline: 4px;
   font-weight: bold;
 }
 
@@ -609,7 +606,7 @@ th:last-child {
 #flash-dialog {
   margin: 0;
   position: fixed;
-  bottom: var(--sp-xl);
+  bottom: var(--sp-lg);
   left: 50%;
   transform: translateX(-50%);
   border: none;

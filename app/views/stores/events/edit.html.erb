@@ -8,29 +8,32 @@
 
 <%= form_with model: [@event], local: true do |form| %>
   <div>
-    <%= form.label :name %><br>
+    <%= form.label :name %>
     <%= form.text_field :name, required: true %>
   </div>
 
   <div>
-    <%= form.label :description %><br>
+    <%= form.label :description %>
     <%= form.text_area :description %>
   </div>
 
-  <div class="group">
-
-    <div>
-      <%= form.label :orders_close_at, "Orders close at" %><br>
-      <%= form.date_field :orders_close_at, required: true, min: Date.current %>
-    </div>
+  <div>
+    <%= form.label :orders_close_at, "Orders close at" %>
+    <%= form.date_field :orders_close_at, required: true, min: Date.current %>
   </div>
 
   <div>
-    <%= form.label :pickup_at, "Pickup date" %><br>
+    <%= form.label :pickup_at, "Pickup date" %>
     <%= form.date_field :pickup_at, required: true, min: Date.current %>
   </div>
 
   <div>
+    <%= form.label :repeat_interval, "Repeat cadence" %>
+    <%= form.select :repeat_interval, Event.repeat_intervals.keys.map { |k| [k.gsub("_", " ").humanize, k] } %>
+    <p class="text-muted text-sm">When published, a new draft will be created automatically for the next bake.</p>
+  </div>
+
+  <div style="margin-top: var(--sp-md);">
     <%= form.submit "Save Changes" %>
   </div>
 <% end %>
@@ -49,7 +52,3 @@
         data: { turbo_confirm: "Are you sure? This will permanently delete the event and all associated orders." } %>
   </div>
 </div>
-
-<p style="margin-top: var(--sp-lg);">
-  <%= link_to "← Back to event", event_path(@event) %>
-</p>
