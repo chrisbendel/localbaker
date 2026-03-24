@@ -174,6 +174,7 @@ Rate limiting: 5 codes per hour per user (enforced in `LoginCode.generate_for`).
 ### Commands
 
 ```bash
+bin/validate            # recommended: runs lint + unit + system tests
 bin/rails test          # unit + integration (fast)
 bin/rails test:system   # browser/system tests only
 bin/rails test:all      # everything
@@ -211,6 +212,7 @@ The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`
 ```bash
 bundle install && bin/rails db:prepare   # setup
 bin/rails server                          # run
+bin/validate                              # full validation (lint + tests)
 bin/rails test:all                        # full test suite
 bundle exec standardrb --fix             # lint + fix
 bin/rails routes                          # inspect routes

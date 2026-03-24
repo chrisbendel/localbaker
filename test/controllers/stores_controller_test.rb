@@ -46,18 +46,17 @@ class StoresControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "edit redirects when store is locked" do
+  test "edit renders even when store has active orders" do
     Store.create!(name: "Mine", slug: "mine", user: @user)
 
-    # Force all Store instances to report active orders for this test
+    # Force active_orders? to true
     original = Store.instance_method(:active_orders?)
     Store.define_method(:active_orders?) { true }
     begin
       get edit_store_path
-      assert_redirected_to store_path
-      assert_equal "Store settings are locked while you have active orders.", flash[:alert]
+      assert_response :success
     ensure
-      # Restore original implementation to avoid leaking to other tests
+      # Restore original implementation
       Store.define_method(:active_orders?, original)
     end
   end

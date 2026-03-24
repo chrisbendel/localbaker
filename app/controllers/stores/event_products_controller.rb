@@ -8,9 +8,9 @@ class Stores::EventProductsController < ApplicationController
   def new
     @event_product = @event.event_products.new(new_event_product_params)
     @recent_products = EventProduct.joins(:event)
-                                   .where(events: { store_id: @store.id })
-                                   .order(created_at: :desc)
-                                   .to_a.uniq(&:name).first(10)
+      .where(events: {store_id: @store.id})
+      .order(created_at: :desc)
+      .to_a.uniq(&:name).first(10)
   end
 
   def create
