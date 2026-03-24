@@ -154,16 +154,12 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
 
-    # ----------------------------------------------------------------
-    # 11. Header store nav works from any page
-    # ----------------------------------------------------------------
     click_on "Storefront"
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
     click_on "Manage"
     assert_text "Morning Loaf"
-    assert_link "View Storefront"
 
     # ----------------------------------------------------------------
     # 12. Sign out

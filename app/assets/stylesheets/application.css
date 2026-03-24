@@ -579,25 +579,30 @@ th:last-child {
   }
 }
 
-/* === DETAILS/DROPDOWN === */
-details {
-  position: relative;
+/* === BREADCRUMBS === */
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-xs);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: var(--sp-sm);
 }
 
-details>summary {
-  list-style: none;
-  cursor: pointer;
+.breadcrumbs a {
+  text-decoration: none;
 }
 
-details>ul {
-  position: absolute;
-  right: 0;
-  border: 1px solid var(--border);
-  list-style: none;
-  padding: var(--sp-sm);
-  border-radius: var(--radius);
-  background: var(--bg);
-  z-index: 10;
+.breadcrumbs a:hover {
+  text-decoration: underline;
+  color: var(--text);
+}
+
+.breadcrumbs .sep::before {
+  content: "·";
+  padding-inline: var(--sp-xs);
+  font-weight: bold;
 }
 
 /* === FLASH TOAST === */
