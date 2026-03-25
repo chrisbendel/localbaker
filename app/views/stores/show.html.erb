@@ -35,6 +35,7 @@
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Orders close</th>
                 <th>Pickup</th>
                 <th></th>
               </tr>
@@ -48,6 +49,7 @@
                       <span class="badge draft">Draft</span>
                     <% end %>
                   </td>
+                  <td><%= nice_date(event.orders_close_at) %></td>
                   <td><%= nice_date(event.pickup_at) %></td>
                   <td>
                     <div class="group justify-end">

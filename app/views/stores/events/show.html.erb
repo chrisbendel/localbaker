@@ -55,7 +55,7 @@
 <div class="group justify-between items-baseline">
   <h3>Products</h3>
   <% if authenticated? && current_user == @store.user %>
-    <%= link_to "+ Add Product", new_event_event_product_path(@event) %>
+    <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button primary" %>
   <% end %>
 </div>
 
