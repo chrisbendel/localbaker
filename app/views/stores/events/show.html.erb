@@ -7,14 +7,14 @@
 
 <div class="group justify-between items-start">
   <div class="stack-sm">
-    <div class="group items-center" style="gap: var(--sp-sm);">
-      <h2 style="margin: 0;"><%= @event.name %></h2>
+    <div class="group items-center">
+      <h2><%= @event.name %></h2>
       <% if @event.draft? %>
         <span class="badge draft">Draft</span>
       <% end %>
     </div>
     
-    <div class="group items-center" style="margin-top: 4px;">
+    <div class="group items-center">
       <% if @event.draft? && current_user == @store.user && @event.event_products.present? %>
         <%= button_to "Publish Event", publish_event_path(@event), method: :post,
             class: "button small primary",
@@ -50,12 +50,12 @@
   <% end %>
 </div>
 
-<hr style="border: none; border-top: 1px solid var(--border); margin-block: var(--sp-lg);">
+<hr class="divider">
 
 <div class="group justify-between items-baseline">
   <h3>Products</h3>
   <% if authenticated? && current_user == @store.user %>
-    <%= link_to "+ Add Product", new_event_event_product_path(@event) %>
+    <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button primary" %>
   <% end %>
 </div>
 
@@ -77,7 +77,7 @@
           <td data-label="Name">
             <div class="group items-center" style="gap: var(--sp-sm);">
               <% if product.image.attached? %>
-                <%= image_tag product.image.variant(resize_to_limit: [40, 40], format: :webp), style: "width: 40px; height: 40px; object-fit: cover; border-radius: 4px; flex-shrink: 0;" %>
+                <%= image_tag product.image.variant(resize_to_limit: [40, 40], format: :webp), class: "img-thumb" %>
               <% end %>
               <strong><%= product.name %></strong>
             </div>
@@ -103,7 +103,7 @@
   </div>
 <% end %>
 
-<hr style="border: none; border-top: 1px solid var(--border); margin-block: var(--sp-lg);">
+<hr class="divider">
 
 <div class="group justify-between items-baseline">
   <h3>Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h3>

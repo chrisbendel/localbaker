@@ -1,0 +1,22 @@
+<% content_for :title, "Profile" %>
+
+<div class="stack">
+  <h1>Profile</h1>
+
+  <%= form_with model: current_user, url: profile_path, method: :patch, class: "stack" do |f| %>
+    <div>
+      <%= f.label :email, "Email" %>
+      <%= f.email_field :email, disabled: true %>
+    </div>
+
+    <div>
+      <%= f.label :name, "Name" %>
+      <%= f.text_field :name, placeholder: "Your name" %>
+    </div>
+
+    <%= f.submit "Save", class: "button primary", style: "align-self: flex-start" %>
+  <% end %>
+
+  <hr class="divider"/>
+  <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted", form: { style: "display: inline" } %>
+</div>

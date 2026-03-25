@@ -1,6 +1,6 @@
 <div class="card stack-sm">
   <% if product.image.attached? %>
-    <%= image_tag product.image.variant(resize_to_limit: [600, 400], format: :webp), style: "width: 100%; height: 180px; object-fit: cover; border-radius: var(--radius, 4px);" %>
+    <%= image_tag product.image.variant(resize_to_limit: [600, 400], format: :webp), class: "img-product" %>
   <% end %>
   <div class="group justify-between items-baseline">
     <h3><%= product.name %></h3>

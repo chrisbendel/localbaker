@@ -9,9 +9,12 @@
         <% if (store = current_user.store)&.persisted? %>
           <%= link_to "Storefront", storefront_path(store.slug) %>
           <%= link_to "Manage", store_path %>
-          <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
-        <% else %>
-          <%= button_to "Sign out", session_path, method: :delete, class: "button-link" %>
+        <% end %>
+        <%= link_to profile_path, class: "nav-icon", aria: { label: "Profile" } do %>
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
         <% end %>
       <% else %>
         <%= link_to "Sign in", new_session_path %>

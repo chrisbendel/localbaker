@@ -1,7 +1,7 @@
 <section class="card-accent stack-sm">
   <div class="group justify-between items-center">
     <h2><%= event.name %></h2>
-    <span class="badge available"><%= event.published? ? "Open for Orders" : "Draft" %></span>
+    <span class="badge <%= event.published? ? 'available' : 'draft' %>"><%= event.published? ? "Open for Orders" : "Draft" %></span>
   </div>
 
   <% if event.description.present? %>

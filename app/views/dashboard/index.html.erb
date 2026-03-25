@@ -7,14 +7,14 @@
       <section class="stack">
         <div class="group justify-between items-baseline">
           <h3>Events</h3>
-          <%= link_to "+ New Event", new_store_event_path %>
+          <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
         </div>
 
         <% events = @user.store.events.order(pickup_at: :desc) %>
         <% if events.any? %>
           <div class="stack-sm">
             <% events.each do |event| %>
-              <%= link_to event_path(event), class: "card", style: "text-decoration: none; color: inherit;" do %>
+              <%= link_to event_path(event), class: "card" do %>
                 <div class="group justify-between items-center">
                   <strong><%= event.name %></strong>
                   <% if event.draft? %>
@@ -43,7 +43,7 @@
         <h3>Your Orders</h3>
         <div class="stack-sm">
           <% @orders.each do |order| %>
-            <%= link_to storefront_event_path(order.event.store.slug, order.event), class: "card", style: "text-decoration: none; color: inherit;" do %>
+            <%= link_to storefront_event_path(order.event.store.slug, order.event), class: "card" do %>
               <div class="group justify-between items-baseline">
                 <strong><%= order.event.store.name %></strong>
                 <span class="text-muted text-sm"><%= number_to_currency(order.total_price) %></span>

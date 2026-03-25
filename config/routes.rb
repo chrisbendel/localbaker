@@ -35,6 +35,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resource :profile, only: [:show, :update]
+
   get "/dashboard", to: "dashboard#index", as: :dashboard
 
   root to: "sessions#new"

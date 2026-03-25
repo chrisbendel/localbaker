@@ -250,7 +250,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 17. Sign out
     # ----------------------------------------------------------------
-    # (Since store is gone, we might be on dashboard or redirected)
+    visit profile_path
     click_on "Sign out"
     assert_current_path root_path
     assert_no_link "Sign out"

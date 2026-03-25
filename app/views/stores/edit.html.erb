@@ -1,5 +1,9 @@
 <% content_for :title, "#{@store.name} — Edit Store" %>
-<h3>Edit Store</h3>
+
+<div class="group justify-between">
+  <h3>Edit Store</h3>
+  <p><%= link_to "Back to store", store_path %></p>
+</div>
 
 <%= form_with model: @store, url: store_path do |f| %>
   <div>
@@ -36,11 +40,11 @@
   </div>
 
   <div>
-    <%= f.submit "Save Changes" %>
+    <%= f.submit "Save Changes", class: "button primary" %>
   </div>
 <% end %>
 
-<hr style="border: none; border-top: 1px solid var(--border); margin-block: var(--sp-lg);">
+<hr class="divider">
 
 <div class="stack-sm">
   <p class="text-sm font-bold text-danger">Danger Zone</p>
@@ -52,7 +56,3 @@
         data: { turbo_confirm: "Are you sure? This will permanently delete your entire store and all its history. This cannot be undone." } %>
   </div>
 </div>
-
-<p style="margin-top: var(--sp-lg);">
-  <%= link_to "← Back to store", store_path %>
-</p>
