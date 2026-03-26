@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_25_122805) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_26_202304) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -54,6 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_122805) do
     t.text "description"
     t.string "name"
     t.datetime "orders_close_at"
+    t.string "pickup_address"
     t.datetime "pickup_at"
     t.datetime "published_at"
     t.integer "repeat_interval"
@@ -106,6 +107,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_25_122805) do
   end
 
   create_table "stores", force: :cascade do |t|
+    t.string "address"
     t.datetime "created_at", null: false
     t.text "description"
     t.string "name"

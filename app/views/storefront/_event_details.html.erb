@@ -18,4 +18,10 @@
     <span><strong>Pickup:</strong> <%= pickup_datetime(event.pickup_at) %></span>
     <span><strong>Orders close:</strong> <%= nice_date(event.orders_close_at) %></span>
   </div>
+
+  <% if (address = event.effective_pickup_address) %>
+    <div class="text-sm">
+      <%= link_to address, google_maps_url(address), target: "_blank", rel: "noopener noreferrer" %>
+    </div>
+  <% end %>
 </section>
