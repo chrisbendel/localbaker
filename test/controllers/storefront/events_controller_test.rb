@@ -41,5 +41,33 @@ module Storefront
       get storefront_event_url(@store.slug, @event)
       assert_response :success
     end
+
+    test "includes open graph meta tags" do
+      get storefront_event_url(@store.slug, @event)
+
+      assert_response :success
+      assert_select "meta[property='og:title'][content*='#{@event.name}']"
+      assert_select "meta[property='og:title'][content*='#{@store.name}']"
+      assert_select "meta[property='og:description']"
+      assert_select "meta[property='og:url'][content*='#{@store.slug}']"
+      assert_select "meta[property='og:image']"
+      assert_select "meta[property='og:site_name'][content='LocalBaker']"
+    end
+
+    test "uses event description in og:description when present" do
+      @event.update!(description: "A special weekend bake.")
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_select "meta[property='og:description'][content='A special weekend bake.']"
+    end
+
+    test "uses fallback text in og:description when no event description" do
+      @event.update_columns(description: nil)
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_select "meta[property='og:description'][content*='#{@store.name}']"
+    end
   end
 end
