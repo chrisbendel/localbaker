@@ -1,5 +1,19 @@
 <% content_for :title, "#{@event.name} — #{@store.name}" %>
 
+<% content_for :head do %>
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LocalBaker">
+  <meta property="og:title" content="<%= "#{@event.name} — #{@store.name}" %>">
+  <% og_description = @event.description.present? ? @event.description : "Pick up from #{@store.name} on #{pickup_datetime(@event.pickup_at)}." %>
+  <meta property="og:description" content="<%= og_description %>">
+  <meta property="og:url" content="<%= request.url %>">
+  <% if @store.banner_image.attached? %>
+    <meta property="og:image" content="<%= url_for(@store.banner_image) %>">
+  <% else %>
+    <meta property="og:image" content="<%= root_url.chomp("/") + "/baguette-solid.png" %>">
+  <% end %>
+<% end %>
+
 <nav class="breadcrumbs">
   <%= link_to @store.name, storefront_path(@store.slug) %>
   <span class="sep"></span>
