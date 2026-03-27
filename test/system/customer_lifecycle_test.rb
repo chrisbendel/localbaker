@@ -9,18 +9,41 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
   setup do
     # Seed a published bakery with two products
     baker = User.create!(email: "baker@breadbarn.com")
-    @store = Store.create!(name: "The Bread Barn", slug: "bread-barn", user: baker)
+    @store = Store.create!(name: "The Bread Barn", slug: "bread-barn", user: baker, address: "123 Home Bakery Lane, Portland, OR")
     @event = @store.events.create!(
       name: "Sunday Bake",
       description: "Sourdough and focaccia.",
       orders_close_at: 5.days.from_now,
-      pickup_at: 7.days.from_now
+      pickup_at: 7.days.from_now,
+      pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR"
     )
     @sourdough = @event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1400)
     @focaccia = @event.event_products.create!(name: "Focaccia", quantity: 8, price_cents: 1200)
     @event.publish!
 
     @customer = User.create!(email: "customer@example.com")
+  end
+
+  test "storefront event shows store address as fallback when event has no pickup location" do
+    # Temporarily clear the event's pickup address so the store address shows
+    @event.update_columns(pickup_address: nil)
+
+    sign_in_via_browser(@customer)
+    visit storefront_event_url(@store.slug, @event)
+
+    assert_link "123 Home Bakery Lane, Portland, OR"
+    assert_no_text "The Climbing Gym"
+  end
+
+  test "storefront event shows no location when neither event nor store has an address" do
+    @event.update_columns(pickup_address: nil)
+    @store.update_columns(address: nil)
+
+    sign_in_via_browser(@customer)
+    visit storefront_event_url(@store.slug, @event)
+
+    # No maps link rendered at all
+    assert_no_css "a[href*='google.com/maps']"
   end
 
   test "full customer lifecycle" do
@@ -58,6 +81,10 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     assert_text "Focaccia"
     assert_text "No items yet"
     assert_no_text "Your order is saved"
+
+    # Event-specific pickup location is shown; store address is not
+    assert_link "The Climbing Gym, 456 Oak Ave, Portland, OR"
+    assert_no_text "123 Home Bakery Lane"
 
     # ----------------------------------------------------------------
     # 5. Add sourdough to order
