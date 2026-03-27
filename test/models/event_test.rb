@@ -117,4 +117,35 @@ class EventTest < ActiveSupport::TestCase
     @event.publish!
     assert_includes Event.current, @event
   end
+
+  # --- pickup_address / effective_pickup_address ---
+
+  test "pickup_address is optional" do
+    @event.pickup_address = nil
+    assert_predicate @event, :valid?
+  end
+
+  test "effective_pickup_address returns the event's pickup_address when set" do
+    @store.update!(address: "123 Home St, Portland, OR")
+    @event.pickup_address = "The Climbing Gym, 456 Oak Ave, Portland, OR"
+    assert_equal "The Climbing Gym, 456 Oak Ave, Portland, OR", @event.effective_pickup_address
+  end
+
+  test "effective_pickup_address falls back to store address when event has none" do
+    @store.update!(address: "123 Home St, Portland, OR")
+    @event.pickup_address = nil
+    assert_equal "123 Home St, Portland, OR", @event.effective_pickup_address
+  end
+
+  test "effective_pickup_address returns nil when neither event nor store has an address" do
+    @store.update!(address: nil)
+    @event.pickup_address = nil
+    assert_nil @event.effective_pickup_address
+  end
+
+  test "effective_pickup_address treats blank event pickup_address as absent" do
+    @store.update!(address: "123 Home St, Portland, OR")
+    @event.pickup_address = ""
+    assert_equal "123 Home St, Portland, OR", @event.effective_pickup_address
+  end
 end

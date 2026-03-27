@@ -79,7 +79,8 @@ class Stores::EventsController < ApplicationController
       :description,
       :orders_close_at,
       :pickup_at,
-      :repeat_interval
+      :repeat_interval,
+      :pickup_address
     )
   end
 end

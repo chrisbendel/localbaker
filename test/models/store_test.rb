@@ -84,6 +84,19 @@ class StoreTest < ActiveSupport::TestCase
     assert_equal true, store.monetization_allowed?
   end
 
+  # --- address ---
+
+  test "address is optional" do
+    store = Store.new(user: @user, name: "Bread House", slug: "bread-house")
+    store.address = nil
+    assert_predicate store, :valid?
+  end
+
+  test "address can be set and persisted" do
+    store = Store.create!(user: @user, name: "Bread House", slug: "bread-house", address: "123 Main St, Portland, OR")
+    assert_equal "123 Main St, Portland, OR", store.reload.address
+  end
+
   test "active_orders? checks for orders with future pickup times" do
     store = Store.create!(user: @user, name: "Test", slug: "test")
 

@@ -69,5 +69,47 @@ module Storefront
 
       assert_select "meta[property='og:description'][content*='#{@store.name}']"
     end
+
+    # --- pickup location display ---
+
+    test "shows event pickup_address as a maps link" do
+      @event.update!(pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR")
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_response :success
+      assert_select "a[href*='google.com/maps']", text: "The Climbing Gym, 456 Oak Ave, Portland, OR"
+    end
+
+    test "falls back to store address when event has no pickup_address" do
+      @store.update!(address: "123 Home St, Portland, OR")
+      @event.update_columns(pickup_address: nil)
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_response :success
+      assert_select "a[href*='google.com/maps']", text: "123 Home St, Portland, OR"
+    end
+
+    test "event pickup_address takes precedence over store address" do
+      @store.update!(address: "123 Home St, Portland, OR")
+      @event.update!(pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR")
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_response :success
+      assert_select "a[href*='google.com/maps']", text: "The Climbing Gym, 456 Oak Ave, Portland, OR"
+      assert_no_match(/123 Home St/, response.body)
+    end
+
+    test "shows no maps link when neither event nor store has an address" do
+      @store.update!(address: nil)
+      @event.update_columns(pickup_address: nil)
+
+      get storefront_event_url(@store.slug, @event)
+
+      assert_response :success
+      assert_select "a[href*='google.com/maps']", count: 0
+    end
   end
 end

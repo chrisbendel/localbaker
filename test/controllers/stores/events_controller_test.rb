@@ -122,6 +122,32 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form"
   end
 
+  test "POST create saves pickup_address when provided" do
+    post store_events_path, params: {
+      event: {
+        name: "Market Day",
+        orders_close_at: 2.days.from_now,
+        pickup_at: 3.days.from_now,
+        pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR"
+      }
+    }
+    assert_equal "The Climbing Gym, 456 Oak Ave, Portland, OR",
+      @store.events.order(:created_at).last.pickup_address
+  end
+
+  test "PATCH update saves pickup_address" do
+    patch event_path(@event), params: {
+      event: {pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR"}
+    }
+    assert_equal "The Climbing Gym, 456 Oak Ave, Portland, OR", @event.reload.pickup_address
+  end
+
+  test "PATCH update can clear pickup_address" do
+    @event.update!(pickup_address: "Somewhere")
+    patch event_path(@event), params: {event: {pickup_address: ""}}
+    assert_predicate @event.reload.pickup_address, :blank?
+  end
+
   test "DELETE destroy removes event and redirects" do
     assert_difference "@store.events.count", -1 do
       delete event_path(@event)

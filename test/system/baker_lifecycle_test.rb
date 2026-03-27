@@ -45,12 +45,14 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     fill_in "Name", with: "Saturday Bake"
     fill_in "Description", with: "Sourdough and focaccia this week."
+    fill_in "Pickup Location", with: "The Climbing Gym, 456 Oak Ave, Portland, OR"
     fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
     fill_in "Pickup date", with: 7.days.from_now.strftime("%Y-%m-%d")
     click_on "Create Event"
 
     assert_text "Event created"
     assert_text "Saturday Bake"
+    assert_text "The Climbing Gym, 456 Oak Ave, Portland, OR"
     assert_css ".badge.draft"
     # Publish button hidden until products exist
     assert_no_button "Publish Event"
@@ -207,6 +209,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Manage"
     click_on "Edit Store"
     fill_in "Description", with: "Updated store description."
+    fill_in "Store Address", with: "123 Home Bakery Lane, Portland, OR"
     click_on "Save Changes"
     assert_text "Store updated!"
     assert_text "Updated store description."

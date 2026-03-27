@@ -24,6 +24,12 @@
     <%= f.text_area :description %>
   </div>
 
+  <div>
+    <%= f.label :address, "Store Address" %>
+    <%= f.text_field :address, placeholder: "e.g. 123 Main St, Portland, OR 97201" %>
+    <p class="text-muted text-sm">Your default pickup location. Customers will see this on event pages. Optional.</p>
+  </div>
+
   <div data-controller="image-upload">
     <%= f.label :banner_image, "Store Banner" %>
     <% if @store.banner_image.attached? %>

@@ -17,6 +17,12 @@
   </div>
 
   <div>
+    <%= form.label :pickup_address, "Pickup Location" %>
+    <%= form.text_field :pickup_address, placeholder: "e.g. The Climbing Gym, 456 Oak Ave, Portland, OR" %>
+    <p class="text-muted text-sm">Where customers should pick up their order. Leave blank to use your store's default address.</p>
+  </div>
+
+  <div>
     <%= form.label :orders_close_at, "Orders close at" %>
     <%= form.date_field :orders_close_at, required: true, min: Date.current %>
   </div>
