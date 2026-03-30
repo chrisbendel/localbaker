@@ -18,6 +18,14 @@ class Event < ApplicationRecord
   attribute :repeat_interval, :integer
   enum :repeat_interval, {no_repeat: 0, weekly: 1, biweekly: 2}, default: :no_repeat
 
+  def address
+    effective_pickup_address
+  end
+
+  def location_display
+    AddressParser.city_state(address)
+  end
+
   def effective_pickup_address
     pickup_address.presence || store.address.presence
   end

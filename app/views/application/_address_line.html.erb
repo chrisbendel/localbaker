@@ -1,7 +1,7 @@
 <% if model.location_display.present? %>
   <div class="group items-center">
     <p class="text-sm"><%= model.location_display %></p>
-    <%= link_to "https://www.google.com/maps/search/?api=1&query=#{u(model.address)}", 
+    <%= link_to google_maps_url(model.address), 
                 target: "_blank", 
                 class: "text-muted",
                 title: "View on Google Maps",

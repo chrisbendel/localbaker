@@ -43,11 +43,7 @@
     Orders close <%= nice_date(@event.orders_close_at) %> &middot;
     Pickup <%= pickup_datetime(@event.pickup_at) %>
   </p>
-  <% if (address = @event.effective_pickup_address) %>
-    <p class="text-sm text-muted">
-      <%= link_to address, google_maps_url(address), target: "_blank", rel: "noopener noreferrer" %>
-    </p>
-  <% end %>
+  <%= render "address_line", model: @event %>
   <% if @event.repeat_interval.present? && !@event.no_repeat? %>
     <p class="text-success text-sm font-bold">
       Repeats <%= @event.repeat_interval.humanize %>
