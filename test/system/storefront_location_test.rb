@@ -13,7 +13,7 @@ class StorefrontLocationTest < ApplicationSystemTestCase
 
   test "displaying city and state on storefront" do
     visit storefront_path(@store.slug)
-    
+
     assert_text "The Crusty Loaf"
     assert_text "Colchester, VT"
     # Ensure the address in the DB was normalized too
