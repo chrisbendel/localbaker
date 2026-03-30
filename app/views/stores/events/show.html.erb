@@ -43,7 +43,7 @@
     Orders close <%= nice_date(@event.orders_close_at) %> &middot;
     Pickup <%= pickup_datetime(@event.pickup_at) %>
   </p>
-  <%= render "address_line", model: @event %>
+  <%= render "application/address_line", model: @event, show_full: true %>
   <% if @event.repeat_interval.present? && !@event.no_repeat? %>
     <p class="text-success text-sm font-bold">
       Repeats <%= @event.repeat_interval.humanize %>

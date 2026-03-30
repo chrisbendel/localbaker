@@ -9,7 +9,7 @@
   <% else %>
     <h1><%= store.name %></h1>
   <% end %>
-  <%= render "address_line", model: store %>
+  <%= render "application/address_line", model: store %>
   <% if store.description.present? %>
     <p class="text-muted"><%= store.description %></p>
   <% end %>

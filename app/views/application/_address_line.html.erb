@@ -1,11 +1,18 @@
+<% show_full = local_assigns.fetch(:show_full, false) %>
 <% if model.location_display.present? %>
   <div class="group items-center">
-    <p class="text-sm"><%= model.location_display %></p>
+    <p class="text-sm">
+      <%= link_to (show_full ? model.address : model.location_display), 
+                  google_maps_url(model.address), 
+                  target: "_blank", 
+                  rel: "noopener noreferrer" %>
+    </p>
     <%= link_to google_maps_url(model.address), 
                 target: "_blank", 
-                class: "text-muted",
+                rel: "noopener noreferrer",
+                class: "text-muted flex",
                 title: "View on Google Maps",
-                style: "display: flex;" do %>
+                aria: { label: "View on Google Maps" } do %>
       <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
         <circle cx="12" cy="10" r="3"></circle>
