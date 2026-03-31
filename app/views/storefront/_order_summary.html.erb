@@ -13,12 +13,12 @@
                   <%= button_to "−", storefront_order_item_path(store.slug, item),
                       method: :patch,
                       params: { order_item: { quantity: item.quantity - 1 } },
-                      class: "button small" %>
+                      class: "button" %>
                   <span><%= item.quantity %></span>
                   <%= button_to "+", storefront_order_item_path(store.slug, item),
                       method: :patch,
                       params: { order_item: { quantity: item.quantity + 1 } },
-                      class: "button small" %>
+                      class: "button" %>
                 </div>
               <% else %>
                 <span><%= item.quantity %></span>

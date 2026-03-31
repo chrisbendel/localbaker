@@ -148,6 +148,30 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_predicate @event.reload.pickup_address, :blank?
   end
 
+  test "GET prep returns standalone prep list for published event with orders" do
+    @event.event_products.create!(name: "Sourdough Loaf", price_cents: 1000, quantity: 12)
+    @event.publish!
+    customer = User.create!(email: "customer@example.com")
+    order = @event.orders.create!(user: customer)
+    order.order_items.create!(event_product: @event.event_products.first, quantity: 3)
+
+    get prep_event_path(@event)
+
+    assert_response :success
+    assert_select "td", /Sourdough Loaf/
+    assert_select "td", /3/
+  end
+
+  test "GET prep renders without application layout" do
+    @event.event_products.create!(name: "Focaccia", price_cents: 800, quantity: 8)
+    @event.publish!
+
+    get prep_event_path(@event)
+
+    assert_response :success
+    assert_no_match %r{<nav}, response.body
+  end
+
   test "DELETE destroy removes event and redirects" do
     assert_difference "@store.events.count", -1 do
       delete event_path(@event)

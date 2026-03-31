@@ -19,9 +19,9 @@
     <% if current_user == @store.user %>
       <%= button_to "Duplicate", duplicate_event_path(@event),
           method: :post,
-          class: "button small secondary",
+          class: "button secondary",
           data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
-      <%= link_to "Edit Event", edit_event_path(@event), class: "button small secondary" %>
+      <%= link_to "Edit Event", edit_event_path(@event), class: "button secondary" %>
     <% end %>
   </div>
 </div>
@@ -112,46 +112,51 @@
 <% if @event.published? %>
   <hr class="divider">
 
-  <div class="group justify-between items-baseline">
-    <h3>Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h3>
-  </div>
-
-  <% if @orders.any? %>
-    <div class="panel stack-sm" style="margin-bottom: var(--sp-md);">
-      <p class="text-sm font-bold">Prep summary</p>
-      <% @event.event_products.each do |product| %>
-        <div class="group justify-between text-sm">
-          <span><%= product.name %></span>
-          <span><strong><%= product.sold %></strong> / <%= product.quantity %></span>
-        </div>
+  <div class="stack-sm">
+    <div class="group justify-between items-baseline">
+      <h3>Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h3>
+      <% if @orders.any? %>
+        <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button secondary" %>
       <% end %>
     </div>
 
-    <table class="responsive-table">
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Items</th>
-          <th>Total</th>
-          <th>Placed</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @orders.each do |order| %>
-          <tr>
-            <td data-label="Customer"><%= order.user.email %></td>
-            <td data-label="Items">
-              <% order.order_items.each do |item| %>
-                <div class="text-sm"><%= item.event_product.name %> &times; <%= item.quantity %></div>
-              <% end %>
-            </td>
-            <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
-            <td data-label="Placed"><%= nice_date(order.created_at) %></td>
-          </tr>
+    <% if @orders.any? %>
+      <div class="panel stack-sm" style="margin-bottom: var(--sp-md);">
+        <p class="text-sm font-bold">Prep summary</p>
+        <% @event.event_products.each do |product| %>
+          <div class="group justify-between text-sm">
+            <span><%= product.name %></span>
+            <span><strong><%= product.sold %></strong> / <%= product.quantity %></span>
+          </div>
         <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p class="text-muted text-sm">No orders yet.</p>
-  <% end %>
+      </div>
+
+      <table class="responsive-table">
+        <thead>
+          <tr>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Placed</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @orders.each do |order| %>
+            <tr>
+              <td data-label="Customer"><%= order.user.email %></td>
+              <td data-label="Items">
+                <% order.order_items.each do |item| %>
+                  <div class="text-sm"><%= item.event_product.name %> &times; <%= item.quantity %></div>
+                <% end %>
+              </td>
+              <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
+              <td data-label="Placed"><%= nice_date(order.created_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="text-muted text-sm">No orders yet.</p>
+    <% end %>
+  </div>
 <% end %>

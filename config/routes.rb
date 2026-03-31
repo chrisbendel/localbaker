@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       member do
         post :publish
         post :duplicate
+        get :prep
       end
       resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
     end

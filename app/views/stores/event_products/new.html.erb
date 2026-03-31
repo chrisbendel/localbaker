@@ -1,18 +1,20 @@
 <% content_for :title, "#{@event.name} — Add Product" %>
-<h2>Add Product</h2>
 
-<div>
-  <%= link_to "Back to event", event_path(@event) %>
-</div>
+<%= render_breadcrumbs([
+  { name: @store.name, path: store_path },
+  { name: @event.name, path: event_path(@event) }
+]) %>
+
+<h2>Add Product</h2>
 
 <% if @recent_products.any? %>
   <div class="panel stack-sm" style="margin-top: var(--sp-lg); margin-bottom: var(--sp-lg);">
     <h3 class="text-sm font-bold text-muted">Quick add from past bakes</h3>
     <div class="group" style="flex-wrap: wrap;">
       <% @recent_products.each do |product| %>
-        <%= link_to "+ #{product.name} (#{product.price_formatted})", 
-            new_event_event_product_path(@event, event_product: { name: product.name, price: product.price }), 
-            class: "button small secondary" %>
+        <%= link_to "+ #{product.name} (#{product.price_formatted})",
+            new_event_event_product_path(@event, event_product: { name: product.name, price: product.price }),
+            class: "button secondary" %>
       <% end %>
     </div>
   </div>

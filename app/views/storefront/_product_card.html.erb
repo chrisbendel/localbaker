@@ -15,10 +15,10 @@
     <% if event.orders_open? && product.available? %>
       <% if authenticated? %>
         <%= form_with url: storefront_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
-          <button class="primary small">Add to Order</button>
+          <button class="primary">Add to Order</button>
         <% end %>
       <% else %>
-        <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary small" %>
+        <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary" %>
       <% end %>
     <% elsif !event.orders_open? %>
       <button disabled>Orders Closed</button>

@@ -1,7 +1,7 @@
 class Stores::EventsController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
-  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate]
+  before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep]
 
   def index
     @events = @store.events.order(pickup_at: :asc)
@@ -23,6 +23,10 @@ class Stores::EventsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def prep
+    render layout: false
   end
 
   def duplicate

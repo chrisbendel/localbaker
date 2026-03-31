@@ -29,11 +29,11 @@
     <h2 class="section-title">Upcoming Bakes</h2>
     
     <% if @notification.present? %>
-      <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "button small secondary", title: "Unsubscribe from email updates" do %>
+      <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "button secondary", title: "Unsubscribe from email updates" do %>
         Unsubscribe
       <% end %>
     <% else %>
-      <%= button_to storefront_notification_path(@store.slug), method: :post, class: "button small secondary", title: "Subscribe to email updates" do %>
+      <%= button_to storefront_notification_path(@store.slug), method: :post, class: "button secondary", title: "Subscribe to email updates" do %>
         Subscribe
       <% end %>
     <% end %>

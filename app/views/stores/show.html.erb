@@ -3,8 +3,8 @@
   <div class="group justify-between items-center">
     <h2><%= @store.name %></h2>
     <div class="group items-center">
-      <%= link_to "Storefront", storefront_path(@store.slug), class: "button small secondary" %>
-      <%= link_to "Edit Store", edit_store_path, class: "button small secondary" %>
+      <%= link_to "Storefront", storefront_path(@store.slug), class: "button secondary" %>
+      <%= link_to "Edit Store", edit_store_path, class: "button secondary" %>
     </div>
   </div>
   <div></div>
@@ -57,7 +57,7 @@
                 <%= link_to event.name, event_path(event), class: "text-sm font-bold" %>
                 <div class="group items-center">
                   <span class="text-muted text-sm"><%= nice_date(event.pickup_at) %></span>
-                  <%= button_to "Reuse", duplicate_event_path(event), class: "button small secondary",
+                  <%= button_to "Reuse", duplicate_event_path(event), class: "button secondary",
                       data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
                 </div>
               </div>
