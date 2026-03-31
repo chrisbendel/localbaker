@@ -30,15 +30,10 @@
 
 /public/assets
 
-# Ignore key files for decrypting credentials and more.
-/config/*.key
 
 # IDE Configs
 .idea
 # Ignore default Litestack SQLite databases.
 /db/**/*.sqlite3
 /db/**/*.sqlite3-*
-
-# Ignore key files for decrypting credentials and more.
-/config/credentials/*.key
 

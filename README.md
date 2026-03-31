@@ -91,11 +91,7 @@ bin/rails db:prepare
 bin/rails s          # http://localhost:3000
 ```
 
-Emails open in the browser via `letter_opener`. Edit production credentials with:
-
-```sh
-EDITOR="vim" bin/rails credentials:edit --environment production
-```
+Emails open in the browser via `letter_opener`.
 
 Static analysis:
 
