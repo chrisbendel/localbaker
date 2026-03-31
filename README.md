@@ -2,8 +2,6 @@
 
 A platform for local bakers to sell directly to their community. Bakers create a storefront, post upcoming bake events with products, and accept pre-orders. Customers browse, subscribe for notifications, and place orders before pickup.
 
-Built as a portfolio project and functional product on modern Rails — no JavaScript framework, no Redis, no Node.js.
-
 ---
 
 ## How it works
@@ -17,13 +15,7 @@ Built as a portfolio project and functional product on modern Rails — no JavaS
 ## Philosophy
 
 Complexity is inevitable — the goal is to drive it down wherever there's control over it.
-
-Every UI decision is filtered through: *does this reduce or add to the user's cognitive load?* A few concrete patterns this produces:
-
-- **State-aware pages.** A draft event and a published event are different modes. The event page surfaces different content and actions depending on state — no orders section on a draft, the publish CTA is the natural endpoint of the draft workflow rather than a button competing with secondary actions.
-- **Status-first hierarchy.** Events are grouped by what needs attention (drafts → upcoming → past), not by time. Time doesn't tell you what to do next.
-- **One job per page.** The storefront is for discovery. The store admin is for event management. Pages that tried to do two jobs were simplified or split.
-- **Progressive disclosure.** The store admin shows only what's actionable — store metadata lives on the storefront and edit form, not the management page.
+Every UI decision is filtered through: *does this reduce or add to the user's cognitive load?*
 
 ---
 
