@@ -1,63 +1,122 @@
-# LocalBaker — Quickstart
+# LocalBaker
 
-## Setup
+A platform for local bakers to sell directly to their community. Bakers create a storefront, post upcoming bake events with products, and accept pre-orders. Customers browse, subscribe for notifications, and place orders before pickup.
 
-- `brew install rbenv`
-- `rbenv install`
-- `rbenv init`
-- `rbenv global <version>`
-- `bundle install`
-- `bin/rails db:prepare`
+Built as a portfolio project and functional product on modern Rails — no JavaScript framework, no Redis, no Node.js.
 
-## Run
+---
 
-- bin/rails s # http://localhost:3000
+## How it works
 
-## Frontend resources
+**Bakers** create a store, draft events (with dates, products, and optional repeat cadence), then publish when ready. Publishing emails all store subscribers and opens the event for ordering. For repeating bakes, a draft of the next one is automatically spawned on publish.
 
-- [Boxicons](https://v2.boxicons.com/) with [web components](https://v2.boxicons.com/usage#web-component) for icons
+**Customers** browse storefronts, subscribe for email notifications, and place orders through a live cart. Orders are tied to a specific pickup event.
 
-## Tests
+---
 
-- bin/validate # RECOMMENDED: all tests + lint
-- bin/rails test # unit + integration
-- bin/rails test:system # browser tests
-- bin/rails test test/models # models only
+## Philosophy
 
-## Lint / Format
+Complexity is inevitable — the goal is to drive it down wherever there's control over it.
 
-- bundle exec standardrb
-- bundle exec standardrb --fix
+Every UI decision is filtered through: *does this reduce or add to the user's cognitive load?* A few concrete patterns this produces:
 
-## Security checks
+- **State-aware pages.** A draft event and a published event are different modes. The event page surfaces different content and actions depending on state — no orders section on a draft, the publish CTA is the natural endpoint of the draft workflow rather than a button competing with secondary actions.
+- **Status-first hierarchy.** Events are grouped by what needs attention (drafts → upcoming → past), not by time. Time doesn't tell you what to do next.
+- **One job per page.** The storefront is for discovery. The store admin is for event management. Pages that tried to do two jobs were simplified or split.
+- **Progressive disclosure.** The store admin shows only what's actionable — store metadata lives on the storefront and edit form, not the management page.
 
-- bundle exec bundler-audit update && bundle exec bundler-audit check
-- bundle exec brakeman -q -w2
+---
 
-## Useful Rails commands
+## Stack
 
-- bin/rails routes
-- bin/rails console
-- bin/rake -T
+| Layer | Choice | Notes |
+|---|---|---|
+| Framework | Rails 8.1 | Full-stack conventions, Hotwire, no SPA complexity |
+| Language | Ruby 4.0 | — |
+| Database | SQLite3 | File-based, persistent volume on Fly.io |
+| Background jobs | Solid Queue | DB-backed, no Redis |
+| Cache | Solid Cache | DB-backed, no Redis |
+| WebSockets | Solid Cable | DB-backed, no Redis |
+| Asset pipeline | Propshaft | Minimal, no Sprockets |
+| JS delivery | importmap-rails | No Node.js, no bundler, native ESM |
+| Interactivity | Hotwire (Turbo + Stimulus) | SPA-like UX without a JS framework |
+| Auth | Passwordless OTP | Email → 6-digit code → session. No passwords, no Devise |
+| Email | Resend | Transactional delivery (dev: Letter Opener) |
+| File storage | Cloudflare R2 via Active Storage | S3-compatible, cheap egress |
+| Rate limiting | Rack::Attack | Request throttling at the middleware layer |
+| Address parsing | StreetAddress | Normalizes freeform pickup addresses |
+| Lint | StandardRB | Zero-config Ruby style enforcement |
+| Testing | Minitest + Capybara | Unit, integration, and full browser system tests |
+| Deployment | Fly.io | Persistent volume for SQLite |
 
-## Notes
+The absence of Redis is intentional. Solid Queue, Cache, and Cable keep the infrastructure minimal — one process, one database, one volume.
 
-- Emails use test delivery in test env; in dev/prod set host via config.action_mailer.default_url_options
-- Background jobs/cache/cable use solid_queue/solid_cache/solid_cable (DB-backed)
+## CSS
 
-## Troubleshooting
+No framework. Custom stylesheet with a token-driven design system defined in `:root`:
 
-- If tests complain about missing DB: run bin/rails db:prepare
+- Spacing scale (`--sp-xs` through `--sp-2xl`), color palette, border, radius tokens
+- Layout primitives: `.stack`, `.group`, `.grid`, `.grid-sidebar`
+- Components: `.card`, `.panel`, `.nudge`, `.badge`, `.button`
+- Philosophy: clean system HTML, no shadows, minimal border-radius, flexbox-first, mobile-first
 
-## Environment variables/credentials
+Icons are inline SVGs. No icon library dependency.
 
-- `EDITOR="vim" bin/rails credentials:edit --environment production`
+## Auth
 
-## Deployments
+Passwordless. Enter an email address → receive a 6-digit OTP → verify to sign in. New accounts are created automatically on first sign-in. No passwords stored, no Devise.
 
-- `fly deploy` to deploy
-- `fly launch` to create a new instance
+## PWA
 
-## Roadmap
+Installable as a Progressive Web App. Service worker registered on load, manifest served at `/manifest`.
 
-- buy a domain (localbread.now ?)
+---
+
+## Testing
+
+The test suite covers:
+
+- **Unit/integration**: models, controllers, mailers — parallelized across 10 processes
+- **System tests**: full browser flows via Capybara + headless Chrome, covering the complete baker lifecycle (store → event → products → publish → orders) and customer lifecycle (browse → subscribe → order → manage cart)
+
+All dates in tests are relative (`n.days.from_now`) — no hardcoded dates that rot.
+
+```sh
+bin/validate          # lint + unit/integration + system (recommended)
+bin/rails test        # unit + integration only
+bin/rails test:system # browser tests only
+```
+
+---
+
+## Development
+
+```sh
+brew install rbenv
+rbenv install        # reads .ruby-version
+bundle install
+bin/rails db:prepare
+bin/rails s          # http://localhost:3000
+```
+
+Emails open in the browser via `letter_opener`. Edit production credentials with:
+
+```sh
+EDITOR="vim" bin/rails credentials:edit --environment production
+```
+
+Static analysis:
+
+```sh
+bundle exec bundler-audit update && bundle exec bundler-audit check
+bundle exec brakeman -q -w2
+```
+
+---
+
+## Deployment
+
+```sh
+fly deploy    # deploy to Fly.io
+fly launch    # first-time setup
+```
