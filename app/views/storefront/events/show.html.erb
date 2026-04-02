@@ -30,21 +30,19 @@
   <% end %>
 
   <% if @event.orders_open? %>
+    <h2 class="section-title">Products</h2>
     <div class="grid grid-sidebar">
-      <section class="stack">
-        <h2 class="section-title">Products</h2>
-        <div class="stack-sm">
-          <% @products.each do |product| %>
-            <%= render "storefront/product_card", product: product, store: @store, event: @event %>
-          <% end %>
-        </div>
-      </section>
+      <div class="stack-sm">
+        <% @products.each do |product| %>
+          <%= render "storefront/product_card", product: product, store: @store, event: @event %>
+        <% end %>
+      </div>
       <aside>
         <%= render "storefront/order_summary", order: @order, store: @store, event: @event %>
       </aside>
     </div>
   <% else %>
-    <section class="stack">
+    <section class="stack-sm">
       <h2 class="section-title">Products</h2>
       <div class="stack-sm">
         <% @products.each do |product| %>

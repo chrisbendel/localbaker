@@ -7,11 +7,10 @@
 
   <div class="stack-sm text-muted text-sm">
     <span><strong>Pickup:</strong> <%= pickup_datetime(event.pickup_at) %></span>
-    <span><strong>Orders close:</strong> <%= nice_date(event.orders_close_at) %></span>
     <% if event.orders_open? %>
-      <span class="text-success">Open for orders</span>
-    <% elsif event.orders_closed? %>
-      <span>Orders closed</span>
+      <span class="text-success"><strong>Order by</strong> <%= nice_date(event.orders_close_at) %></span>
+    <% else %>
+      <span><strong>Orders closed</strong> <%= nice_date(event.orders_close_at) %></span>
     <% end %>
   </div>
 

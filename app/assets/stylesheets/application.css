@@ -492,6 +492,25 @@ button.danger,
   display: inline;
 }
 
+/* Icon-only action button — no border, no underline, just the icon */
+.btn-icon {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0.15rem 0.25rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  border-radius: var(--radius);
+}
+
+.btn-icon:hover {
+  color: var(--danger);
+}
+
 /* === IMAGE UTILITIES === */
 
 /* Full-width banner (16:9) — store hero, event hero */

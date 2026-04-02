@@ -133,9 +133,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 8. Remove sourdough via × button
     # ----------------------------------------------------------------
     within "aside" do
-      within find(".group", text: "Sourdough") do
-        click_on "✕"
-      end
+      find("button[aria-label='Remove Sourdough']").click
     end
 
     assert_text "Removed Sourdough"
