@@ -46,7 +46,7 @@
   </table>
 <% else %>
   <div class="empty-state stack-sm">
-    <p class="text-muted">No events yet.</p>
-    <%= link_to "Create your first event", new_store_event_path %>
+    <p class="text-muted">Events are how you sell. Create one to set a pickup date, add products, and start taking orders.</p>
+    <%= link_to "Create your first event", new_store_event_path, class: "button primary" %>
   </div>
 <% end %>

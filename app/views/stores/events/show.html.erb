@@ -87,14 +87,11 @@
     </tbody>
   </table>
 <% else %>
-  <div class="nudge">
-    <span>
-      No products yet.
-      <% if current_user == @store.user %>
-        <%= link_to "Add your first product", new_event_event_product_path(@event) %>
-        before you can publish this event.
-      <% end %>
-    </span>
+  <div class="empty-state stack-sm">
+    <p class="text-muted">No products yet. Add at least one product before you can publish this event.</p>
+    <% if current_user == @store.user %>
+      <%= link_to "Add a product", new_event_event_product_path(@event), class: "button primary" %>
+    <% end %>
   </div>
 <% end %>
 
@@ -156,7 +153,9 @@
         </tbody>
       </table>
     <% else %>
-      <p class="text-muted text-sm">No orders yet.</p>
+      <div class="empty-state stack-sm">
+        <p class="text-muted">No orders yet. Share your store link so customers can place orders.</p>
+      </div>
     <% end %>
   </div>
 <% end %>
