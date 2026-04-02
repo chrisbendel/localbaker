@@ -19,6 +19,8 @@ jobs:
       url: https://localbaker.app
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
+      - name: Force Node 24 for Javascript Actions
+        run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
