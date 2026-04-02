@@ -15,5 +15,4 @@ cloudflare:
   endpoint: https://<%= ENV["CLOUDFLARE_ACCOUNT_ID"] %>.r2.cloudflarestorage.com
   force_path_style: true
   public: true
-  host: <%= ENV.fetch("CLOUDFLARE_PUBLIC_HOST", "https://cdn.localbaker.app") %>
 
