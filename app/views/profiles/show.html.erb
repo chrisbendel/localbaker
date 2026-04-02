@@ -17,6 +17,14 @@
     <%= f.submit "Save", class: "button primary", style: "align-self: flex-start" %>
   <% end %>
 
+  <% unless current_user.store %>
+    <hr class="divider"/>
+    <div class="stack-sm">
+      <p class="text-muted text-sm">Want to sell your own baked goods?</p>
+      <%= link_to "Create your store", new_store_path %>
+    </div>
+  <% end %>
+
   <hr class="divider"/>
   <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted", form: { style: "display: inline" } %>
 </div>
