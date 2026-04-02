@@ -29,39 +29,22 @@ module Storefront
       assert_equal "Added #{@product.name}", flash[:notice]
     end
 
-    test "should update quantity" do
+    test "should increment quantity when adding same product again" do
       sign_in_as(@customer)
 
-      # Create initial item
       post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
       item = OrderItem.last
 
-      patch storefront_order_item_url(@store.slug, item), params: {order_item: {quantity: 5}}
-
-      assert_redirected_to storefront_event_path(@store.slug, @event)
-      assert_equal 5, item.reload.quantity
-      assert_equal "Updated quantity.", flash[:notice]
-    end
-
-    test "should destroy item when quantity updated to 0" do
-      sign_in_as(@customer)
-
-      # Create initial item
-      post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
-      item = OrderItem.last
-
-      assert_difference("OrderItem.count", -1) do
-        patch storefront_order_item_url(@store.slug, item), params: {order_item: {quantity: 0}}
+      assert_no_difference("OrderItem.count") do
+        post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
       end
 
-      assert_redirected_to storefront_event_path(@store.slug, @event)
-      assert_equal "Removed item.", flash[:notice]
+      assert_equal 2, item.reload.quantity
     end
 
     test "should destroy item directly" do
       sign_in_as(@customer)
 
-      # Create initial item
       post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
       item = OrderItem.last
 
@@ -70,15 +53,12 @@ module Storefront
       end
 
       assert_redirected_to storefront_event_path(@store.slug, @event)
-      assert_equal "Removed item.", flash[:notice]
+      assert_equal "Removed #{@product.name}", flash[:notice]
     end
 
     test "should prevent adding more than stock" do
       sign_in_as(@customer)
 
-      # Try to add more than 10
-      # But create logic is just "add 1". It checks remaining < 1.
-      # To test failing, set stock to 0.
       @product.update!(quantity: 0)
 
       assert_no_difference("OrderItem.count") do
@@ -102,8 +82,6 @@ module Storefront
       assert_equal "Sorry, orders for this event are closed.", flash[:alert]
     end
 
-    # --- Closed order window ---
-
     test "should block adding to order when orders are closed" do
       @event.update_columns(orders_close_at: 1.hour.ago)
       sign_in_as(@customer)
@@ -114,20 +92,6 @@ module Storefront
 
       assert_redirected_to storefront_event_path(@store.slug, @event)
       assert_equal "Sorry, orders for this event are closed.", flash[:alert]
-    end
-
-    test "should block updating order item when orders are closed" do
-      sign_in_as(@customer)
-      post storefront_event_order_items_url(@store.slug, @event), params: {event_product_id: @product.id}
-      item = OrderItem.last
-
-      @event.update_columns(orders_close_at: 1.hour.ago)
-
-      patch storefront_order_item_url(@store.slug, item), params: {order_item: {quantity: 3}}
-
-      assert_redirected_to storefront_event_path(@store.slug, @event)
-      assert_equal "Sorry, orders for this event are closed.", flash[:alert]
-      assert_equal 1, item.reload.quantity
     end
 
     test "should block destroying order item when orders are closed" do

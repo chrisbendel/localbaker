@@ -34,7 +34,7 @@ Rails.application.routes.draw do
     resource :notification, only: [:create, :destroy]
 
     resources :events, only: [:show], shallow: true do
-      resources :order_items, only: [:create, :update, :destroy]
+      resources :order_items, only: [:create, :destroy]
     end
   end
 

@@ -23,8 +23,9 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 - **Web Standards**: Native browser features (Flexbox, CSS custom properties) over JavaScript-driven UI.
 - **Token-driven CSS**: All colors, spacing, and shape values come from CSS custom properties defined in `:root`. No hardcoded values in views or components.
 - **Modular Design**: Rails partials as components. Keep partials focused and reusable.
-- **No Dropdowns**: Avoid JS-dependent UI patterns.
+- **No Dropdowns**: Avoid JS-dependent UI patterns. Native `<select>` is fine; custom JS dropdowns are not.
 - **No Emoji**: Keep the UI text-only and clean. Unicode punctuation (arrows, middots) is fine; emoji are not.
+- **Mobile First**: Toast z-index and `env(safe-area-inset-bottom)` ensure UI chrome doesn't obscure content on iOS. Order summary hoists above product list on mobile via CSS `order: -1`.
 
 ## UI & CSS Architecture
 
@@ -33,19 +34,25 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 All values come from `:root` custom properties:
 
 ```css
---font             /* system-ui stack */
+--font             /* "DM Sans", system-ui — loaded via Google Fonts */
 --text             /* #111 — primary text */
---text-muted       /* #666 — secondary text */
---border           /* #ddd — default borders */
---border-strong    /* #999 — emphasized borders */
---bg               /* #fff */
---bg-subtle        /* #f6f6f6 — cards, panels */
---success / --success-bg / --success-border
---danger  / --danger-bg  / --danger-border
---sp-xs / --sp-sm / --sp-md / --sp-lg / --sp-xl / --sp-2xl  /* spacing scale */
+--text-muted       /* #706860 — secondary text (warm gray) */
+--border           /* #e0dbd5 — default borders */
+--border-strong    /* #aca49d — emphasized borders */
+--bg               /* #faf8f5 — warm off-white */
+--bg-subtle        /* #f0ede8 — cards, panels */
+--success          /* #5a7a5e — muted sage green */
+--success-bg       /* #eef1ec */
+--success-border   /* #bfcbbc */
+--danger           /* #8f4a42 — muted terracotta */
+--danger-bg        /* #f3ebe9 */
+--danger-border    /* #cfa49f */
+--sp-sm / --sp-md / --sp-lg   /* spacing scale */
 --radius           /* 3px */
 --radius-full      /* 9999px — pills */
 ```
+
+The palette is earthy/warm-toned rather than generic Bootstrap greens/reds.
 
 ### Layout Primitives
 
@@ -67,12 +74,14 @@ All values come from `:root` custom properties:
 | Class | Purpose |
 |---|---|
 | `.card` | Bordered box, `1px solid var(--border)`, minimal radius |
+| `.card.sold-out` | Dimmed card (`opacity: 0.55`) for sold-out products |
 | `.card-accent` | Card with a bold left border (event details) |
 | `.panel` | Subtle background container (`--bg-subtle`) |
-| `.empty-state` | Dashed border centered placeholder |
+| `.empty-state` | Dashed border centered placeholder with optional CTA |
 | `.nudge` | Subtle next-step prompt (subtle bg + border) |
-| `.badge` | Pill badge — variants: `.available`, `.sold-out`, `.draft` |
-| `.order-confirmed` | Green callout for saved order confirmation |
+| `.badge` | Inline status label — variants: `.open`, `.closed`, `.draft` (no pill shape; uppercase, letter-spaced) |
+| `.qty-select` | Native `<select>` for order item quantity (auto-submits via `requestSubmit()` on change) |
+| `.nav-order-count` | Small count bubble on the nav bag icon |
 
 ### Buttons
 
@@ -100,8 +109,8 @@ Global `table` styles apply to all tables. Use `.responsive-table` + `data-label
 | Model | Description |
 |---|---|
 | `User` | Email-based account. Can be a baker (has store) and/or customer (has orders). |
-| `Store` | Baker's storefront. One per user. Has a `slug` for public URL. |
-| `Event` | A bake/pickup event. Draft until `published_at` is set. |
+| `Store` | Baker's storefront. One per user. Has a `slug` for public URL. `onboarding_steps` / `onboarding_complete?` methods track setup progress. |
+| `Event` | A bake/pickup event. Draft until `published_at` is set. Supports `repeat_cadence` for recurring events. |
 | `EventProduct` | A product in an event (name, quantity, price_cents). |
 | `Order` | One order per user per event. |
 | `OrderItem` | Line item in an order. Captures `unit_price_cents` at order time. |
@@ -127,6 +136,7 @@ Key controllers:
 /                          → SessionsController#new (sign in)
 /dashboard                 → DashboardController#index
 /store                     → StoresController (singular resource)
+  /dismiss_onboarding      → StoresController#dismiss_onboarding (POST — sets session flag)
   /events                  → Stores::EventsController
     /event_products        → Stores::EventProductsController (shallow)
 /shop/:slug                   → StorefrontController#show (public)
@@ -140,13 +150,15 @@ Key controllers:
 ### Views & Partials
 
 ```
-layouts/application.html.erb       — container, header, flash toast
-application/_header.html.erb       — logo + nav (Storefront/Manage gated on store.persisted?)
-storefront/_store_hero.html.erb    — store name + back link
+layouts/application.html.erb         — container, header, flash toast (z-index + safe-area-inset for mobile)
+application/_header.html.erb         — logo + nav (Manage gated on store.persisted?; bag icon with upcoming order count)
+storefront/_store_hero.html.erb      — store name + back link
 storefront/_event_list_item.html.erb — public event card
-storefront/_event_details.html.erb — event info card on order page
-storefront/_product_card.html.erb  — product with Add to Order button
-storefront/_order_summary.html.erb — order sidebar with +/- controls + confirmation callout
+storefront/_event_details.html.erb   — event info card on order page (pickup location with maps link)
+storefront/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
+storefront/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom
+stores/show.html.erb                 — baker store page; events grouped into Drafts / Taking orders / Upcoming sections;
+                                       onboarding checklist card (session-dismissible) at top for new stores
 stores/event_products/_form.html.erb — shared product form
 ```
 
@@ -182,9 +194,11 @@ bin/rails test:all      # everything
 
 ### System Tests
 
-Two full lifecycle tests in `test/system/`:
+Full lifecycle and feature tests in `test/system/`:
 - `baker_lifecycle_test.rb` — full baker journey (sign in through sign out)
-- `customer_lifecycle_test.rb` — full customer journey (sign in through sign out)
+- `customer_lifecycle_test.rb` — full customer journey (sign in through sign out, qty select, remove item)
+- `onboarding_checklist_test.rb` — checklist card shows/completes/dismisses for new bakers
+- `recurring_events_test.rb` — publishing a weekly-repeat event spawns the next draft
 
 System tests use a **test-only sign-in bypass** instead of the OTP email flow:
 - Route: `GET /test/sign_in/:user_id` (only registered when `Rails.env.test?`)

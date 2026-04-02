@@ -98,7 +98,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     within "aside" do
       assert_text "Sourdough"
       assert_text "$14.00"
-      assert_text "Your order is saved"
+      assert_text "Pickup"
     end
 
     # ----------------------------------------------------------------
@@ -116,13 +116,13 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     end
 
     # ----------------------------------------------------------------
-    # 7. Increase sourdough quantity via + button
+    # 7. Add sourdough again to bump quantity to 2
     # ----------------------------------------------------------------
-    within find("tr", text: "Sourdough") do
-      click_on "+"
+    within find(".card", text: "Sourdough") do
+      click_on "Add to Order"
     end
 
-    assert_text "Updated quantity"
+    assert_text "Added Sourdough"
 
     within "aside" do
       # Total: $14*2 + $12 = $40
@@ -130,43 +130,31 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     end
 
     # ----------------------------------------------------------------
-    # 8. Decrease sourdough back via − button
+    # 8. Remove sourdough via × button
     # ----------------------------------------------------------------
-    within find("tr", text: "Sourdough") do
-      click_on "−"
+    accept_confirm do
+      within "aside" do
+        find("button[aria-label='Remove Sourdough']").click
+      end
     end
 
-    assert_text "Updated quantity"
+    assert_text "Removed Sourdough"
 
     within "aside" do
-      assert_text "$26.00"
+      assert_no_text "Sourdough"
+      assert_text "Focaccia"
+      assert_text "$12.00"
     end
 
     # ----------------------------------------------------------------
-    # 9. Remove focaccia by decrementing to 0
+    # 9. Add sourdough back so order has both items again
     # ----------------------------------------------------------------
-    within find("tr", text: "Focaccia") do
-      click_on "−"
-    end
-
-    assert_text "Removed item"
-
-    within "aside" do
-      assert_text "Sourdough"
-      assert_no_text "Focaccia"
-      assert_text "$14.00"
-    end
-
-    # ----------------------------------------------------------------
-    # 10. Add focaccia back via Add to Order, then remove via − again
-    #     (covers the full remove path via order_items#destroy as well
-    #      as re-adding after removal)
-    # ----------------------------------------------------------------
-    within find(".card", text: "Focaccia") do
+    within find(".card", text: "Sourdough") do
       click_on "Add to Order"
     end
 
     within "aside" do
+      assert_text "Sourdough"
       assert_text "Focaccia"
       assert_text "$26.00"
     end
@@ -187,7 +175,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # Clicking the order card goes to the storefront event
     find(".card", text: "The Bread Barn").click
     assert_text "Products"
-    assert_text "Your order is saved"
+    assert_text "Your order"
 
     # ----------------------------------------------------------------
     # 12. Unsubscribe via the storefront subscribe toggle

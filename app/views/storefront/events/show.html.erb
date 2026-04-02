@@ -30,21 +30,22 @@
   <% end %>
 
   <% if @event.orders_open? %>
+    <div class="group justify-between items-baseline">
+      <h2 class="section-title">Products</h2>
+      <span class="text-sm text-success">Order by <%= nice_date(@event.orders_close_at) %></span>
+    </div>
     <div class="grid grid-sidebar">
-      <section class="stack">
-        <h2 class="section-title">Products</h2>
-        <div class="stack-sm">
-          <% @products.each do |product| %>
-            <%= render "storefront/product_card", product: product, store: @store, event: @event %>
-          <% end %>
-        </div>
-      </section>
+      <div class="stack-sm">
+        <% @products.each do |product| %>
+          <%= render "storefront/product_card", product: product, store: @store, event: @event %>
+        <% end %>
+      </div>
       <aside>
         <%= render "storefront/order_summary", order: @order, store: @store, event: @event %>
       </aside>
     </div>
   <% else %>
-    <section class="stack">
+    <section class="stack-sm">
       <h2 class="section-title">Products</h2>
       <div class="stack-sm">
         <% @products.each do |product| %>

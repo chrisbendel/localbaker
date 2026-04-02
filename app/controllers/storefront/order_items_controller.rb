@@ -34,47 +34,11 @@ module Storefront
       redirect_to storefront_event_path(@store.slug, @event), notice: "Added #{@product.name}"
     end
 
-    def update
-      # For shallow routes, we look up the item directly, then derive context
-      item = current_user.order_items.find(params[:id])
-      @event = item.order.event
-      @store = @event.store
-
-      unless @event.orders_open?
-        redirect_to storefront_event_path(@store.slug, @event), alert: "Sorry, orders for this event are closed."
-        return
-      end
-
-      new_quantity = params.dig(:order_item, :quantity).to_i
-
-      if new_quantity > 0
-        # Check stock if increasing
-        if new_quantity > item.quantity
-          required = new_quantity - item.quantity
-          # Lock the event_product row to prevent race conditions
-          item.event_product.with_lock do
-            if required > item.event_product.remaining
-              redirect_to storefront_event_path(@store.slug, @event), alert: "Sorry, we don't have enough stock for that quantity."
-              return
-            end
-            item.update!(quantity: new_quantity)
-          end
-        else
-          item.update!(quantity: new_quantity)
-        end
-        notice = "Updated quantity."
-      else
-        item.destroy!
-        notice = "Removed item."
-      end
-
-      redirect_to storefront_event_path(@store.slug, @event), notice: notice
-    end
-
     def destroy
       item = current_user.order_items.find(params[:id])
       @event = item.order.event
       @store = @event.store
+      product_name = item.event_product.name
 
       unless @event.orders_open?
         redirect_to storefront_event_path(@store.slug, @event), alert: "Sorry, orders for this event are closed."
@@ -83,7 +47,7 @@ module Storefront
 
       item.destroy!
 
-      redirect_to storefront_event_path(@store.slug, @event), notice: "Removed item."
+      redirect_to storefront_event_path(@store.slug, @event), notice: "Removed #{product_name}"
     end
 
     private
