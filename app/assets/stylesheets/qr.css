@@ -1,0 +1,66 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DM Sans", system-ui, sans-serif;
+  background: #fff;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+
+.qr-poster-name {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.qr-poster-tagline {
+  font-size: 1rem;
+  color: #706860;
+  margin: 0;
+}
+
+.qr-poster-url {
+  font-size: 0.8rem;
+  color: #706860;
+  margin: 0;
+}
+
+.qr-poster-brand {
+  font-size: 0.75rem;
+  color: #aca49d;
+  margin-top: 0.5rem;
+}
+
+.qr-poster-print {
+  margin-top: 1.5rem;
+  padding: 0.5rem 1.25rem;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.qr-poster-print:hover {
+  background: #333;
+}
+
+@media print {
+  .qr-poster-print {
+    display: none;
+  }
+}

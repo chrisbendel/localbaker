@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   # Singular store for member actions (a user owns at most one store)
   resource :store, shallow: true, only: [:new, :create, :show, :edit, :update, :destroy] do
+    get :qr, on: :member
     post :dismiss_onboarding, on: :member
     resources :events, shallow: true, module: :stores do
       member do

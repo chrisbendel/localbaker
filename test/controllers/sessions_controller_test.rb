@@ -55,14 +55,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = User.create!(email: "returnto@example.com")
 
     ActionMailer::Base.deliveries.clear
-    get new_session_path, params: {return_to: "/s/some-bakery"}
+    get new_session_path, params: {return_to: "/shop/my-bakery"}
     post session_path, params: {email: user.email}
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
 
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to "/s/some-bakery"
+    assert_redirected_to "/shop/my-bakery"
   end
 
   test "confirm falls back to root when no return_to" do

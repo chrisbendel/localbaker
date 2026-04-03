@@ -67,4 +67,5 @@ end
 gem "standard"
 gem "resend", "~> 1.0"
 gem "rack-attack"
+gem "rqrcode", "~> 2.2"
 gem "StreetAddress", "~> 1.0", require: "street_address"

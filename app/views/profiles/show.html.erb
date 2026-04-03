@@ -3,6 +3,12 @@
 <div class="stack">
   <h1>Profile</h1>
 
+  <% unless current_user.store %>
+    <div>
+      <small class="text-muted">Want to sell your own baked goods? <%= link_to "Create your store", new_store_path %></small> 
+    </div>
+  <% end %>
+
   <%= form_with model: current_user, url: profile_path, method: :patch, class: "stack" do |f| %>
     <div>
       <%= f.label :email, "Email" %>
@@ -18,5 +24,5 @@
   <% end %>
 
   <hr class="divider"/>
-  <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted", form: { style: "display: inline" } %>
+  <%= button_to "Sign out", session_path, method: :delete, class: "button text-muted", form: { style: "display: inline" } %>
 </div>

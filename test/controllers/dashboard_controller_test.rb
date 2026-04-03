@@ -17,6 +17,15 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_select "title", /Dashboard/
   end
 
+  test "empty state is customer-focused for new user with no store and no orders" do
+    sign_in_as(@user)
+    get dashboard_path
+
+    assert_response :success
+    assert_select "p", /You don't have any orders yet/
+    assert_select "a[href='#{new_store_path}']", false
+  end
+
   test "renders orders when user has orders" do
     store = Store.create!(user: User.create!(email: "store@example.com"), name: "Bakery", slug: "bakery")
     event = store.events.create!(name: "Weekly Bake", orders_close_at: 1.day.from_now, pickup_at: 2.days.from_now)

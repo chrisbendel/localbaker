@@ -8,7 +8,7 @@
 
   <div>
     <%= label_tag :code, "6-digit code" %>
-    <%= text_field_tag :code, nil, required: true, maxlength: 6, pattern: "\\d{6}", autocomplete: "one-time-code", data: { otp_target: "input", action: "input->otp#submit" } %>
+    <%= text_field_tag :code, nil, required: true, autofocus: true, maxlength: 6, pattern: "\\d{6}", autocomplete: "one-time-code", inputmode: "numeric", data: { otp_target: "input", action: "input->otp#submit" } %>
   </div>
 
   <div>

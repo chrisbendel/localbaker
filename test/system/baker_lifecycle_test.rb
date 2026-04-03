@@ -15,14 +15,16 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     sign_in_via_browser(@baker)
     assert_current_path dashboard_path
 
-    # Empty state is visible
-    assert_text "your dashboard"
-    assert_text "Create your Store"
+    # Empty state is customer-focused — no "Create your Store" prompt here
+    assert_text "You don't have any orders yet"
+    assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------
-    # 2. Create store
+    # 2. Create store (via profile page — intentional baker flow)
     # ----------------------------------------------------------------
-    click_on "Create your Store"
+    visit profile_path
+    assert_link "Create your store"
+    click_on "Create your store"
     assert_current_path new_store_path
 
     fill_in "Name", with: "Morning Loaf"
@@ -207,7 +209,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 14. Edit store with active orders
     # ----------------------------------------------------------------
     click_on "Manage"
-    click_on "Edit Store"
+    click_on "Store Settings"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"
@@ -241,13 +243,16 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 16. Delete store
     # ----------------------------------------------------------------
     click_on "Manage"
-    click_on "Edit Store"
+    click_on "Store Settings"
     # 244: (no longer needs within row since it's grouped but we'll see)
     accept_confirm do
       click_on "Delete Store"
     end
     assert_text "Store removed."
-    assert_text "Create your Store"
+    # "Create your store" lives on the profile page, not the dashboard
+    assert_no_text "Create your Store"
+    visit profile_path
+    assert_link "Create your store"
 
     # ----------------------------------------------------------------
     # 17. Sign out

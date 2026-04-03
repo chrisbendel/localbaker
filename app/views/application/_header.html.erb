@@ -37,7 +37,7 @@
           </svg>
         <% end %>
       <% else %>
-        <%= link_to "Sign in", new_session_path %>
+        <%= link_to "Sign in", new_session_path(return_to: request.fullpath) %>
       <% end %>
     </nav>
   </div>

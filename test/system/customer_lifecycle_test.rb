@@ -53,8 +53,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     sign_in_via_browser(@customer)
     assert_current_path dashboard_path
 
-    # No orders yet — empty state
-    assert_text "dashboard"
+    # No orders yet — customer-focused empty state
+    assert_text "You don't have any orders yet"
 
     # ----------------------------------------------------------------
     # 2. Browse to storefront
