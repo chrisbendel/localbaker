@@ -13,10 +13,9 @@ export default class extends Controller {
   }
 
   showToast(message) {
-    const toast = document.createElement("p")
-    toast.className = "copy-toast"
-    toast.textContent = message
-    document.body.appendChild(toast)
-    setTimeout(() => toast.remove(), 2500)
+    const d = document.getElementById("flash-dialog")
+    d.innerHTML = `<p>${message}</p>`
+    d.show()
+    setTimeout(() => d.close(), 3000)
   }
 }

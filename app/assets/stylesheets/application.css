@@ -723,25 +723,6 @@ th:last-child {
   color: var(--success);
 }
 
-/* === COPY TOAST === */
-.copy-toast {
-  margin: 0;
-  position: fixed;
-  bottom: calc(var(--sp-lg) + env(safe-area-inset-bottom, 0px));
-  left: 50%;
-  transform: translateX(-50%);
-  border: none;
-  border-radius: var(--radius-full);
-  padding: var(--sp-sm) var(--sp-lg);
-  font-size: 0.875rem;
-  background: var(--text);
-  color: var(--bg);
-  width: max-content;
-  max-width: 80vw;
-  z-index: 1000;
-  animation: slideup 2.5s forwards;
-  pointer-events: none;
-}
 
 /* === FLASH TOAST === */
 #flash-dialog {
