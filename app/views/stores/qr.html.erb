@@ -1,0 +1,10 @@
+<% content_for :title, "#{@store.name} — QR Code" %>
+
+<%= raw @qr_svg %>
+
+<h1 class="qr-poster-name"><%= @store.name %></h1>
+<p class="qr-poster-tagline">Scan to browse and order</p>
+<p class="qr-poster-url"><%= @storefront_url %></p>
+<p class="qr-poster-brand">LocalBaker</p>
+
+<button class="qr-poster-print" onclick="window.print()">Print this page</button>

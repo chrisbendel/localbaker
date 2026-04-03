@@ -2,7 +2,7 @@ class StoresController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
   before_action :ensure_no_store!, only: [:new, :create]
-  before_action :ensure_store_exists!, only: [:show, :edit, :update, :destroy]
+  before_action :ensure_store_exists!, only: [:show, :edit, :update, :destroy, :qr]
 
   def new
     @store = current_user.build_store
@@ -28,6 +28,7 @@ class StoresController < ApplicationController
   end
 
   def edit
+    @storefront_url = storefront_url(@store.slug)
   end
 
   def update
@@ -40,6 +41,18 @@ class StoresController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def qr
+    @storefront_url = storefront_url(@store.slug)
+    @qr_svg = RQRCode::QRCode.new(@storefront_url).as_svg(
+      color: "000",
+      shape_rendering: "crispEdges",
+      module_size: 6,
+      standalone: true,
+      use_path: true
+    )
+    render layout: "qr"
   end
 
   def dismiss_onboarding

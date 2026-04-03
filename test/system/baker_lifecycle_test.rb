@@ -209,7 +209,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 14. Edit store with active orders
     # ----------------------------------------------------------------
     click_on "Manage"
-    click_on "Edit Store"
+    click_on "Store Settings"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"
@@ -243,7 +243,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 16. Delete store
     # ----------------------------------------------------------------
     click_on "Manage"
-    click_on "Edit Store"
+    click_on "Store Settings"
     # 244: (no longer needs within row since it's grouped but we'll see)
     accept_confirm do
       click_on "Delete Store"
