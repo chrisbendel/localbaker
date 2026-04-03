@@ -1,6 +1,6 @@
-<% content_for :title, "#{@event.name} — #{@store.name}" %>
+<% content_for :title, "#{@event.name} — #{@store.name} | Order bread near me" %>
 
-<% og_description = @event.description.present? ? @event.description : "Pick up from #{@store.name} on #{pickup_datetime(@event.pickup_at)}." %>
+<% og_description = @event.description.present? ? @event.description : "Order bread and baked goods for pick up from #{@store.name}, your local bakery, on #{pickup_datetime(@event.pickup_at)}." %>
 <% content_for(:meta_description, og_description) %>
 
 <% if @store.banner_image.attached? %>
@@ -36,7 +36,15 @@
         <% end %>
       </div>
       <aside>
-        <%= render "storefront/order_summary", order: @order, store: @store, event: @event %>
+        <% if authenticated? %>
+          <%= render "storefront/order_summary", order: @order, store: @store, event: @event %>
+        <% else %>
+          <div class="panel stack-sm">
+            <h3 class="font-bold">Ready to order?</h3>
+            <p class="text-sm text-muted">Sign in with an email link to start your order. No passwords required.</p>
+            <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary" %>
+          </div>
+        <% end %>
       </aside>
     </div>
   <% else %>

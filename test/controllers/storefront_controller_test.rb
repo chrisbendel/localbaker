@@ -55,7 +55,7 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     get storefront_url(@store.slug)
 
     assert_response :success
-    assert_select "meta[property='og:title'][content='#{@store.name}']"
+    assert_select "meta[property='og:title'][content='#{@store.name} | Local bakery near me']"
     assert_select "meta[property='og:description'][content*='#{@store.name}']"
     assert_select "meta[property='og:url'][content*='#{@store.slug}']"
     assert_select "meta[property='og:image']"

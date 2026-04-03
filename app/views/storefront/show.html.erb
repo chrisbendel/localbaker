@@ -1,6 +1,6 @@
-<%= content_for(:title, @store.name) %>
+<%= content_for(:title, "#{@store.name} | Local bakery near me") %>
 
-<% content_for(:meta_description, @store.description.presence || "Order fresh baked goods from #{@store.name} on LocalBaker.") %>
+<% content_for(:meta_description, @store.description.presence || "Order fresh bread and baked goods from #{@store.name}, a local bakery near you. Pre-order and pick up from this neighborhood home baker on LocalBaker.") %>
 <% if @store.banner_image.attached? %>
   <% content_for(:og_image, url_for(@store.banner_image)) %>
 <% else %>

@@ -1,12 +1,18 @@
-<% content_for :title, "LocalBaker — Ethos & Mission" %>
-<% content_for :meta_description, "Learn about the ethos and mission behind LocalBaker. We believe in simplicity, web standards, and escaping the bloat." %>
+<% content_for :title, "LocalBaker — Ethos & Mission of your Local Bakery platform" %>
+<% content_for :meta_description, "Learn about the ethos behind LocalBaker. We believe in simplicity and helping you find a local baker near you to order bread and support neighborhood bakers." %>
 
-<div class="stack container" style="max-width: 600px; padding-block: var(--sp-lg);">
-  <h1 style="font-size: 2rem;">Our Ethos</h1>
+<div class="stack-lg">
+  <h1>Our Ethos</h1>
 
-  <hr class="divider" style="margin-block: var(--sp-md)" />
+  <hr class="divider">
 
   <div class="stack">
+    <div class="card card-accent">
+      <p class="text-muted">
+        LocalBaker was born out of a personal need. As a home baker, I simply wanted a tool tailored to my own weekly bakes. I spent a long time looking for a free or low-cost platform that didn't force me back into the traditional, clunky spreadsheet-and-forms approach — but nothing fit the bill. I built this to be the tool I wished I had.
+      </p>
+    </div>
+
     <h2 class="font-bold">1. Keep It Simple</h2>
     <p>
       If you look around the web today, everything feels heavy and complicated. LocalBaker takes a step back. We focus on getting the basics exactly right. The platform is intentionally lightweight, skipping the bloated features that you don't actually need. Just clean, fast, and reliable software that stays out of your way.
@@ -28,7 +34,7 @@
     </p>
   </div>
 
-  <div class="panel text-center stack-sm" style="margin-top: var(--sp-lg)">
+  <div class="panel text-center stack-sm">
     <p class="font-bold">Ready to start baking?</p>
     <div>
       <%= link_to "Open your storefront", new_session_path, class: "button primary" %>

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title><%= content_for(:title) || "LocalBaker" %></title>
-  <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : 'LocalBaker: Simple pre-orders for home bakeries.' %>">
+  <title><%= content_for(:title) || "LocalBaker | Find a local bakery near me" %></title>
+  <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : 'LocalBaker: Simple pre-orders for home bakeries. Find a local baker near you, order fresh bread, and discover the best local bakery goods in your community.' %>">
 
-  <meta property="og:title" content="<%= content_for(:title) || 'LocalBaker' %>">
-  <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : 'LocalBaker: Simple pre-orders for home bakeries.' %>">
+  <meta property="og:title" content="<%= content_for(:title) || 'LocalBaker | Find a local bakery near me' %>">
+  <meta property="og:description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : 'LocalBaker: Simple pre-orders for home bakeries. Find a local baker near you, order fresh bread, and discover the best local bakery goods in your community.' %>">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="LocalBaker">
   <meta property="og:url" content="<%= request.original_url %>">

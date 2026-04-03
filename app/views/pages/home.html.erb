@@ -1,18 +1,20 @@
-<% content_for :title, "LocalBaker — Connect with neighborhood bakers" %>
-<% content_for :meta_description, "Connect with local home bakers to order fresh bread, or start your own neighborhood bakery." %>
+<% content_for :title, "LocalBaker — Find a local baker near me" %>
+<% content_for :meta_description, "Find a local baker near you and order fresh bread from a neighborhood local bakery. LocalBaker makes it simple to discover home bakers and pre-order baked goods." %>
 
 <div class="stack-lg">
-  <div class="stack text-center items-center" style="padding-block: var(--sp-lg)">
-    <h1 style="font-size: 2.5rem; max-width: 500px;">Fresh bread, fresh from the neighborhood.</h1>
-    <p class="text-lg text-muted" style="max-width: 550px;">
+  <div class="stack text-center items-center">
+    <h1>Fresh bread from a local baker near you.</h1>
+    <p class="text-lg text-muted">
       LocalBaker connects artisan home bakers with their community. Whether you're baking twenty loaves a week or just looking for great bread down the street, everything works seamlessly.
     </p>
-    <div style="margin-top: var(--sp-sm);">
-      <%= link_to "Sign in / Join", new_session_path, class: "button primary", style: "font-size: 1.1rem; padding: 0.6rem 1.2rem;" %>
-    </div>
+    <% unless authenticated? %>
+      <div>
+        <%= link_to "Get started", new_session_path, class: "button primary" %>
+      </div>
+    <% end %>
   </div>
 
-  <div class="grid grid-cols-2" style="margin-top: var(--sp-lg);">
+  <div class="grid grid-cols-2">
     <div class="card card-accent stack-sm">
       <h3 class="font-bold">For Neighborhood Bakers</h3>
       <p class="text-muted">Post your upcoming bakes and share a simple link. We organize your list so you know exactly who gets what and when, letting you focus on the dough.</p>
@@ -24,9 +26,9 @@
     </div>
   </div>
 
-  <div class="stack items-center empty-state" style="margin-top: var(--sp-lg); padding-block: 3rem;">
+  <div class="empty-state stack items-center">
     <h2>Community-first, software second</h2>
-    <p class="text-muted text-center" style="max-width: 400px;">LocalBaker is built to stay out of your way. Learn more about our mission and why we keep things intentionally simple.</p>
+    <p class="text-muted text-center">LocalBaker is built to stay out of your way. Learn more about our mission and why we keep things intentionally simple.</p>
     <%= link_to "Read our Ethos", about_path, class: "button secondary" %>
   </div>
 </div>
