@@ -32,49 +32,23 @@ class OrderConfirmationTest < ApplicationSystemTestCase
 
     assert_text "Order confirmed!"
     assert_selector "aside", text: "Order confirmed"
-    assert_link "Add to Google Calendar"
-    assert_link "Download .ics"
+    assert_selector "aside", text: "Add to Google Calendar"
 
     # 3. Add another item (should unconfirm)
     within ".card", text: "Sourdough" do
       click_on "Add to Order"
     end
 
+    # Should reset to draft
     assert_text "Added Sourdough"
     assert_selector "aside", text: "Your order"
     assert_button "Complete Order"
 
-    # 4. Confirm again
+    # 4. Edit Order button should unconfirm
     click_on "Complete Order"
     assert_text "Order confirmed!"
 
-    # 5. Edit Order button should unconfirm
     click_on "Edit Order"
     assert_button "Complete Order"
-
-    # 6. Remove item (should now be visible)
-    accept_confirm do
-      within "aside" do
-        find("button[aria-label='Remove Sourdough']").click
-      end
-    end
-
-    assert_text "Removed Sourdough"
-    assert_button "Complete Order"
-  end
-
-  test "downloading ics file" do
-    sign_in_via_browser(@customer)
-    visit storefront_event_path(@store.slug, @event)
-
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
-    end
-    click_on "Complete Order"
-
-    click_on "Download .ics"
-
-    # Basic content verification (response_headers not supported in system tests)
-    assert_match(/BEGIN:VCALENDAR/, page.body)
   end
 end

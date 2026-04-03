@@ -15,7 +15,7 @@ class Order < ApplicationRecord
   def total_price
     total_price_cents / 100.0
   end
-  
+
   def confirmed?
     confirmed_at.present?
   end
