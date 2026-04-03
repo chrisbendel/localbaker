@@ -50,11 +50,10 @@
     <div data-controller="image-upload">
       <%= f.label :banner_image, "Store Banner" %>
       <% if @store.banner_image.attached? %>
-        <div style="margin-bottom: var(--sp-sm);">
-          <label>
-            <%= f.check_box :remove_banner_image %> Remove current banner
-          </label>
-        </div>
+        <%= image_tag @store.banner_image.variant(resize_to_limit: [1200, 800], format: :webp), class: "img-banner" %>
+        <label>
+          <%= f.check_box :remove_banner_image %> Remove current banner
+        </label>
       <% end %>
       <div class="group items-center">
         <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
