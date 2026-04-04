@@ -29,27 +29,20 @@
   <% end %>
 
   <div class="group justify-between items-baseline">
-    <div class="group items-baseline">
-      <h2><%= @store.name %></h2>
-      <% if current_user.pro? %>
-        <span class="badge text-sm">Pro</span>
-      <% else %>
-        <%= link_to "Free plan", billing_upgrade_path, class: "text-sm text-muted" %>
-      <% end %>
-    </div>
+    <h2><%= @store.name %></h2>
     <%= link_to "Store Settings", edit_store_path, class: "button secondary" %>
   </div>
 
   <div class="group justify-between items-center">
     <h3>Events</h3>
-    <div class="group items-center">
-      <% if current_user.free? %>
-        <% active_count = @store.events.active_published.count %>
-        <span class="text-muted text-sm"><%= active_count %>/<%= User::FREE_EVENT_LIMIT %> active</span>
-      <% end %>
-      <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
-    </div>
+    <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
   </div>
+
+  <% if current_user.at_event_limit? %>
+    <div class="nudge">
+      <span>You've reached your free plan limit. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to publish more events.</span>
+    </div>
+  <% end %>
 
   <% live   = @upcoming.select(&:orders_open?) %>
   <% prep   = @upcoming.select(&:orders_closed?) %>
