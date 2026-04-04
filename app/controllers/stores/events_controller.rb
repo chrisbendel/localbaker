@@ -35,6 +35,10 @@ class Stores::EventsController < ApplicationController
   end
 
   def publish
+    if current_user.at_event_limit?
+      return redirect_to billing_upgrade_path, alert: "You've reached your free plan limit of #{User::FREE_EVENT_LIMIT} active #{"event".pluralize(User::FREE_EVENT_LIMIT)}. Upgrade to Pro for unlimited events."
+    end
+
     @event.publish!
 
     @store.notifications.includes(:user).find_each do |notification|

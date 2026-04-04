@@ -43,4 +43,71 @@ class UserTest < ActiveSupport::TestCase
       user.destroy
     end
   end
+
+  # --- plan ---
+
+  test "defaults to free plan" do
+    user = User.create!(email: "baker@example.com")
+    assert user.free?
+    assert_not user.pro?
+  end
+
+  test "can be upgraded to pro" do
+    user = User.create!(email: "baker@example.com")
+    user.update!(plan: :pro)
+    assert user.pro?
+    assert_not user.free?
+  end
+
+  # --- at_event_limit? ---
+
+  def create_published_event(store, pickup_at: 2.days.from_now)
+    event = store.events.create!(
+      name: "Event",
+      orders_close_at: pickup_at - 1.hour,
+      pickup_at: pickup_at
+    )
+    event.update_column(:published_at, Time.current)
+    event
+  end
+
+  test "at_event_limit? returns false for pro user regardless of event count" do
+    user = User.create!(email: "pro@example.com", plan: :pro)
+    store = user.create_store!(name: "Pro Store", slug: "pro-store")
+    create_published_event(store)
+    assert_not user.at_event_limit?
+  end
+
+  test "at_event_limit? returns false when free user has no active events" do
+    user = User.create!(email: "free@example.com")
+    user.create_store!(name: "Free Store", slug: "free-store")
+    assert_not user.at_event_limit?
+  end
+
+  test "at_event_limit? returns false when free user is below the limit" do
+    user = User.create!(email: "free@example.com")
+    store = user.create_store!(name: "Free Store", slug: "free-store")
+    (User::FREE_EVENT_LIMIT - 1).times do
+      create_published_event(store)
+    end
+    assert_not user.at_event_limit?
+  end
+
+  test "at_event_limit? returns true when free user reaches the limit" do
+    user = User.create!(email: "free@example.com")
+    store = user.create_store!(name: "Free Store", slug: "free-store")
+    User::FREE_EVENT_LIMIT.times do
+      create_published_event(store)
+    end
+    assert user.at_event_limit?
+  end
+
+  test "at_event_limit? does not count past events" do
+    user = User.create!(email: "free@example.com")
+    store = user.create_store!(name: "Free Store", slug: "free-store")
+    User::FREE_EVENT_LIMIT.times do |i|
+      create_published_event(store, pickup_at: (i + 1).weeks.ago)
+    end
+    assert_not user.at_event_limit?
+  end
 end

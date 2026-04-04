@@ -44,6 +44,8 @@ class StoresController < ApplicationController
   end
 
   def qr
+    return redirect_to billing_upgrade_path, alert: "QR codes are a Pro feature. Upgrade to unlock." if current_user.free?
+
     @storefront_url = storefront_url(@store.slug)
     @qr_svg = RQRCode::QRCode.new(@storefront_url).as_svg(
       color: "000",

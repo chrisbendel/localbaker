@@ -14,6 +14,7 @@ class Event < ApplicationRecord
   scope :published, -> { where.not(published_at: nil) }
   scope :draft, -> { where(published_at: nil) }
   scope :current, -> { published.where("pickup_at >= ?", 3.days.ago) }
+  scope :active_published, -> { published.where("pickup_at >= ?", Time.current) }
 
   attribute :repeat_interval, :integer
   enum :repeat_interval, {no_repeat: 0, weekly: 1, biweekly: 2}, default: :no_repeat

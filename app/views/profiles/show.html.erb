@@ -1,28 +1,53 @@
 <% content_for :title, "Profile" %>
 
-<div class="stack">
-  <h1>Profile</h1>
+<div class="stack-lg">
+  <section class="stack">
+    <h2>Profile</h2>
+    <%= form_with model: current_user, url: profile_path, method: :patch, class: "stack" do |f| %>
+      <div>
+        <%= f.label :email, "Email" %>
+        <%= f.email_field :email, disabled: true %>
+      </div>
 
-  <% unless current_user.store %>
-    <p>
-      <small class="text-muted">Want to sell your own baked goods?</small> <%= link_to "Create your store", new_store_path %>
-    </p>
-  <% end %>
+      <div>
+        <%= f.label :name, "Name" %>
+        <%= f.text_field :name, placeholder: "Your name" %>
+      </div>
 
-  <%= form_with model: current_user, url: profile_path, method: :patch, class: "stack" do |f| %>
-    <div>
-      <%= f.label :email, "Email" %>
-      <%= f.email_field :email, disabled: true %>
+      <%= f.submit "Save", class: "button primary", style: "align-self: flex-start" %>
+    <% end %>
+  </section>
+
+  <section class="stack">
+    <h2>Account</h2>
+    <div class="stack-sm">
+      <div class="group items-center">
+        <span class="text-muted text-sm">Plan</span>
+        <div class="group items-center">
+          <% if current_user.pro? %>
+            <span class="badge">Pro</span>
+          <% else %>
+            <span class="badge secondary">Free</span>
+            <%= link_to "Upgrade to Pro", billing_upgrade_path, class: "text-sm" %>
+          <% end %>
+        </div>
+      </div>
+
+      <% if current_user.store %>
+        <div class="group items-center">
+          <span class="text-muted text-sm">Store</span>
+          <%= link_to current_user.store.name, store_path, class: "text-sm" %>
+        </div>
+      <% else %>
+        <div class="group items-center">
+          <span class="text-muted text-sm">Store</span>
+          <%= link_to "Create your store", new_store_path, class: "text-sm" %>
+        </div>
+      <% end %>
     </div>
+  </section>
 
-    <div>
-      <%= f.label :name, "Name" %>
-      <%= f.text_field :name, placeholder: "Your name" %>
-    </div>
-
-    <%= f.submit "Save", class: "button primary", style: "align-self: flex-start" %>
-  <% end %>
-
-  <hr class="divider"/>
-  <%= button_to "Sign out", session_path, method: :delete, class: "button text-muted", form: { style: "display: inline" } %>
+  <section>
+    <%= button_to "Sign out", session_path, method: :delete, class: "button text-muted", form: { style: "display: inline" } %>
+  </section>
 </div>

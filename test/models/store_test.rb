@@ -79,7 +79,7 @@ class StoreTest < ActiveSupport::TestCase
     end
   end
 
-  test "monetization_allowed? placeholder returns true" do
+  test "monetization_allowed? returns true" do
     store = Store.create!(user: @user, name: "Test", slug: "test")
     assert_equal true, store.monetization_allowed?
   end

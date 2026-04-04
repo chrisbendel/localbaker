@@ -1,0 +1,32 @@
+<% content_for :title, "Plans" %>
+
+<div class="stack-lg">
+  <h2>Plans</h2>
+
+  <div class="stack">
+    <div class="card stack-sm">
+      <div class="group justify-between items-baseline">
+        <h3>Free</h3>
+        <% if current_user.free? %><span class="badge secondary">Current plan</span><% end %>
+      </div>
+      <p class="text-muted"><%= User::FREE_EVENT_LIMIT %> active event &middot; Order management &middot; Email notifications</p>
+    </div>
+
+    <div class="card stack-sm">
+      <div class="group justify-between items-baseline">
+        <h3>Pro</h3>
+        <% if current_user.pro? %><span class="badge">Current plan</span><% end %>
+      </div>
+      <p class="text-muted">Everything in Free, plus:</p>
+      <ul class="stack-sm" style="list-style: none; padding: 0">
+        <li>Unlimited active events</li>
+        <li>QR code poster</li>
+        <li>Analytics</li>
+        <li>Discount codes</li>
+      </ul>
+      <% if current_user.free? %>
+        <p class="text-muted text-sm">Paid plans coming soon.</p>
+      <% end %>
+    </div>
+  </div>
+</div>

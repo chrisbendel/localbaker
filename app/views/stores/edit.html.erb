@@ -19,7 +19,11 @@
         </svg>
       </button>
     </div>
-    <%= link_to "QR Poster", qr_store_path, target: "_blank", class: "button secondary small" %>
+    <% if current_user.pro? %>
+      <%= link_to "QR Poster", qr_store_path, target: "_blank", class: "button secondary small" %>
+    <% else %>
+      <%= link_to "QR Poster ↑ Pro", billing_upgrade_path, class: "button secondary small text-muted" %>
+    <% end %>
   </div>
 
   <%= form_with model: @store, url: store_path do |f| %>
