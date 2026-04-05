@@ -16,8 +16,12 @@ RUN gem update --system --no-document && \
 
 # Install base packages
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 ca-certificates && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Install Litestream
+ADD https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-amd64.tar.gz /tmp/litestream.tar.gz
+RUN tar -C /usr/local/bin -xzf /tmp/litestream.tar.gz
 
 # Set production environment
 ENV BUNDLE_DEPLOYMENT="1" \
@@ -55,7 +59,7 @@ FROM base
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y imagemagick libvips && \
+    apt-get install --no-install-recommends -y imagemagick libvips ca-certificates && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
@@ -77,4 +81,9 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 EXPOSE 3000
 VOLUME /data
-CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
+
+# Copy Litestream configuration
+COPY config/litestream.yml /etc/litestream.yml
+
+# Replicate the database to R2
+CMD ["litestream", "replicate", "-config", "/etc/litestream.yml", "-exec", "./bin/rails server -b 0.0.0.0"]
