@@ -1,0 +1,14 @@
+# Litestream configuration for Cloudflare R2
+# Reusing ActiveStorage environment variables
+# See https://litestream.io/docs/config/ for more information.
+
+dbs:
+  - path: /data/production.sqlite3
+    replicas:
+      - type: s3
+        bucket: localbaker-litestream-backups
+        endpoint: https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com
+        access-key-id: ${CLOUDFLARE_R2_ACCESS_KEY_ID}
+        secret-access-key: ${CLOUDFLARE_R2_SECRET_ACCESS_KEY}
+        region: auto
+        force-path-style: true
