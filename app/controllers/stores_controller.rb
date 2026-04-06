@@ -1,5 +1,5 @@
 class StoresController < ApplicationController
-  before_action :require_authentication!, except: [:new, :create]
+  before_action :require_authentication!
   before_action :set_store, only: [:show, :qr, :dismiss_onboarding, :destroy]
 
   def new
@@ -53,7 +53,7 @@ class StoresController < ApplicationController
 
   def set_store
     @store = current_user.store
-    redirect_to new_store_path unless @store || action_name == "new" || action_name == "create"
+    redirect_to new_store_path unless @store
   end
 
   def store_params
