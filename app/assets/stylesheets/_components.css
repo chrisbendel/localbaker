@@ -1,0 +1,85 @@
+/* === COMPONENTS === */
+
+/* Card — bordered box, no shadow */
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-md);
+}
+
+.card-accent {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--text);
+  border-radius: var(--radius);
+  padding: var(--sp-lg);
+}
+
+/* Panel — subtle bg container */
+.panel {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-md);
+}
+
+/* Empty state */
+.empty-state {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-lg) var(--sp-md);
+  text-align: center;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius);
+  font-size: 0.7rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.badge.available {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success-border);
+}
+
+.badge.sold-out {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+}
+
+.badge.closed {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.badge.draft {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+/* Sold-out product card */
+.card.sold-out {
+  opacity: 0.55;
+}
+
+/* Next-step nudge */
+.nudge {
+  border: 1px solid var(--border);
+  background: var(--bg-subtle);
+  padding: var(--sp-md);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+
+/* Card used as a link — strip default anchor styles */
+a.card {
+  text-decoration: none;
+  color: inherit;
+}

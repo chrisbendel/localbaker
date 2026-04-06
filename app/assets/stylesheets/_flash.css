@@ -1,0 +1,45 @@
+/* === FLASH TOAST === */
+#flash-dialog {
+  margin: 0;
+  position: fixed;
+  bottom: calc(var(--sp-lg) + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--sp-sm) var(--sp-lg);
+  font-size: 0.875rem;
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: slideup 3s forwards;
+  width: max-content;
+  max-width: 80vw;
+  z-index: 1000;
+}
+
+#flash-dialog p {
+  margin: 0;
+}
+
+@keyframes slideup {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 1rem);
+  }
+
+  10% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  85% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+}

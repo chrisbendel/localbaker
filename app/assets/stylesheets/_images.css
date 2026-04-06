@@ -1,0 +1,35 @@
+/* === IMAGE UTILITIES === */
+
+/* Full-width banner (16:9) — store hero, event hero */
+.img-banner {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: var(--radius);
+  margin-bottom: var(--sp-sm);
+}
+
+/* Product card image — full width, fixed height */
+.img-product {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+/* Small thumbnail — used in table rows */
+.img-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+/* Horizontal rule divider */
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-block: var(--sp-lg);
+  width: 100%;
+}

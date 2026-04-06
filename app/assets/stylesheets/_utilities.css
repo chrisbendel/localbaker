@@ -1,0 +1,36 @@
+/* === COPY BUTTON === */
+.copy-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  background: none;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 0;
+}
+
+.copy-btn:hover {
+  color: var(--text);
+}
+
+.copy-btn .icon-check {
+  display: none;
+}
+
+.copy-btn.copied .icon-copy {
+  display: none;
+}
+
+.copy-btn.copied .icon-check {
+  display: block;
+  color: var(--success);
+}
+
+/* === VISIBILITY === */
+.hidden {
+  display: none !important;
+}

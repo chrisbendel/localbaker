@@ -1,7 +1,5 @@
 module Settings
   class AccountsController < BaseController
-    # Skip set_store redirect if the user doesn't have a store yet
-    # but still wants to edit their account settings.
     skip_before_action :set_store
 
     def show

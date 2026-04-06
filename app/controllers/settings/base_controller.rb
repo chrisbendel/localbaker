@@ -8,10 +8,6 @@ module Settings
 
     def set_store
       @store = current_user.store
-      # Redirect baker-specific settings back to store creation if missing
-      unless @store || controller_name == "accounts"
-        redirect_to new_store_path, notice: "Please create your store first."
-      end
     end
   end
 end

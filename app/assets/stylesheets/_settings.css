@@ -1,0 +1,56 @@
+/* === SETTINGS HUB === */
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav a,
+.settings-nav button {
+  display: block;
+  width: 100%;
+  padding: var(--sp-sm) var(--sp-md);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.settings-nav a:hover,
+.settings-nav button:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.settings-nav a.active {
+  background: var(--bg-subtle);
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .settings-layout {
+    flex-direction: row;
+    align-items: start;
+  }
+
+  .settings-sidebar {
+    flex: 0 0 200px;
+    position: sticky;
+    top: var(--sp-lg);
+  }
+
+  .settings-content {
+    flex: 1;
+  }
+}

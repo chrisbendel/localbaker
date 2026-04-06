@@ -1,0 +1,58 @@
+/* === NAVIGATION === */
+header {
+  padding-block: var(--sp-md);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--sp-lg);
+}
+
+/* Icon link (profile, etc.) */
+a.nav-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+a.nav-icon:hover {
+  color: var(--text);
+}
+
+a.nav-logo {
+  text-decoration: none;
+  line-height: 0;
+}
+
+/* Order summary item rows */
+.order-items > div {
+  padding: var(--sp-sm) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-items > div:first-child {
+  border-top: 1px solid var(--border);
+}
+
+/* Quantity select in order summary */
+.qty-select {
+  width: auto;
+  font-size: 0.875rem;
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+}
+
+/* Orders nav icon count */
+.nav-order-count {
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* Store name as implicit back link */
+a.store-name-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+a.store-name-link:hover h1 {
+  text-decoration: underline;
+}

@@ -1,0 +1,29 @@
+/* === DESIGN TOKENS === */
+:root {
+  --font: "DM Sans", system-ui, -apple-system, sans-serif;
+
+  /* Colors */
+  --text: #111;
+  --text-muted: #706860;
+  --border: #e0dbd5;
+  --border-strong: #aca49d;
+  --bg: #faf8f5;
+  --bg-subtle: #f0ede8;
+
+  /* Status — muted earthy palette */
+  --success: #5a7a5e;
+  --success-bg: #eef1ec;
+  --success-border: #bfcbbc;
+  --danger: #8f4a42;
+  --danger-bg: #f3ebe9;
+  --danger-border: #cfa49f;
+
+  /* Spacing */
+  --sp-sm: 0.5rem;
+  --sp-md: 1rem;
+  --sp-lg: 2rem;
+
+  /* Shape */
+  --radius: 3px;
+  --radius-full: 9999px;
+}
