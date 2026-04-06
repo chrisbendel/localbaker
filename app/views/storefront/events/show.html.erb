@@ -50,7 +50,9 @@
           <div class="panel stack-sm">
             <h3 class="font-bold">Ready to order?</h3>
             <p class="text-sm text-muted">Sign in with an email link to start your order. No passwords required.</p>
-            <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary" %>
+            <div>
+              <%= link_to "Sign in to order", new_session_path(return_to: request.fullpath), class: "button primary" %>
+            </div>
           </div>
         <% end %>
       </aside>
