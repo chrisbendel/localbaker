@@ -28,6 +28,9 @@ if Rails.env.development?
     s.slug = "the-crusty-loaf"
     s.description = "Artisanal naturally leavened breads baked in a wood-fired oven."
     s.address = "123 Main St, Springfield"
+    s.bio = "Alice has been baking sourdough for over 10 years, starting in her small apartment and now serving the whole neighborhood."
+    s.instagram_handle = "thecrustyloaf"
+    s.venmo_handle = "alicebakes"
   end
 
   store2 = Store.find_or_create_by!(user: baker2) do |s|
@@ -60,6 +63,14 @@ if Rails.env.development?
     description: "Fresh heritage wheat sourdough and seasonal herbs.",
     orders_close_at: 2.days.from_now,
     pickup_at: 4.days.from_now,
+    pickup_address: "123 Main St, Springfield",
+    published_at: nil
+  )
+  s1_prep = store1.events.create!(
+    name: "Mid-Week Pizza Night",
+    description: "Sourdough pizza dough and fresh toppings.",
+    orders_close_at: 1.day.ago,
+    pickup_at: 2.days.from_now,
     pickup_address: "123 Main St, Springfield",
     published_at: nil
   )
@@ -126,7 +137,7 @@ if Rails.env.development?
     {name: "Chocolate Babka Loaf", price_cents: 1400, quantity: 15}
   ]
 
-  [s1_past, s1_active, s1_future].each do |event|
+  [s1_past, s1_active, s1_future, s1_prep].each do |event|
     s1_products.each { |p| event.event_products.create!(p) }
   end
 
@@ -138,6 +149,7 @@ if Rails.env.development?
   # 4b. Publish events now that they have products
   s1_past.update!(published_at: 3.weeks.ago)
   s1_active.update!(published_at: 1.day.ago)
+  s1_prep.update!(published_at: 3.days.ago)
   s2_active.update!(published_at: 2.days.ago)
   s3_active.update!(published_at: 4.days.ago)
 
@@ -162,6 +174,14 @@ if Rails.env.development?
     event_product: s1_active.event_products.find_by(name: "Olive & Rosemary Focaccia"),
     quantity: 1,
     unit_price_cents: 1200
+  )
+
+  # Store 1 Prep Orders
+  order_prep = s1_prep.orders.create!(user: buyer3)
+  order_prep.order_items.create!(
+    event_product: s1_prep.event_products.find_by(name: "Classic Sourdough"),
+    quantity: 2,
+    unit_price_cents: 850
   )
 
   order3 = s1_past.orders.create!(user: buyer1)

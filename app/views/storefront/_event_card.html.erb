@@ -1,0 +1,18 @@
+<a href="<%= storefront_event_path(store.slug, event) %>" class="card stack-sm" style="text-decoration: none;">
+  <div class="group justify-between items-start">
+    <h3 style="margin: 0;"><%= event.name %></h3>
+    <span class="text-muted text-sm"><%= pluralize(event.event_products.count, "product") %></span>
+  </div>
+
+  <div class="stack-sm text-sm" style="gap: 2px;">
+    <div class="text-muted">
+      Pickup <strong><%= nice_date(event.pickup_at) %></strong>
+      <% if event.location_display.present? %>
+        &middot; <%= event.location_display %>
+      <% end %>
+    </div>
+    <div class="text-danger">
+      Orders close <%= nice_date(event.orders_close_at) %>
+    </div>
+  </div>
+</a>

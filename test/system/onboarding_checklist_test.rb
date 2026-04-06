@@ -10,7 +10,7 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
   test "checklist shows for a new store with all steps incomplete" do
     visit store_path
 
-    assert_text "Getting started"
+    assert_text "Setup Checklist"
     assert_text "Add your store address and description"
     assert_text "Create your first event"
     assert_text "Add products to an event"
@@ -23,7 +23,7 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
     fill_in "Store Address", with: "123 Baker St, Portland, OR"
     click_on "Save Changes"
 
-    assert_text "Getting started"
+    assert_text "Setup Checklist"
     assert_no_link "Add your store address and description"
   end
 
@@ -42,15 +42,15 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
 
     visit store_path
 
-    assert_no_text "Getting started"
+    assert_no_text "Setup Checklist"
   end
 
   test "dismiss button hides the checklist" do
     visit store_path
 
-    assert_text "Getting started"
+    assert_text "Setup Checklist"
     click_on "Dismiss"
 
-    assert_no_text "Getting started"
+    assert_no_text "Setup Checklist"
   end
 end

@@ -153,7 +153,7 @@ Key controllers:
 layouts/application.html.erb         — container, header, flash toast (z-index + safe-area-inset for mobile)
 application/_header.html.erb         — logo + nav (Manage gated on store.persisted?; bag icon with upcoming order count)
 storefront/_store_hero.html.erb      — store name + back link
-storefront/_event_list_item.html.erb — public event card
+storefront/_event_card.html.erb      — public event card
 storefront/_event_details.html.erb   — event info card on order page (pickup location with maps link)
 storefront/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
 storefront/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom

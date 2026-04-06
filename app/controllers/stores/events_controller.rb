@@ -30,8 +30,8 @@ class Stores::EventsController < ApplicationController
   end
 
   def duplicate
-    new_event = @event.spawn_next_event
-    redirect_to edit_event_path(new_event), notice: "Event duplicated. Please verify dates."
+    new_event = @event.spawn_next_event(clear_dates: true)
+    redirect_to edit_event_path(new_event), notice: "Event duplicated. Please set new dates."
   end
 
   def publish

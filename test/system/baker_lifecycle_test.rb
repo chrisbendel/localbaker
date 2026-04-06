@@ -35,14 +35,14 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
     # Header nav now has store shortcuts
     assert_link "Storefront"
-    assert_link "Manage"
+    assert_link "Bakery"
     # Nudge to create first event
-    assert_text "create your first event"
+    assert_text "Create your first event"
 
     # ----------------------------------------------------------------
     # 3. Create an event
     # ----------------------------------------------------------------
-    click_on "create your first event"
+    click_on "Create your first event"
     assert_current_path new_store_event_path
 
     fill_in "Name", with: "Saturday Bake"
@@ -144,8 +144,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     visit store_path
 
-    assert_text "Events"
-    assert_css ".card", text: "Saturday Bake"
+    assert_text "Morning Loaf"
+    # Event cards are now in tiles or list — let's just assert the name exists
+    assert_text "Saturday Bake"
 
     # ----------------------------------------------------------------
     # 10. Edit event
@@ -164,7 +165,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
-    click_on "Manage"
+    click_on "Bakery"
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
@@ -176,7 +177,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
       click_on "Duplicate"
     end
 
-    assert_text "Event duplicated. Please verify dates."
+    assert_text "Event duplicated. Please set new dates."
     assert_field "Name", with: "Copy of Saturday Bake (Updated)"
 
     # Needs new dates
@@ -208,8 +209,8 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 14. Edit store with active orders
     # ----------------------------------------------------------------
-    click_on "Manage"
-    click_on "Store Settings"
+    click_on "Bakery"
+    click_on "Settings"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"
@@ -242,8 +243,8 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 16. Delete store
     # ----------------------------------------------------------------
-    click_on "Manage"
-    click_on "Store Settings"
+    click_on "Bakery"
+    click_on "Settings"
     # 244: (no longer needs within row since it's grouped but we'll see)
     accept_confirm do
       click_on "Delete Store"

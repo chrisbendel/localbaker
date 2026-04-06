@@ -1,10 +1,12 @@
-<% content_for :title, "#{@store.name} — Store" %>
+<% content_for :title, "#{@store.name} — Bakery Dashboard" %>
+
 <div class="stack">
+  <%# Onboarding / Setup Checklist %>
   <% unless session[:onboarding_dismissed] || @store.onboarding_complete? %>
     <% steps = @store.onboarding_steps %>
     <div class="card stack-sm">
       <div class="group justify-between items-baseline">
-        <p class="font-bold">Getting started</p>
+        <p class="font-bold">Setup Checklist</p>
         <%= button_to "Dismiss", dismiss_onboarding_store_path, method: :post, class: "button-link text-muted text-sm" %>
       </div>
       <div class="stack-sm">
@@ -28,14 +30,16 @@
     </div>
   <% end %>
 
-  <div class="group justify-between items-baseline">
-    <h2><%= @store.name %></h2>
-    <%= link_to "Store Settings", edit_store_path, class: "button secondary" %>
-  </div>
-
+  <%# Dashboard Header %>
   <div class="group justify-between items-center">
-    <h3>Events</h3>
-    <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
+    <div>
+      <h2 style="margin-bottom: 0;"><%= @store.name %></h2>
+      <%= link_to "View storefront →", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
+    </div>
+    <div class="group">
+      <%= link_to "Settings", edit_store_path, class: "button secondary" %>
+      <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
+    </div>
   </div>
 
   <% if current_user.at_event_limit? %>
@@ -44,96 +48,90 @@
     </div>
   <% end %>
 
-  <% live   = @upcoming.select(&:orders_open?) %>
-  <% prep   = @upcoming.select(&:orders_closed?) %>
-
-  <% if @drafts.any? || live.any? || prep.any? || @past.any? %>
-    <div class="stack">
-
-      <%# Drafts — need products + publishing before they go live %>
-      <% if @drafts.any? %>
-        <div class="stack-sm">
-          <h4 class="text-muted">Drafts</h4>
-          <% @drafts.each do |event| %>
-            <%= link_to event_path(event), class: "card" do %>
-              <strong><%= event.name %></strong>
-              <p class="text-muted text-sm">
-                <% if event.event_products.empty? %>
-                  No products yet &middot; pickup <%= nice_date(event.pickup_at) %>
-                <% else %>
-                  <%= pluralize(event.event_products.size, "product") %> &middot; pickup <%= nice_date(event.pickup_at) %>
-                <% end %>
-              </p>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-
-      <%# Taking orders — published and orders currently open %>
-      <% if live.any? %>
-        <div class="stack-sm">
-          <h4 class="text-muted">Taking orders</h4>
-          <% live.each do |event| %>
-            <%= link_to event_path(event), class: "card" do %>
-              <div class="group justify-between items-baseline">
-                <strong><%= event.name %></strong>
-                <span class="text-sm text-muted">
-                  <% if event.orders.any? %>
-                    <%= pluralize(event.orders.size, "order") %>
-                  <% else %>
-                    No orders yet
-                  <% end %>
-                </span>
-              </div>
-              <p class="text-muted text-sm">Closes <%= nice_date(event.orders_close_at) %> &middot; Pickup <%= nice_date(event.pickup_at) %></p>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-
-      <%# Upcoming — orders closed, pickup hasn't happened yet, time to prep %>
-      <% if prep.any? %>
-        <div class="stack-sm">
-          <h4 class="text-muted">Upcoming</h4>
-          <% prep.each do |event| %>
-            <div class="card">
-              <div class="group justify-between items-center">
-                <%= link_to event.name, event_path(event), class: "font-bold" %>
-                <%= link_to "Prep list →", prep_event_path(event), target: "_blank", class: "text-sm" %>
-              </div>
-              <p class="text-muted text-sm"><%= pluralize(event.orders.size, "order") %> &middot; pickup <%= nice_date(event.pickup_at) %></p>
+  <%# 1. Taking Orders (Highest Priority) %>
+  <% if @live.any? %>
+    <div class="stack-sm">
+      <h4 class="section-title">Taking Orders</h4>
+      <div class="grid grid-cols-2">
+        <% @live.each do |event| %>
+          <%= link_to event_path(event), class: "card-accent stack-sm", style: "text-decoration: none;" do %>
+            <p class="font-bold" style="font-size: 1.15rem;"><%= event.name %></p>
+            <div class="group justify-between items-baseline">
+              <span class="text-sm"><%= pluralize(event.orders.size, "order") %></span>
+              <span class="text-xs text-muted">Closes <%= nice_date(event.orders_close_at) %></span>
             </div>
           <% end %>
-        </div>
-      <% end %>
-
-      <% if @past.any? %>
-        <details>
-          <summary class="text-muted text-sm">Past Events (<%= @past.count %>)</summary>
-          <div class="stack-sm" style="margin-top: var(--sp-sm);">
-            <% @past.each do |event| %>
-              <div class="group justify-between items-center">
-                <%= link_to event.name, event_path(event), class: "text-sm font-bold" %>
-                <div class="group items-center">
-                  <span class="text-muted text-sm"><%= nice_date(event.pickup_at) %></span>
-                  <%= button_to "Reuse", duplicate_event_path(event), class: "button secondary",
-                      data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
-                </div>
-              </div>
-            <% end %>
-          </div>
-        </details>
-      <% end %>
-
+        <% end %>
+      </div>
     </div>
-  <% else %>
-    <div class="nudge">
-      <span>
-        Your store is set up! Next,
-        <%= link_to "create your first event", new_store_event_path %>
-        to start accepting orders.
-      </span>
+  <% elsif @drafts.empty? && @upcoming.empty? %>
+    <div class="empty-state stack-sm">
+      <p>Your bakery is quiet right now.</p>
+      <%= link_to "Schedule your next bake", new_store_event_path, class: "button primary" %>
     </div>
   <% end %>
 
+  <%# 2. Preparation (Orders Closed, Upcoming Pickup) %>
+  <% if @prep.any? %>
+    <div class="stack-sm">
+      <h4 class="section-title">Preparation</h4>
+      <div class="stack-sm">
+        <% @prep.each do |event| %>
+          <div class="card stack-sm">
+            <div class="group justify-between items-center">
+              <%= link_to event.name, event_path(event), class: "font-bold" %>
+              <div class="group items-center">
+                <span class="text-sm"><%= pluralize(event.orders.size, "order") %></span>
+                <%= link_to "Prep list →", prep_event_path(event), target: "_blank", class: "text-sm" %>
+              </div>
+            </div>
+            <p class="text-muted text-sm">Pickup <%= nice_date(event.pickup_at) %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# 3. Drafts %>
+  <% if @drafts.any? %>
+    <div class="stack-sm">
+      <h4 class="section-title">Drafts</h4>
+      <div class="stack-sm">
+        <% @drafts.each do |event| %>
+          <%= link_to event_path(event), class: "card" do %>
+            <div class="group justify-between items-center">
+              <strong><%= event.name %></strong>
+              <span class="text-muted text-sm">Draft</span>
+            </div>
+            <p class="text-muted text-sm">
+              <% if event.event_products.empty? %>
+                No products yet &middot; pickup <%= nice_date(event.pickup_at) %>
+              <% else %>
+                <%= pluralize(event.event_products.size, "product") %> &middot; pickup <%= nice_date(event.pickup_at) %>
+              <% end %>
+            </p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# 4. Past Events %>
+  <% if @past.any? %>
+    <details>
+      <summary class="text-muted text-sm">Past Events (<%= @past.count %>)</summary>
+      <div class="stack-sm" style="margin-top: var(--sp-sm);">
+        <% @past.each do |event| %>
+          <div class="group justify-between items-center">
+            <%= link_to event.name, event_path(event), class: "text-sm font-bold" %>
+            <div class="group items-center">
+              <span class="text-muted text-sm"><%= nice_date(event.pickup_at) %></span>
+              <%= button_to "Reuse", duplicate_event_path(event), class: "button secondary small",
+                  data: { turbo_confirm: "Duplicate this event?" } %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
 </div>

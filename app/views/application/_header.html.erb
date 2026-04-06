@@ -8,7 +8,7 @@
       <% if authenticated? %>
         <% if (store = current_user.store)&.persisted? %>
           <%= link_to "Storefront", storefront_path(store.slug) %>
-          <%= link_to "Manage", store_path %>
+          <%= link_to "Bakery", store_path %>
         <% end %>
 
         <% upcoming_orders = current_user.orders
