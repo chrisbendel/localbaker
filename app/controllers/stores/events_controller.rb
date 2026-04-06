@@ -1,6 +1,7 @@
 class Stores::EventsController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
+  before_action :require_store!
   before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep]
   before_action :ensure_event_not_past!, only: [:edit, :update, :destroy, :publish]
 
@@ -76,6 +77,10 @@ class Stores::EventsController < ApplicationController
 
   def set_store
     @store = current_user.store
+  end
+
+  def require_store!
+    redirect_to new_store_path, alert: "You must create a store first." unless @store
   end
 
   def set_event

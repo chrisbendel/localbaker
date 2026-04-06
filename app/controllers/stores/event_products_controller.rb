@@ -1,6 +1,7 @@
 class Stores::EventProductsController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
+  before_action :require_store!
   before_action :set_event_product, only: [:edit, :update, :destroy]
   before_action :set_event
   before_action :require_store_owner!
@@ -51,6 +52,10 @@ class Stores::EventProductsController < ApplicationController
 
   def set_store
     @store = current_user.store
+  end
+
+  def require_store!
+    redirect_to new_store_path, alert: "You must create a store first." unless @store
   end
 
   # Load @event_product only for shallow routes
