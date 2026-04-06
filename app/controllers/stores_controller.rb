@@ -3,6 +3,7 @@ class StoresController < ApplicationController
   before_action :set_store, only: [:show, :qr, :dismiss_onboarding, :destroy]
 
   def new
+    redirect_to store_path if current_user.store
     @store = Store.new
   end
 

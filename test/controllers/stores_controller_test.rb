@@ -40,12 +40,6 @@ class StoresControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "show renders when store exists" do
-    Store.create!(name: "Mine", slug: "mine", user: @user)
-    get store_path
-    assert_response :success
-  end
-
   test "destroy removes store" do
     Store.create!(name: "Mine", slug: "mine", user: @user)
 

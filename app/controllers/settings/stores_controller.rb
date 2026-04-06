@@ -4,10 +4,6 @@ module Settings
     end
 
     def update
-      if params[:store][:remove_banner_image] == "1"
-        @store.banner_image.purge
-      end
-
       if @store.update(store_params)
         redirect_to settings_store_path, notice: "Store settings updated."
       else
