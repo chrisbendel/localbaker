@@ -177,7 +177,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
       click_on "Duplicate"
     end
 
-    assert_text "Event duplicated. Please set new dates."
+    assert_text "Event duplicated. Please verify dates."
     assert_field "Name", with: "Copy of Saturday Bake (Updated)"
 
     # Needs new dates

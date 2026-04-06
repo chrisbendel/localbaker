@@ -58,21 +58,14 @@ class Event < ApplicationRecord
     end
   end
 
-  def spawn_next_event(clear_dates: false)
+  def spawn_next_event
     interval_weeks = ((repeat_interval == "biweekly") ? 2 : 1)
 
     new_event = dup
     new_event.name = "Copy of #{name}"
     new_event.published_at = nil
-
-    if clear_dates
-      new_event.pickup_at = nil
-      new_event.orders_close_at = nil
-    else
-      new_event.pickup_at = pickup_at + interval_weeks.weeks if pickup_at
-      new_event.orders_close_at = orders_close_at + interval_weeks.weeks if orders_close_at
-    end
-
+    new_event.pickup_at = pickup_at + interval_weeks.weeks if pickup_at
+    new_event.orders_close_at = orders_close_at + interval_weeks.weeks if orders_close_at
     new_event.save!(validate: false)
 
     event_products.each do |ep|
