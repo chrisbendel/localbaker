@@ -140,6 +140,45 @@ class EventTest < ActiveSupport::TestCase
     refute_includes Event.active_published, @event
   end
 
+  # --- past scope ---
+
+  test "past includes published events with pickup in the last 30 days" do
+    @event.orders_close_at = 2.days.ago
+    @event.pickup_at = 2.days.ago + 1.hour
+    @event.save!(validate: false)
+    @event.update_column(:published_at, 2.days.ago)
+    assert_includes Event.past, @event
+  end
+
+  test "past excludes published events with future pickup" do
+    @event.save!
+    @event.update_column(:published_at, Time.current)
+    refute_includes Event.past, @event
+  end
+
+  test "past excludes draft events" do
+    @event.orders_close_at = 2.days.ago
+    @event.pickup_at = 2.days.ago + 1.hour
+    @event.save!(validate: false)
+    refute_includes Event.past, @event
+  end
+
+  test "past excludes published events older than 30 days by default" do
+    @event.orders_close_at = 31.days.ago
+    @event.pickup_at = 31.days.ago + 1.hour
+    @event.save!(validate: false)
+    @event.update_column(:published_at, 31.days.ago)
+    refute_includes Event.past, @event
+  end
+
+  test "past includes older events when custom days provided" do
+    @event.orders_close_at = 45.days.ago
+    @event.pickup_at = 45.days.ago + 1.hour
+    @event.save!(validate: false)
+    @event.update_column(:published_at, 45.days.ago)
+    assert_includes Event.past(60), @event
+  end
+
   # --- pickup_address / effective_pickup_address ---
 
   test "pickup_address is optional" do

@@ -23,7 +23,6 @@ class StoresController < ApplicationController
     @upcoming = @store.events.published.where("pickup_at >= ?", Time.current).includes(:orders).order(pickup_at: :asc)
     @live = @upcoming.select(&:orders_open?)
     @prep = @upcoming.select(&:orders_closed?)
-    @past = @store.events.published.where("pickup_at < ?", Time.current).order(pickup_at: :desc)
   end
 
   def qr

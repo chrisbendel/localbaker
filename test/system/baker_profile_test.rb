@@ -26,7 +26,7 @@ class BakerProfileTest < ApplicationSystemTestCase
     assert_text "Payment options updated."
 
     # Verify on public profile
-    visit storefront_profile_path(@store.slug)
+    visit storefront_path(@store.slug)
 
     assert_text "Meet the Baker"
     assert_text "Baking bread in my backyard oven since 2020."
@@ -51,8 +51,8 @@ class BakerProfileTest < ApplicationSystemTestCase
     assert_text "Order confirmed"
     assert_text "Venmo (@crusty-baker)"
 
-    # Check link presence on storefront
+    # Check content presence on storefront
     visit storefront_path(@store.slug)
-    assert_link "Meet the Baker"
+    assert_text "Meet the Baker"
   end
 end

@@ -4,6 +4,7 @@ class Stores::EventProductsController < ApplicationController
   before_action :set_event_product, only: [:edit, :update, :destroy]
   before_action :set_event
   before_action :require_store_owner!
+  before_action :ensure_event_not_past!, only: [:new, :create, :edit, :update, :destroy]
 
   def new
     @event_product = @event.event_products.new(new_event_product_params)
@@ -72,6 +73,12 @@ class Stores::EventProductsController < ApplicationController
   def require_store_owner!
     return if current_user == @store.user
     redirect_to event_path(@event), alert: "Not allowed."
+  end
+
+  def ensure_event_not_past!
+    if @event.past?
+      redirect_to event_path(@event), alert: "Past events cannot be edited."
+    end
   end
 
   def new_event_product_params

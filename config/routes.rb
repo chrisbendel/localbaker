@@ -42,7 +42,6 @@ Rails.application.routes.draw do
 
   scope "/shop/:slug", module: :storefront, as: :storefront do
     resource :notification, only: [:create, :destroy]
-    resource :profile, only: [:show], controller: "profiles"
 
     resources :events, only: [:show], shallow: true do
       member do
@@ -57,8 +56,6 @@ Rails.application.routes.draw do
   get "billing/upgrade", to: "billing#upgrade"
 
   resource :contact, only: [:new, :create]
-
-  resource :profile, only: [:show, :update]
 
   resources :orders, only: [:index]
   root to: "pages#home"

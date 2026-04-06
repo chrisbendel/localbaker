@@ -2,73 +2,89 @@ require "application_system_test_case"
 
 class BakeryDashboardTest < ApplicationSystemTestCase
   setup do
-    @baker = User.create!(email: "baker@example.com")
-    @store = Store.create!(user: @baker, name: "The Crusty Loaf", slug: "crusty-loaf")
-    sign_in_via_browser(@baker)
+    @user = User.create!(email: "baker@example.com")
+    @store = Store.create!(user: @user, name: "Morning Loaf", slug: "morning-loaf")
+    sign_in_via_browser(@user)
   end
 
-  test "dashboard shows events in correct priority sections" do
-    # 1. Taking Orders (Live)
-    live_event = @store.events.create!(
-      name: "Active Bake",
+  test "viewing taking orders bakes" do
+    event = @store.events.create!(
+      name: "Saturday Sourdough",
       orders_close_at: 1.day.from_now,
       pickup_at: 2.days.from_now
     )
-    live_event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
-    live_event.update!(published_at: Time.current)
+    event.update_columns(published_at: Time.current)
 
-    # 2. Preparation (Prep)
-    prep_event = @store.events.create!(
-      name: "Prep Bake",
-      orders_close_at: 1.hour.ago,
+    visit store_path
+    assert_text "Taking Orders"
+    assert_text "Saturday Sourdough"
+    assert_text "0 orders"
+  end
+
+  test "viewing preparation bakes" do
+    event = @store.events.create!(
+      name: "Friday Focaccia",
+      orders_close_at: 1.day.ago,
       pickup_at: 1.day.from_now
     )
-    prep_event.event_products.create!(name: "Cookies", price_cents: 500, quantity: 20)
-    prep_event.update!(published_at: 1.day.ago)
+    event.update_columns(published_at: Time.current)
 
-    # 3. Draft
-    draft_event = @store.events.create!(
-      name: "Draft Bake",
+    visit store_path
+    assert_text "Preparation"
+    assert_text "Friday Focaccia"
+    assert_link "Prep list →"
+  end
+
+  test "viewing draft bakes" do
+    @store.events.create!(
+      name: "Sunday Sweets",
+      published_at: nil,
       orders_close_at: 3.days.from_now,
       pickup_at: 4.days.from_now
     )
-    assert draft_event.persisted?
-
-    # 4. Past
-    past_event = @store.events.create!(
-      name: "Old Bake",
-      orders_close_at: 10.days.ago,
-      pickup_at: 9.days.ago
-    )
-    past_event.event_products.create!(name: "Old Bread", price_cents: 1000, quantity: 10)
-    past_event.update!(published_at: 11.days.ago)
 
     visit store_path
+    assert_text "Drafts"
+    assert_text "Sunday Sweets"
+    assert_text "Draft"
+  end
 
-    # Verify Taking Orders Section
-    within "h4", text: "Taking Orders" do
-      # Should see the live event
+  test "navigating to all events" do
+    event = @store.events.create!(
+      name: "Past Bake",
+      orders_close_at: 11.days.ago,
+      pickup_at: 9.days.ago
+    )
+    event.update_columns(published_at: 10.days.ago)
+
+    visit store_path
+    assert_no_text "Past Bake"
+
+    click_on "View all events →"
+    assert_current_path store_events_path
+    assert_text "All Events"
+    assert_text "Past Bake"
+  end
+
+  test "management actions are centralized on show page" do
+    event = @store.events.create!(
+      name: "Centralized Bake",
+      orders_close_at: 1.day.from_now,
+      pickup_at: 2.days.from_now
+    )
+
+    visit store_events_path
+    within "tr", text: "Centralized Bake" do
+      assert_no_link "Edit"
+      assert_no_button "Reuse Event"
+      assert_no_button "Delete Event"
+      click_on "Centralized Bake"
     end
-    assert_link "Active Bake"
 
-    # Verify Preparation Section
-    within "h4", text: "Preparation" do
-      # Should see the prep event
-    end
-    assert_link "Prep Bake"
-    assert_link "Prep list →"
-
-    # Verify Drafts Section
-    within "h4", text: "Drafts" do
-      # Should see the draft event
-    end
-    assert_link "Draft Bake"
-
-    # Verify Past Events (inside details)
-    assert_text "Past Events (1)"
-    find("summary", text: "Past Events (1)").click
-    assert_link "Old Bake"
-    assert_button "Reuse"
+    assert_current_path event_path(event)
+    assert_link "Edit Event"
+    assert_button "Reuse Event"
+    assert_button "Delete Event"
   end
 
   test "dashboard empty state" do

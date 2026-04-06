@@ -116,22 +116,9 @@
     </div>
   <% end %>
 
-  <%# 4. Past Events %>
-  <% if @past.any? %>
-    <details>
-      <summary class="text-muted text-sm">Past Events (<%= @past.count %>)</summary>
-      <div class="stack-sm">
-        <% @past.each do |event| %>
-          <div class="group justify-between items-center">
-            <%= link_to event.name, event_path(event), class: "text-sm font-bold" %>
-            <div class="group items-center">
-              <span class="text-muted text-sm"><%= nice_date(event.pickup_at) %></span>
-              <%= button_to "Reuse", duplicate_event_path(event), class: "button secondary small",
-                  data: { turbo_confirm: "Duplicate this event?" } %>
-            </div>
-          </div>
-        <% end %>
-      </div>
-    </details>
-  <% end %>
+  <hr class="divider">
+
+  <div class="group justify-center">
+    <%= link_to "View all events →", store_events_path, class: "text-muted text-sm" %>
+  </div>
 </div>

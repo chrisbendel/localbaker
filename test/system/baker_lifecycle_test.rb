@@ -165,7 +165,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
-    click_on "Bakery"
+    within "header nav" do
+      click_on "Bakery"
+    end
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
@@ -174,7 +176,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Saturday Bake (Updated)"
 
     accept_confirm do
-      click_on "Duplicate"
+      click_on "Reuse Event"
     end
 
     assert_text "Event duplicated. Please verify dates."
@@ -206,10 +208,10 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event deleted."
     assert_no_text "Copy of Saturday Bake (Updated)"
 
-    # ----------------------------------------------------------------
-    # 14. Edit store with active orders
-    # ----------------------------------------------------------------
-    click_on "Bakery"
+    # Navigate back to dashboard to edit store settings
+    within "header nav" do
+      click_on "Bakery"
+    end
     click_on "Settings"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
@@ -217,7 +219,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Store settings updated."
 
     # Navigate back to dashboard to start next event
-    click_on "Bakery"
+    within "header nav" do
+      click_on "Bakery"
+    end
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
     fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
@@ -242,7 +246,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 16. Delete store
     # ----------------------------------------------------------------
-    click_on "Bakery"
+    within "header nav" do
+      click_on "Bakery"
+    end
     click_on "Settings"
     click_on "Account"
     accept_confirm do

@@ -1,52 +1,110 @@
-<% content_for :title, "#{@store.name} — Events" %>
+<% content_for :title, "#{@store.name} — All Events" %>
+
+<%= render_breadcrumbs([
+  { name: "Bakery", path: store_path },
+  { name: "All Events" }
+]) %>
+
 <div class="group justify-between items-baseline">
-  <h1>Events</h1>
+  <h1>All Events</h1>
   <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
 </div>
 
-<% if @events.any? %>
-  <table class="responsive-table">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Orders Close</th>
-        <th>Pickup</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @events.each do |event| %>
-        <tr>
-          <td data-label="Name">
-            <%= link_to event.name, event_path(event) %>
-            <% if event.draft? %>
-              <span class="badge draft">Draft</span>
-            <% end %>
-          </td>
-          <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
-          <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
-          <td>
-            <div class="group justify-end items-center" style="gap: var(--sp-md);">
-              <%= link_to "Edit", edit_event_path(event) %>
-              <%= button_to "Duplicate", duplicate_event_path(event), 
-                  method: :post, 
-                  class: "button-link text-muted text-sm",
-                  data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
-              <% if event.draft? || event.orders.empty? %>
-                <%= button_to "Delete", event_path(event), 
-                    method: :delete, 
-                    class: "button-link text-danger text-sm",
-                    data: { turbo_confirm: "Are you sure? This will permanently delete the event." } %>
-              <% end %>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <div class="empty-state stack-sm">
-    <p class="text-muted">Events are how you sell. Create one to set a pickup date, add products, and start taking orders.</p>
-    <%= link_to "Create your first event", new_store_event_path, class: "button primary" %>
-  </div>
-<% end %>
+<div class="stack-lg">
+  <%# 1. Active Events (Taking Orders + Prep) %>
+  <% active_events = @events.reject(&:past?).reject(&:draft?) %>
+  <% if active_events.any? %>
+    <div class="stack-sm">
+      <h3 class="section-title">Active Bakes</h3>
+      <table class="responsive-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Orders Close</th>
+            <th>Pickup</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% active_events.each do |event| %>
+            <tr id="<%= dom_id(event) %>">
+              <td data-label="Name">
+                <%= link_to event.name, event_path(event), class: "font-bold" %>
+              </td>
+              <td data-label="Orders Close">
+                <% if event.orders_close_at.present? %>
+                  <%= nice_date(event.orders_close_at) %>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <%# 2. Draft Events %>
+  <% draft_events = @events.select(&:draft?) %>
+  <% if draft_events.any? %>
+    <div class="stack-sm">
+      <h3 class="section-title">Drafts</h3>
+      <table class="responsive-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Orders Close</th>
+            <th>Pickup</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% draft_events.each do |event| %>
+            <tr id="<%= dom_id(event) %>">
+              <td data-label="Name">
+                <%= link_to event.name, event_path(event), class: "font-bold" %>
+              </td>
+              <td data-label="Orders Close"><span class="text-muted">—</span></td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <%# 3. Past Events %>
+  <% past_events = @events.select(&:past?) %>
+  <% if past_events.any? %>
+    <div class="stack-sm">
+      <h3 class="section-title">Past Bakes</h3>
+      <table class="responsive-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Orders Close</th>
+            <th>Pickup</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% past_events.each do |event| %>
+            <tr id="<%= dom_id(event) %>">
+              <td data-label="Name">
+                <%= link_to event.name, event_path(event), class: "font-bold" %>
+              </td>
+              <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+
+  <% if @events.empty? %>
+    <div class="empty-state stack-sm">
+      <p class="text-muted">Events are how you sell. Create one to set a pickup date, add products, and start taking orders.</p>
+      <%= link_to "Create your first event", new_store_event_path, class: "button primary" %>
+    </div>
+  <% end %>
+</div>

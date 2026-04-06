@@ -17,14 +17,31 @@
 
   <div class="group items-center">
     <% if current_user == @store.user %>
-      <%= button_to "Duplicate", duplicate_event_path(@event),
+      <%= button_to "Reuse Event", duplicate_event_path(@event),
           method: :post,
           class: "button secondary",
           data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
-      <%= link_to "Edit Event", edit_event_path(@event), class: "button secondary" %>
+      <% unless @event.past? %>
+        <%= link_to "Edit Event", edit_event_path(@event), class: "button secondary" %>
+
+        <% if @event.draft? || @event.orders.empty? %>
+          <%= button_to "Delete Event", event_path(@event),
+            method: :delete,
+            class: "button danger",
+            data: { turbo_confirm: "Are you sure? This will permanently delete the event." } %>
+        <% end %>
+      <% end %>
     <% end %>
   </div>
 </div>
+
+<% if @event.past? %>
+  <div class="nudge" style="margin-top: var(--sp-md);">
+    <div class="group items-center">
+      <span class="text-sm">This is a past event. Details are read-only.</span>
+    </div>
+  </div>
+<% end %>
 
 <div class="stack-sm" style="margin-top: var(--sp-sm);">
   <p class="text-muted">
@@ -47,7 +64,7 @@
 
 <div class="group justify-between items-baseline">
   <h3>Products</h3>
-  <% if current_user == @store.user %>
+  <% if current_user == @store.user && !@event.past? %>
     <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button primary" %>
   <% end %>
 </div>
@@ -77,10 +94,12 @@
           </td>
           <td data-label="Qty"><%= product.quantity %></td>
           <td data-label="Price"><%= product.price_formatted %></td>
-          <% if current_user == @store.user %>
+          <% if current_user == @store.user && !@event.past? %>
             <td class="group justify-end items-center">
               <%= link_to "Edit", edit_event_product_path(product) %>
             </td>
+          <% else %>
+            <td></td>
           <% end %>
         </tr>
       <% end %>

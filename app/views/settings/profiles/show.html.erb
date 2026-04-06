@@ -3,7 +3,7 @@
 <div class="stack">
   <div class="group justify-between items-center">
     <h3>Baker Profile</h3>
-    <%= link_to "View Profile", storefront_profile_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
+    <%= link_to "View Profile", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
   </div>
 
   <%= form_with model: @store, url: settings_profile_path do |f| %>

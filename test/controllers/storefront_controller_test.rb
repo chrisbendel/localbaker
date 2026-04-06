@@ -22,24 +22,14 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: /Upcoming/
   end
 
-  test "shows events with pickup within the last 3 days" do
-    recent = publish_event(name: "Recent", orders_close_at: 3.days.ago, pickup_at: 2.days.ago + 1.hour)
-    recent.update_columns(orders_close_at: 3.days.ago, pickup_at: 2.days.ago + 1.hour)
+  test "hides past events on storefront" do
+    recent = publish_event(name: "Recent", orders_close_at: 1.day.ago, pickup_at: 1.hour.ago)
+    recent.update_columns(orders_close_at: 1.day.ago, pickup_at: 1.hour.ago)
 
     get storefront_url(@store.slug)
 
     assert_response :success
-    assert_select "a", text: /Recent/
-  end
-
-  test "hides events with pickup older than 3 days" do
-    old = publish_event(name: "Old Event", orders_close_at: 5.days.ago, pickup_at: 4.days.ago + 1.hour)
-    old.update_columns(orders_close_at: 5.days.ago, pickup_at: 4.days.ago + 1.hour)
-
-    get storefront_url(@store.slug)
-
-    assert_response :success
-    assert_select "a", text: /Old Event/, count: 0
+    assert_select "a", text: /Recent/, count: 0
   end
 
   test "hides draft events" do
