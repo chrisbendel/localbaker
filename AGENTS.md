@@ -249,6 +249,5 @@ bin/rails db:seed                         # seed demo data
 - Follow feature branch naming: `feat/...`, `fix/...`, `chore/...`.
 - Use conventional commit messages.
 - Do not add inline `style=` attributes — use CSS classes and tokens.
-- Do not use flexbox primitives (.stack/.group) instead of ad-hoc padding/margins where possible.
 - Do not introduce new CDN dependencies — assets are self-hosted via Propshaft.
 - Do not use emoji in views or copy.
