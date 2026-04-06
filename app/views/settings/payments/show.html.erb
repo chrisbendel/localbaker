@@ -8,19 +8,17 @@
   <p class="text-muted text-sm">Help customers find your preferred payment methods. LocalBaker handles orders, but payments happen directly between you and your customers.</p>
 
   <%= form_with model: @store, url: settings_payments_path do |f| %>
-    <div class="group">
-      <div class="stack-sm">
-        <%= f.label :venmo_handle, "Venmo Handle" %>
-        <%= f.text_field :venmo_handle, placeholder: "@yourhandle" %>
-      </div>
-
-      <div class="stack-sm">
-        <%= f.label :paypal_url, "PayPal.me Link" %>
-        <%= f.text_field :paypal_url, placeholder: "https://paypal.me/yourname" %>
-      </div>
+    <div >
+      <%= f.label :venmo_handle, "Venmo Handle" %>
+      <%= f.text_field :venmo_handle, placeholder: "@yourhandle" %>
     </div>
 
-    <div class="stack">
+    <div>
+      <%= f.label :paypal_url, "PayPal.me Link" %>
+      <%= f.text_field :paypal_url, placeholder: "https://paypal.me/yourname" %>
+    </div>
+
+    <div>
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
   <% end %>

@@ -13,16 +13,14 @@
       <p class="field-hint">Tell your customers a bit about yourself.</p>
     </div>
 
-    <div class="group">
-      <div class="stack-sm">
-        <%= f.label :instagram_handle, "Instagram Handle" %>
-        <%= f.text_field :instagram_handle, placeholder: "@yourbakery" %>
-      </div>
+    <div>
+      <%= f.label :instagram_handle, "Instagram Handle" %>
+      <%= f.text_field :instagram_handle, placeholder: "@yourbakery" %>
+    </div>
 
-      <div class="stack-sm">
-        <%= f.label :facebook_url, "Facebook URL" %>
-        <%= f.text_field :facebook_url, placeholder: "https://facebook.com/yourbakery" %>
-      </div>
+    <div>
+      <%= f.label :facebook_url, "Facebook URL" %>
+      <%= f.text_field :facebook_url, placeholder: "https://facebook.com/yourbakery" %>
     </div>
 
     <div>
@@ -30,7 +28,7 @@
       <%= f.text_field :website_url, placeholder: "https://yourbakery.com" %>
     </div>
 
-    <div class="stack">
+    <div>
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
   <% end %>
