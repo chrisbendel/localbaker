@@ -23,8 +23,8 @@ class Store < ApplicationRecord
     allow_blank: true
   validates :bio, length: {maximum: 1000}, allow_blank: true
 
-  before_validation { self.address = AddressParser.normalize(address) }
-  before_validation :nilify_blank_profile_fields
+  normalizes :bio, :description, :instagram_handle, :facebook_url, :website_url, :venmo_handle, :paypal_url, with: -> { it.strip.presence }
+  normalizes :address, with: -> { AddressParser.normalize(it).presence }
   validate :slug_cannot_change_with_active_orders
   before_save :purge_banner_image_if_requested
 
@@ -62,15 +62,6 @@ class Store < ApplicationRecord
   end
 
   private
-
-  def nilify_blank_profile_fields
-    self.bio = nil if bio.blank?
-    self.instagram_handle = nil if instagram_handle.blank?
-    self.facebook_url = nil if facebook_url.blank?
-    self.website_url = nil if website_url.blank?
-    self.venmo_handle = nil if venmo_handle.blank?
-    self.paypal_url = nil if paypal_url.blank?
-  end
 
   def slug_cannot_change_with_active_orders
     if slug_changed? && persisted? && active_orders?

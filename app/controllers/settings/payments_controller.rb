@@ -1,5 +1,7 @@
 module Settings
   class PaymentsController < BaseController
+    before_action :require_store!
+
     def show
     end
 

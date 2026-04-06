@@ -1,5 +1,7 @@
 module Settings
   class ProfilesController < BaseController
+    before_action :require_store!
+
     def show
     end
 

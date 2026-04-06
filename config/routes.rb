@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
   # Settings Hub
   namespace :settings do
-    root to: redirect("/settings/store")
+    root to: redirect("/settings/account")
     resource :store, only: [:show, :update], controller: "stores"
     resource :profile, only: [:show, :update], controller: "profiles"
     resource :payments, only: [:show, :update], controller: "payments"

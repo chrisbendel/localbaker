@@ -9,5 +9,9 @@ module Settings
     def set_store
       @store = current_user.store
     end
+
+    def require_store!
+      redirect_to settings_account_path, alert: "You must create a store first." unless @store&.persisted?
+    end
   end
 end
