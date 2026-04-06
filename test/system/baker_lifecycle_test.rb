@@ -20,9 +20,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------
-    # 2. Create store (via profile page — intentional baker flow)
+    # 2. Create store (via account settings — intentional baker flow)
     # ----------------------------------------------------------------
-    visit profile_path
+    visit settings_account_path
     assert_link "Create your store"
     click_on "Create your store"
     assert_current_path new_store_path
@@ -214,11 +214,10 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"
-    assert_text "Store updated!"
+    assert_text "Store settings updated."
 
-    # ----------------------------------------------------------------
-    # 15. Quick Add Product
-    # ----------------------------------------------------------------
+    # Navigate back to dashboard to start next event
+    click_on "Bakery"
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
     fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
@@ -245,20 +244,20 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     click_on "Bakery"
     click_on "Settings"
-    # 244: (no longer needs within row since it's grouped but we'll see)
+    click_on "Account"
     accept_confirm do
       click_on "Delete Store"
     end
-    assert_text "Store removed."
-    # "Create your store" lives on the profile page, not the dashboard
-    assert_no_text "Create your Store"
-    visit profile_path
+    assert_text "Store deleted."
+
+    # "Create your store" lives on the account settings page
+    visit settings_account_path
     assert_link "Create your store"
 
     # ----------------------------------------------------------------
     # 17. Sign out
     # ----------------------------------------------------------------
-    visit profile_path
+    visit settings_account_path
     click_on "Sign out"
     assert_current_path root_path
     assert_no_link "Sign out"

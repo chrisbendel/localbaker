@@ -14,4 +14,9 @@ module ApplicationHelper
   def google_maps_url(address)
     "https://www.google.com/maps/dir/?api=1&destination=#{ERB::Util.url_encode(address)}"
   end
+
+  def nav_link_to(label, path)
+    active = current_page?(path)
+    link_to label, path, class: (active ? "active" : nil)
+  end
 end

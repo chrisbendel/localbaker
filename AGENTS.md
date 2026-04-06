@@ -219,7 +219,8 @@ The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`
 - **Prices**: Stored as integer cents (`price_cents`). Use `price_formatted` and `number_to_currency` helpers for display.
 - **Inventory**: `EventProduct#remaining` and `sold` are calculated, not stored. `with_lock` used in `OrderItemsController` to prevent race conditions.
 - **Authorization**: No gem — manual `current_user == @store.user` ownership checks. `require_authentication!` before_action for protected routes.
-- **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are a code smell.
+- **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are strictly forbidden. Use layout primitives (.stack/.group) to handle spacing.
+- **Flexbox First**: Use `.stack` and `.group` as the primary layout engines. Only use CSS Grid (`.grid`) when a multi-column grid layout is explicitly required.
 
 ## Development Workflow
 
@@ -248,5 +249,6 @@ bin/rails db:seed                         # seed demo data
 - Follow feature branch naming: `feat/...`, `fix/...`, `chore/...`.
 - Use conventional commit messages.
 - Do not add inline `style=` attributes — use CSS classes and tokens.
+- Do not use flexbox primitives (.stack/.group) instead of ad-hoc padding/margins where possible.
 - Do not introduce new CDN dependencies — assets are self-hosted via Propshaft.
 - Do not use emoji in views or copy.

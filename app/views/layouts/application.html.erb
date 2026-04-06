@@ -26,7 +26,7 @@
 
   <link rel="icon" href="/baguette.png" type="image/png">
   <link rel="icon" href="/baguette.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/icon.png">
+  <link rel="apple-touch-icon" href="/baguette.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,17 +61,6 @@
   <%= yield %>
 </main>
 
-<footer>
-  <div class="group justify-between items-center">
-    <span>&copy; <%= Time.current.year %> LocalBaker</span>
-    <nav class="group">
-      <%= link_to "Home", root_path %>
-      <span class="text-muted" aria-hidden="true">&middot;</span>
-      <%= link_to "Our Ethos", about_path %>
-      <span class="text-muted" aria-hidden="true">&middot;</span>
-      <%= link_to "Contact", new_contact_path %>
-    </nav>
-  </div>
-</footer>
+<%= render "application/footer" %>
 </body>
 </html>

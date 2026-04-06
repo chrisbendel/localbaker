@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   end
 
   # Singular store for member actions (a user owns at most one store)
-  resource :store, shallow: true, only: [:new, :create, :show, :edit, :update, :destroy] do
+  resource :store, shallow: true, only: [:new, :create, :show, :destroy] do
     get :qr, on: :member
     post :dismiss_onboarding, on: :member
     resources :events, shallow: true, module: :stores do
@@ -25,6 +25,15 @@ Rails.application.routes.draw do
       end
       resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
     end
+  end
+
+  # Settings Hub
+  namespace :settings do
+    root to: redirect("/settings/store")
+    resource :store, only: [:show, :update], controller: "stores"
+    resource :profile, only: [:show, :update], controller: "profiles"
+    resource :payments, only: [:show, :update], controller: "payments"
+    resource :account, only: [:show, :update], controller: "accounts"
   end
 
   get "unsub/:token", to: "public_unsubscribes#unsubscribe", as: :unsubscribe

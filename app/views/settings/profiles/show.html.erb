@@ -1,0 +1,37 @@
+<% content_for :title, "Baker Profile — Settings" %>
+
+<div class="stack">
+  <div class="group justify-between items-center">
+    <h3>Baker Profile</h3>
+    <%= link_to "View Profile", storefront_profile_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
+  </div>
+
+  <%= form_with model: @store, url: settings_profile_path do |f| %>
+    <div>
+      <%= f.label :bio, "Baker Bio" %>
+      <%= f.text_area :bio, placeholder: "Your story, your baking philosophy...", rows: 6 %>
+      <p class="field-hint">Tell your customers a bit about yourself.</p>
+    </div>
+
+    <div class="group">
+      <div class="stack-sm">
+        <%= f.label :instagram_handle, "Instagram Handle" %>
+        <%= f.text_field :instagram_handle, placeholder: "@yourbakery" %>
+      </div>
+
+      <div class="stack-sm">
+        <%= f.label :facebook_url, "Facebook URL" %>
+        <%= f.text_field :facebook_url, placeholder: "https://facebook.com/yourbakery" %>
+      </div>
+    </div>
+
+    <div>
+      <%= f.label :website_url, "Personal Website" %>
+      <%= f.text_field :website_url, placeholder: "https://yourbakery.com" %>
+    </div>
+
+    <div class="stack">
+      <%= f.submit "Save Changes", class: "button primary" %>
+    </div>
+  <% end %>
+</div>

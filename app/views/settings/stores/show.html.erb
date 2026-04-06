@@ -1,0 +1,52 @@
+<% content_for :title, "Store Info — Settings" %>
+
+<div class="stack">
+  <div class="group justify-between items-center">
+    <h3>Store Info</h3>
+    <%= link_to "View Storefront", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
+  </div>
+
+  <%= form_with model: @store, url: settings_store_path do |f| %>
+    <div>
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+    </div>
+
+    <div>
+      <%= f.label :slug, "Store URL" %>
+      <%= f.text_field :slug, disabled: @store.active_orders? %>
+      <% if @store.active_orders? %>
+        <p class="field-hint">Slug cannot be changed while you have active orders.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description %>
+    </div>
+
+    <div>
+      <%= f.label :address, "Store Address" %>
+      <%= f.text_field :address, placeholder: "e.g. 123 Main St, Portland, OR 97201" %>
+      <p class="field-hint">Your default pickup location. Optional.</p>
+    </div>
+
+    <div data-controller="image-upload">
+      <%= f.label :banner_image, "Store Banner" %>
+      <% if @store.banner_image.attached? %>
+        <%= image_tag @store.banner_image.variant(resize_to_limit: [1200, 800], format: :webp), class: "img-banner" %>
+        <label>
+          <%= f.check_box :remove_banner_image %> Remove current banner
+        </label>
+      <% end %>
+      <div class="group items-center">
+        <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+        <button type="button" class="button secondary hidden" data-image-upload-target="cancelButton" data-action="image-upload#cancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="stack">
+      <%= f.submit "Save Changes", class: "button primary" %>
+    </div>
+  <% end %>
+</div>

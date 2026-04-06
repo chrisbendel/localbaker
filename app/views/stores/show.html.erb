@@ -11,7 +11,7 @@
       </div>
       <div class="stack-sm">
         <% [
-          [steps[:store_setup],     "Add your store address and description", edit_store_path],
+          [steps[:store_setup],     "Add your store address and description", settings_store_path],
           [steps[:event_created],   "Create your first event",                new_store_event_path],
           [steps[:products_added],  "Add products to an event",               store_events_path],
           [steps[:event_published], "Publish and share your store",           store_events_path]
@@ -32,12 +32,12 @@
 
   <%# Dashboard Header %>
   <div class="group justify-between items-center">
-    <div>
-      <h2 style="margin-bottom: 0;"><%= @store.name %></h2>
+    <div class="stack-sm">
+      <h2><%= @store.name %></h2>
       <%= link_to "View storefront →", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
     </div>
     <div class="group">
-      <%= link_to "Settings", edit_store_path, class: "button secondary" %>
+      <%= link_to "Settings", settings_store_path, class: "button secondary" %>
       <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
     </div>
   </div>
@@ -52,10 +52,10 @@
   <% if @live.any? %>
     <div class="stack-sm">
       <h4 class="section-title">Taking Orders</h4>
-      <div class="grid grid-cols-2">
+      <div class="group">
         <% @live.each do |event| %>
-          <%= link_to event_path(event), class: "card-accent stack-sm", style: "text-decoration: none;" do %>
-            <p class="font-bold" style="font-size: 1.15rem;"><%= event.name %></p>
+          <%= link_to event_path(event), class: "card card-accent stack-sm" do %>
+            <p class="font-bold text-lg"><%= event.name %></p>
             <div class="group justify-between items-baseline">
               <span class="text-sm"><%= pluralize(event.orders.size, "order") %></span>
               <span class="text-xs text-muted">Closes <%= nice_date(event.orders_close_at) %></span>
@@ -120,7 +120,7 @@
   <% if @past.any? %>
     <details>
       <summary class="text-muted text-sm">Past Events (<%= @past.count %>)</summary>
-      <div class="stack-sm" style="margin-top: var(--sp-sm);">
+      <div class="stack-sm">
         <% @past.each do |event| %>
           <div class="group justify-between items-center">
             <%= link_to event.name, event_path(event), class: "text-sm font-bold" %>

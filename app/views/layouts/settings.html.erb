@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title><%= content_for?(:title) ? yield(:title) : "Settings — LocalBaker" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable experience %>
+    <%# <link rel="manifest" href="/manifest.json"> %>
+
+    <link rel="icon" href="/baguette.png" type="image/png">
+    <link rel="icon" href="/baguette.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/baguette.png">
+
+    <%# Google Fonts: DM Sans %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="container">
+    <%= render "application/header" %>
+
+    <main>
+      <div class="settings-layout">
+        <aside class="settings-sidebar">
+          <%= render "settings/sidebar" %>
+        </aside>
+
+        <section class="settings-content stack">
+          <%= yield %>
+        </section>
+      </div>
+    </main>
+
+    <%= render "application/footer" %>
+
+    <dialog id="flash-dialog">
+      <% flash.each do |type, message| %>
+        <p class="<%= type %>"><%= message %></p>
+      <% end %>
+    </dialog>
+
+    <script>
+      (() => {
+        const d = document.getElementById("flash-dialog");
+        if (d && d.children.length > 0) {
+          d.show();
+          setTimeout(() => d.close(), 3000);
+        }
+      })();
+    </script>
+  </body>
+</html>

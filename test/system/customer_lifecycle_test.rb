@@ -188,7 +188,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 13. Sign out
     # ----------------------------------------------------------------
-    visit profile_path
+    visit settings_account_path
     click_on "Sign out"
     assert_current_path root_path
     assert_no_link "Sign out"

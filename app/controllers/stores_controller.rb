@@ -1,20 +1,17 @@
 class StoresController < ApplicationController
-  before_action :require_authentication!
-  before_action :set_store
-  before_action :ensure_no_store!, only: [:new, :create]
-  before_action :ensure_store_exists!, only: [:show, :edit, :update, :destroy, :qr]
+  before_action :require_authentication!, except: [:new, :create]
+  before_action :set_store, only: [:show, :qr, :dismiss_onboarding, :destroy]
 
   def new
-    @store = current_user.build_store
-    # unless current_user.subscription_active?
-    #   redirect_to pricing_path, alert: "A subscription is required to create a store."
-    # end
+    @store = Store.new
   end
 
   def create
-    @store = current_user.build_store(store_params)
+    @store = Store.new(store_params)
+    @store.user = current_user
+
     if @store.save
-      redirect_to store_path, notice: "Store created!"
+      redirect_to store_path, notice: "Bakery created! Welcome to LocalBaker."
     else
       render :new, status: :unprocessable_entity
     end
@@ -26,22 +23,6 @@ class StoresController < ApplicationController
     @live = @upcoming.select(&:orders_open?)
     @prep = @upcoming.select(&:orders_closed?)
     @past = @store.events.published.where("pickup_at < ?", Time.current).order(pickup_at: :desc)
-  end
-
-  def edit
-    @storefront_url = storefront_url(@store.slug)
-  end
-
-  def update
-    if params[:store][:remove_banner_image] == "1"
-      @store.banner_image.purge
-    end
-
-    if @store.update(store_params)
-      redirect_to store_path, notice: "Store updated!"
-    else
-      render :edit, status: :unprocessable_entity
-    end
   end
 
   def qr
@@ -64,28 +45,18 @@ class StoresController < ApplicationController
   end
 
   def destroy
-    @store.destroy
-    redirect_to root_path, notice: "Store removed."
+    @store.destroy!
+    redirect_to root_path, notice: "Store deleted."
   end
 
   private
 
   def set_store
     @store = current_user.store
-  end
-
-  def ensure_no_store!
-    redirect_to store_path, alert: "You already have a store." if @store
-  end
-
-  def ensure_store_exists!
-    redirect_to new_store_path, alert: "Create your store first." unless @store
+    redirect_to new_store_path unless @store || action_name == "new" || action_name == "create"
   end
 
   def store_params
-    params.require(:store).permit(
-      :name, :slug, :description, :bio, :banner_image, :address,
-      :instagram_handle, :facebook_url, :website_url, :venmo_handle, :paypal_url
-    )
+    params.expect(store: [:name, :slug, :address, :description])
   end
 end

@@ -1,0 +1,14 @@
+<nav class="settings-nav">
+  <% if current_user.store&.persisted? %>
+    <%= nav_link_to "Store Info", settings_store_path %>
+    <%= nav_link_to "Baker Profile", settings_profile_path %>
+    <%= nav_link_to "Payments", settings_payments_path %>
+  <% end %>
+
+  <%= nav_link_to "Account", settings_account_path %>
+
+  <div class="stack-sm">
+    <hr class="divider">
+    <%= button_to "Sign out", session_path, method: :delete %>
+  </div>
+</nav>
