@@ -81,6 +81,9 @@ class StoresController < ApplicationController
   end
 
   def store_params
-    params.require(:store).permit(:name, :slug, :description, :banner_image, :address)
+    params.require(:store).permit(
+      :name, :slug, :description, :bio, :banner_image, :address,
+      :instagram_handle, :facebook_url, :website_url, :venmo_handle, :paypal_url
+    )
   end
 end

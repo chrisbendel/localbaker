@@ -1,0 +1,61 @@
+<%= content_for(:title, "About the Baker — #{@store.name}") %>
+
+<div class="stack">
+  <header class="stack-sm">
+    <p><%= link_to "← Back to Shop", storefront_path(@store.slug), class: "text-muted text-sm" %></p>
+    <h1><%= @store.name %></h1>
+    <%= render "application/address_line", model: @store %>
+  </header>
+
+  <% if @store.bio.present? %>
+    <section class="stack-sm">
+      <h2 class="section-title">Meet the Baker</h2>
+      <p><%= simple_format @store.bio %></p>
+    </section>
+  <% end %>
+
+  <% if @store.instagram_handle.present? || @store.facebook_url.present? || @store.website_url.present? %>
+    <section class="stack-sm">
+      <h2 class="section-title">Find us on</h2>
+      <div class="group">
+        <% if @store.instagram_handle.present? %>
+          <%= link_to @store.instagram_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+            Instagram
+          <% end %>
+        <% end %>
+
+        <% if @store.facebook_url.present? %>
+          <%= link_to @store.facebook_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+            Facebook
+          <% end %>
+        <% end %>
+
+        <% if @store.website_url.present? %>
+          <%= link_to @store.website_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+            Website
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @store.venmo_handle.present? || @store.paypal_url.present? %>
+    <section class="stack-sm">
+      <h2 class="section-title">Payment Options</h2>
+      <p class="text-sm text-muted">You can pay for your orders using these methods at pickup or as arranged with the baker.</p>
+      <div class="group">
+        <% if @store.venmo_handle.present? %>
+          <%= link_to @store.venmo_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+            Venmo (<%= @store.venmo_handle %>)
+          <% end %>
+        <% end %>
+
+        <% if @store.paypal_url.present? %>
+          <%= link_to @store.paypal_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+            PayPal
+          <% end %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+</div>

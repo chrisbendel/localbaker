@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   scope "/shop/:slug", module: :storefront, as: :storefront do
     resource :notification, only: [:create, :destroy]
+    resource :profile, only: [:show], controller: "profiles"
 
     resources :events, only: [:show], shallow: true do
       member do

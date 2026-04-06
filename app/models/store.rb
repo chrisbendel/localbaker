@@ -27,6 +27,14 @@ class Store < ApplicationRecord
     AddressParser.city_state(address)
   end
 
+  def instagram_url
+    "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
+  end
+
+  def venmo_url
+    "https://venmo.com/#{venmo_handle.sub("@", "")}" if venmo_handle.present?
+  end
+
   def onboarding_complete?
     onboarding_steps.values.all?
   end

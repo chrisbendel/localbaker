@@ -25,7 +25,9 @@
   </div>
   <%= render "application/address_line", model: @store %>
   <% if @store.description.present? %>
-    <p class="text-muted"><%= @store.description %></p>
+    <p class="text-muted"><%= @store.description %> — <%= link_to "Meet the Baker", storefront_profile_path(@store.slug) %></p>
+  <% else %>
+    <p class="text-muted"><%= link_to "Meet the Baker", storefront_profile_path(@store.slug) %></p>
   <% end %>
 </header>
 

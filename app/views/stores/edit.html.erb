@@ -65,6 +65,54 @@
       </div>
     </div>
 
+    <hr class="divider">
+
+    <div class="stack-sm">
+      <h4 class="section-title">Baker Profile</h4>
+      <p class="text-muted text-sm">Tell your customers a bit about yourself and where else to find you.</p>
+
+      <div>
+        <%= f.label :bio, "Baker Bio" %>
+        <%= f.text_area :bio, placeholder: "Your story, your baking philosophy...", rows: 4 %>
+      </div>
+
+      <div class="grid grid-cols-2">
+        <div>
+          <%= f.label :instagram_handle, "Instagram Handle" %>
+          <%= f.text_field :instagram_handle, placeholder: "@yourbakery" %>
+        </div>
+
+        <div>
+          <%= f.label :facebook_url, "Facebook URL" %>
+          <%= f.text_field :facebook_url, placeholder: "https://facebook.com/yourbakery" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :website_url, "Personal Website" %>
+        <%= f.text_field :website_url, placeholder: "https://yourbakery.com" %>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="stack-sm">
+      <h4 class="section-title">Payment Options</h4>
+      <p class="text-muted text-sm">Help customers find your preferred payment methods. LocalBaker handles orders, but payments happen directly between you and your customers.</p>
+
+      <div class="grid grid-cols-2">
+        <div>
+          <%= f.label :venmo_handle, "Venmo Handle" %>
+          <%= f.text_field :venmo_handle, placeholder: "@yourhandle" %>
+        </div>
+
+        <div>
+          <%= f.label :paypal_url, "PayPal.me Link" %>
+          <%= f.text_field :paypal_url, placeholder: "https://paypal.me/yourname" %>
+        </div>
+      </div>
+    </div>
+
     <div>
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
