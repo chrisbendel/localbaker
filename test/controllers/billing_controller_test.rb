@@ -33,7 +33,8 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Actual Stripe redirect is covered by manual testing.
-  # We verify the error path by posting without a configured payment processor.
+  # This fails because STRIPE_PRO_PRICE_ID / Stripe API keys are not present in test,
+  # which exercises the rescue path and verifies the user sees a graceful error.
   test "POST checkout redirects to upgrade page on error" do
     sign_in_as(@user)
     post billing_checkout_path
@@ -61,6 +62,13 @@ class BillingControllerTest < ActionDispatch::IntegrationTest
     assert_changes -> { @user.reload.plan }, from: "free", to: "pro" do
       get billing_success_path
     end
+  end
+
+  test "POST checkout redirects pro user to portal instead of creating duplicate subscription" do
+    @user.update!(plan: :pro)
+    sign_in_as(@user)
+    post billing_checkout_path
+    assert_redirected_to billing_portal_path
   end
 
   # --- portal ---

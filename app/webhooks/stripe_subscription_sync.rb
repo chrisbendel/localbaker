@@ -7,13 +7,17 @@ class StripeSubscriptionSync
     user = pay_subscription.customer.owner
     return unless user.is_a?(User)
 
-    case subscription.status
-    when "active"
-      user.update!(plan: :pro)
-      Rails.logger.info("User #{user.id} synced to pro (subscription: #{subscription.id})")
-    when "past_due", "unpaid", "incomplete_expired", "canceled"
-      user.update!(plan: :free)
-      Rails.logger.info("User #{user.id} synced to free (status: #{subscription.status})")
-    end
+    resolved_plan = active_subscription?(user) ? :pro : :free
+    user.update!(plan: resolved_plan)
+    Rails.logger.info(
+      "User #{user.id} synced to #{resolved_plan} after #{subscription.status} " \
+      "(subscription: #{subscription.id})"
+    )
+  end
+
+  private
+
+  def active_subscription?(user)
+    user.pay_subscriptions.where(status: "active").exists?
   end
 end

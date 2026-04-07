@@ -56,4 +56,21 @@ class StripeSubscriptionSyncTest < ActiveSupport::TestCase
     @sync.call(stripe_event(status: "trialing"))
     assert @user.reload.free?
   end
+
+  test "keeps plan as pro when one subscription is canceled but another remains active" do
+    # Create a second active subscription for the same user
+    second_subscription = @user.payment_processor.subscribe(plan: "fake")
+
+    @user.update!(plan: :pro)
+
+    # Cancel the first subscription — the second is still active
+    @sync.call(stripe_event(status: "canceled"))
+
+    assert @user.reload.pro?
+
+    # Now cancel the second — no active subscriptions remain
+    @sync.call(stripe_event(status: "canceled", id: second_subscription.processor_id))
+
+    assert @user.reload.free?
+  end
 end

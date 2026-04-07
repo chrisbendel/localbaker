@@ -5,6 +5,8 @@ class BillingController < ApplicationController
   end
 
   def checkout
+    return redirect_to billing_portal_path, alert: "You're already on the Pro plan." if current_user.pro?
+
     checkout_session = current_user.payment_processor.checkout(
       mode: "subscription",
       line_items: [{price: stripe_pro_price_id, quantity: 1}],
