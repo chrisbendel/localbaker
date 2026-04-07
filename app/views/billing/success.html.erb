@@ -1,0 +1,23 @@
+<% content_for :title, "Upgrade Successful" %>
+
+<div class="stack-lg">
+  <div class="panel stack">
+    <h2>Upgrade Successful</h2>
+    <p>Welcome to Pro! Your subscription is now active and you have unlimited access to all Pro features.</p>
+  </div>
+
+  <div class="card stack-sm">
+    <h3>What's New</h3>
+    <ul class="stack-sm">
+      <li>Unlimited active events</li>
+      <li>QR code poster for events</li>
+      <li>Analytics dashboard</li>
+      <li>Discount codes</li>
+    </ul>
+  </div>
+
+  <div class="group">
+    <%= link_to "Back to Dashboard", root_path, class: "button primary" %>
+    <%= button_to "Manage Subscription", billing_portal_path, method: :post, class: "button", data: { turbo: false } %>
+  </div>
+</div>

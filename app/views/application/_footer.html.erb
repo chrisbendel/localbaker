@@ -7,6 +7,14 @@
       <%= link_to "Our Ethos", about_path %>
       <span class="text-muted" aria-hidden="true">&middot;</span>
       <%= link_to "Contact", new_contact_path %>
+      <% if authenticated? %>
+        <span class="text-muted" aria-hidden="true">&middot;</span>
+        <% if current_user.pro? %>
+          <%= link_to "Pro", settings_account_path %>
+        <% else %>
+          <%= link_to "Upgrade to Pro", billing_upgrade_path %>
+        <% end %>
+      <% end %>
     </nav>
   </div>
 </footer>

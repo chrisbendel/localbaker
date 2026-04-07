@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  pay_customer default_payment_processor: :stripe
+
   FREE_EVENT_LIMIT = 1
 
   has_one :store, dependent: :destroy
@@ -14,6 +16,14 @@ class User < ApplicationRecord
     uniqueness: {case_sensitive: false}
 
   enum :plan, {free: "free", pro: "pro"}, default: "free"
+
+  def pro?
+    plan == "pro" || pay_subscriptions.where(status: "active").any?
+  end
+
+  def free?
+    !pro?
+  end
 
   def at_event_limit?
     return false if pro?
