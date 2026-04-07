@@ -16,7 +16,8 @@ module Settings
     private
 
     def store_params
-      params.expect(store: [:name, :slug, :description, :address, :banner_image, :remove_banner_image])
+      params.expect(store: [:name, :slug, :description, :address, :banner_image, :remove_banner_image,
+        :delivery_zone_type, :delivery_zone_radius_miles, :delivery_zone_postal_codes])
     end
   end
 end

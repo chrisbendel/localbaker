@@ -7,7 +7,12 @@ module Storefront
     def confirm
       @order = @event.orders.find_by!(user: current_user)
 
-      if @order.confirm!
+      # Save delivery address if provided
+      if params[:delivery_address].present?
+        @order.delivery_address = params[:delivery_address]
+      end
+
+      if @order.save && @order.confirm!
         OrderMailer.with(order: @order).confirmation_email.deliver_later
         redirect_to storefront_event_path(@store.slug, @event), notice: "Order confirmed! We've sent a receipt to your email."
       else

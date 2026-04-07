@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   resources :orders, only: [:index]
   root to: "pages#home"
   get "about", to: "pages#about", as: :about
+  get "near", to: "locations#near", as: :near
 
   # Test-only: direct sign-in without OTP (used by system tests to bypass email auth)
   if Rails.env.test?

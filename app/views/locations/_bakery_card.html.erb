@@ -1,0 +1,29 @@
+<a href="<%= storefront_path(store.slug) %>" class="block bg-white rounded-lg border border-gray-200 p-6 hover:border-orange-500 hover:shadow-lg transition">
+  <div class="flex items-start justify-between">
+    <div class="flex-1">
+      <h3 class="text-xl font-bold text-gray-900"><%= store.name %></h3>
+      <p class="text-gray-600 mt-1"><%= store.location_display %></p>
+
+      <% if distance.present? %>
+        <p class="text-sm text-gray-500 mt-2">
+          📍 <%= number_to_human(distance, units: :distance, precision: 1) %> away
+        </p>
+      <% end %>
+
+      <% upcoming_event = store.events.active_published.first %>
+      <% if upcoming_event %>
+        <p class="text-sm text-gray-600 mt-3">
+          📅 Next pickup: <time datetime="<%= upcoming_event.pickup_at.iso8601 %>">
+            <%= upcoming_event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
+          </time>
+        </p>
+      <% end %>
+    </div>
+
+    <% if store.photo.attached? %>
+      <div class="ml-4">
+        <%= image_tag store.photo, alt: store.name, class: "w-20 h-20 object-cover rounded" %>
+      </div>
+    <% end %>
+  </div>
+</a>

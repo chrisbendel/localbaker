@@ -24,6 +24,12 @@
   </div>
 
   <div>
+    <%= form.label :delivery_enabled, "Allow Delivery" %>
+    <%= form.check_box :delivery_enabled %>
+    <p class="text-muted text-sm">Let customers enter a delivery address instead of picking up. Both pickup and delivery can be offered.</p>
+  </div>
+
+  <div>
     <%= form.label :orders_close_at, "Orders close at" %>
     <%= form.date_field :orders_close_at, required: true, min: Date.current %>
   </div>

@@ -28,6 +28,9 @@ class Store < ApplicationRecord
   normalizes :address, with: -> { AddressParser.normalize(it).presence }
   validate :slug_cannot_change_with_active_orders
   before_save :purge_attachments_if_requested
+  after_commit :geocode_location, if: :saved_change_to_address?
+
+  scope :geocoded, -> { where.not(latitude: nil, longitude: nil) }
 
   def monetization_allowed?
     user.pro?
@@ -73,5 +76,9 @@ class Store < ApplicationRecord
   def purge_attachments_if_requested
     banner_image.purge if remove_banner_image == "1"
     photo.purge if remove_photo == "1"
+  end
+
+  def geocode_location
+    GeocodeStoreJob.perform_later(id)
   end
 end

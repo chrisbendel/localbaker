@@ -1,3 +1,4 @@
+require "street_address"
 module AddressParser
   module_function
 
