@@ -5,14 +5,9 @@ class Order < ApplicationRecord
   has_many :event_products, through: :order_items
 
   validates :user_id, uniqueness: {scope: :event_id}
-  validates :delivery_address, presence: true, if: :delivery_required?
   validate :delivery_address_within_zone, if: :delivery_address_changed?
 
   before_validation { self.delivery_address = AddressParser.normalize(delivery_address) if delivery_address.present? }
-
-  def delivery_required?
-    event.delivery_enabled?
-  end
 
   def delivery_address_within_zone?
     return true if delivery_address.blank?

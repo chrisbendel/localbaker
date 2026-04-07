@@ -1,22 +1,17 @@
-Geocoder.configure(
-  # Use Nominatim in production for real geocoding
-  lookup: :nominatim,
-
-  # Nominatim requires a user-agent header
-  http_headers: {
-    user_agent: "LocalBaker (https://localbaker.app)"
-  },
-
-  # Cache results to avoid duplicate API calls
-  cache: Rails.cache,
-  cache_prefix: "geocoder:",
-
-  # Use HTTPS for Nominatim
-  use_https: true,
-
-  # Timeout and retry settings
-  timeout: 5,
-
-  # Don't raise exceptions on lookup failure — graceful degradation
-  always_raise: []
-)
+if Rails.env.production?
+  Geocoder.configure(
+    lookup: :nominatim,
+    http_headers: {
+      user_agent: "LocalBaker (https://localbaker.app)"
+    },
+    cache: Rails.cache,
+    cache_prefix: "geocoder:",
+    use_https: true,
+    timeout: 5,
+    always_raise: []
+  )
+else
+  # Use test lookup in dev/test — no network calls, returns stubs or empty results.
+  # test_helper.rb sets a default stub for test; dev geocoding is mocked in GeocodeStoreJob.
+  Geocoder.configure(lookup: :test, ip_lookup: :test)
+end

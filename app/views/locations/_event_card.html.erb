@@ -14,9 +14,9 @@
       Pickup: <%= event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
     </p>
 
-    <% if event.event_products.any? %>
+    <% if (products_count = event.event_products.size) > 0 %>
       <p class="text-sm text-muted">
-        <%= pluralize(event.event_products.count, "product") %> available
+        <%= pluralize(products_count, "product") %> available
       </p>
     <% end %>
   </div>

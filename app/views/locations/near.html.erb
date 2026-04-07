@@ -54,7 +54,7 @@
           <div class="stack">
             <% if @stores.any? %>
               <% @stores.each do |store| %>
-                <%= render "locations/bakery_card", store: store, distance: store.distance %>
+                <%= render "locations/bakery_card", store: store, distance: store.distance, upcoming_event: @next_events_by_store[store.id] %>
               <% end %>
             <% else %>
               <div class="empty-state">

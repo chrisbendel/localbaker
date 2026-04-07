@@ -8,12 +8,13 @@ class ProximityService
   def self.events_near(latitude, longitude, radius_miles = 25)
     stores = stores_near(latitude, longitude, radius_miles).to_a
 
+    stores_by_id = stores.index_by(&:id)
+
     Event.active_published
-      .where(store_id: stores.map(&:id))
-      .includes(:store)
+      .where(store_id: stores_by_id.keys)
+      .includes(:store, :event_products)
       .map do |event|
-        store_match = stores.find { |s| s.id == event.store_id }
-        EventResult.new(event: event, distance: store_match&.distance)
+        EventResult.new(event: event, distance: stores_by_id[event.store_id]&.distance)
       end
       .sort_by { |r| [r.event.pickup_at, r.distance || 999] }
   end

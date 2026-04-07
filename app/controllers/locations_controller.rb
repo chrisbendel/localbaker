@@ -3,7 +3,7 @@ class LocationsController < ApplicationController
     @latitude = params[:latitude]
     @longitude = params[:longitude]
     @address = params[:address]
-    @radius = (params[:radius].presence || 25).to_i
+    @radius = (params[:radius].presence || 25).to_i.clamp(1, 100)
     @tab = params[:tab].presence || "bakeries"
 
     if @address.present?
@@ -19,9 +19,16 @@ class LocationsController < ApplicationController
         .joins(:events)
         .merge(Event.active_published)
         .distinct
+        .to_a
+      @next_events_by_store = Event.active_published
+        .where(store_id: @stores.map(&:id))
+        .order(:pickup_at)
+        .group_by(&:store_id)
+        .transform_values(&:first)
       @events = ProximityService.events_near(@latitude, @longitude, @radius)
     else
       @stores = []
+      @next_events_by_store = {}
       @events = []
     end
   end

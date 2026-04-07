@@ -10,7 +10,7 @@
         </p>
       <% end %>
 
-      <% upcoming_event = store.events.active_published.first %>
+      <% upcoming_event = local_assigns[:upcoming_event] || store.events.active_published.order(:pickup_at).first %>
       <% if upcoming_event %>
         <p class="text-sm font-bold">
           Next pickup: <%= upcoming_event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
