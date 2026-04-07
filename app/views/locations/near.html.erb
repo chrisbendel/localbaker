@@ -40,7 +40,7 @@
 
     <% if @stores.any? || @events.any? %>
       <div class="stack">
-        <div class="group border-bottom">
+        <div class="group">
           <%= link_to "Bakeries (#{@stores.length})", 
               near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "bakeries"), 
               class: "button #{(@tab == 'bakeries') ? 'primary' : 'secondary'}" %>

@@ -16,7 +16,8 @@ module Storefront
         OrderMailer.with(order: @order).confirmation_email.deliver_later
         redirect_to storefront_event_path(@store.slug, @event), notice: "Order confirmed! We've sent a receipt to your email."
       else
-        redirect_to storefront_event_path(@store.slug, @event), alert: "Could not confirm order. Please try again."
+        error_message = @order.errors.full_messages.to_sentence.presence || "Could not confirm order. Please try again."
+        redirect_to storefront_event_path(@store.slug, @event), alert: error_message
       end
     end
 

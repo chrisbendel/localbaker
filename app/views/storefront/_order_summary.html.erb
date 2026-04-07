@@ -70,8 +70,7 @@
               <%= f.label :delivery_address, "Delivery Address (Optional)", class: "text-sm font-bold" %>
               <%= f.text_field :delivery_address,
                   placeholder: "Street address, city, state, zip",
-                  value: order.delivery_address,
-                  class: "w-full px-2 py-1 border border-gray-300 rounded text-sm" %>
+                  value: order.delivery_address %>
               <p class="text-xs text-muted">Leave blank for pickup. Enter an address for delivery.</p>
             </div>
           <% end %>
