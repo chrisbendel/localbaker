@@ -25,12 +25,7 @@
         <li>Discount codes</li>
       </ul>
       <% if current_user.free? %>
-        <form method="post" action="<%= billing_checkout_path %>" data-turbo="false">
-          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <div>
-            <button type="submit" class="button primary">Upgrade to Pro · $9/month</button>
-          </div>
-        </form>
+        <%= button_to "Upgrade to Pro · $9/month", billing_checkout_path, method: :post, class: "button primary", data: { turbo: false } %>
       <% end %>
     </div>
   </div>

@@ -9,10 +9,10 @@ class StripeSubscriptionSync
 
     case subscription.status
     when "active"
-      user.update(plan: :pro)
+      user.update!(plan: :pro)
       Rails.logger.info("User #{user.id} synced to pro (subscription: #{subscription.id})")
     when "past_due", "unpaid", "incomplete_expired", "canceled"
-      user.update(plan: :free)
+      user.update!(plan: :free)
       Rails.logger.info("User #{user.id} synced to free (status: #{subscription.status})")
     end
   end

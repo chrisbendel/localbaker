@@ -18,6 +18,8 @@ class BillingController < ApplicationController
   end
 
   def success
+    # TODO: move subscription sync to a background job to avoid latency on this
+    # user-facing redirect. Currently a safety net for the webhook delivery window.
     if (processor = current_user.payment_processor) && processor.processor_id.present?
       processor.sync_subscriptions(status: "all") unless Rails.env.test?
       current_user.pro! if processor.subscriptions.active.any?
@@ -33,7 +35,7 @@ class BillingController < ApplicationController
       redirect_to billing_upgrade_path, alert: "Upgrade to Pro first to manage your subscription."
     end
   rescue => e
-    Rails.logger.error("Stripe billing portal error: #{e.message}")
+    Rails.logger.error("Stripe billing portal error: #{e.class}: #{e.message}\n#{e.backtrace.first(5).join("\n")}")
     redirect_to settings_account_path, alert: "Failed to open billing portal. Please try again."
   end
 

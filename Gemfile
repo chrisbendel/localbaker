@@ -40,6 +40,7 @@ gem "aws-sdk-s3", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "dotenv-rails", require: "dotenv/load"
 
   # Audits gems for known security defects (use config/bundler-audit.yml to ignore issues)
   gem "bundler-audit", require: false
@@ -71,4 +72,3 @@ gem "rqrcode", "~> 2.2"
 gem "StreetAddress", "~> 1.0", require: "street_address"
 gem "pay", "~> 11.5"
 gem "stripe", "~> 19.0"
-gem "dotenv-rails", require: "dotenv/load"

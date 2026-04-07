@@ -17,14 +17,6 @@ class User < ApplicationRecord
 
   enum :plan, {free: "free", pro: "pro"}, default: "free"
 
-  def pro?
-    plan == "pro" || pay_subscriptions.where(status: "active").any?
-  end
-
-  def free?
-    !pro?
-  end
-
   def at_event_limit?
     return false if pro?
     store&.events&.active_published&.count.to_i >= FREE_EVENT_LIMIT
