@@ -36,14 +36,14 @@
 </div>
 
 <% if @event.past? %>
-  <div class="nudge" style="margin-top: var(--sp-md);">
+  <div class="nudge">
     <div class="group items-center">
       <span class="text-sm">This is a past event. Details are read-only.</span>
     </div>
   </div>
 <% end %>
 
-<div class="stack-sm" style="margin-top: var(--sp-sm);">
+<div class="stack-sm">
   <p class="text-muted">
     Orders close <%= nice_date(@event.orders_close_at) %> &middot;
     Pickup <%= pickup_datetime(@event.pickup_at) %>
@@ -57,7 +57,7 @@
 </div>
 
 <% if @event.description.present? %>
-  <p style="margin-top: var(--sp-md);"><%= @event.description %></p>
+  <p><%= @event.description %></p>
 <% end %>
 
 <hr class="divider">
@@ -85,7 +85,7 @@
       <% @event.event_products.each do |product| %>
         <tr>
           <td data-label="Name">
-            <div class="group items-center" style="gap: var(--sp-sm);">
+            <div class="group items-center">
               <% if product.image.attached? %>
                 <%= image_tag product.image.variant(resize_to_limit: [40, 40], format: :webp), class: "img-thumb" %>
               <% end %>
@@ -115,7 +115,7 @@
 <% end %>
 
 <% if @event.draft? && current_user == @store.user && @event.event_products.present? %>
-  <div class="nudge" style="margin-top: var(--sp-md);">
+  <div class="nudge">
     <div class="group justify-between items-center">
       <span>Ready to go? Publishing will notify all subscribers.</span>
       <%= button_to "Publish Event", publish_event_path(@event), method: :post,
@@ -137,7 +137,7 @@
     </div>
 
     <% if @orders.any? %>
-      <div class="panel stack-sm" style="margin-bottom: var(--sp-md);">
+      <div class="panel stack-sm">
         <p class="text-sm font-bold">Prep summary</p>
         <% @event.event_products.each do |product| %>
           <div class="group justify-between text-sm">

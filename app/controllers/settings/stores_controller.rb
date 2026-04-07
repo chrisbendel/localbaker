@@ -16,7 +16,7 @@ module Settings
     private
 
     def store_params
-      params.expect(store: [:name, :slug, :description, :address, :banner_image, :remove_banner_image, :venmo_handle, :paypal_url, :bio, :instagram_handle, :facebook_url, :website_url])
+      params.expect(store: [:name, :slug, :description, :address, :banner_image, :remove_banner_image])
     end
   end
 end

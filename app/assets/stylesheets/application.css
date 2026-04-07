@@ -518,6 +518,16 @@ button.danger,
   flex-shrink: 0;
 }
 
+/* Profile photo — circle avatar */
+.profile-photo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
 /* Horizontal rule divider */
 hr.divider {
   border: none;

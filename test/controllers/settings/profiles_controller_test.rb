@@ -122,5 +122,20 @@ module Settings
       assert_redirected_to settings_profile_path
       assert_equal "my.bakery.co", @store.reload.instagram_handle
     end
+
+    test "update handles photo upload" do
+      photo = fixture_file_upload("banner.png", "image/png")
+      patch settings_profile_path, params: {store: {photo: photo}}
+      assert_redirected_to settings_profile_path
+      assert @store.reload.photo.attached?
+    end
+
+    test "update handles photo removal" do
+      @store.photo.attach(io: File.open(Rails.root.join("test/fixtures/files/banner.png")), filename: "banner.png", content_type: "image/png")
+      assert @store.photo.attached?
+
+      patch settings_profile_path, params: {store: {remove_photo: "1"}}
+      assert_redirected_to settings_profile_path
+    end
   end
 end

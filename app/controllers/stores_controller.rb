@@ -57,6 +57,6 @@ class StoresController < ApplicationController
   end
 
   def store_params
-    params.expect(store: [:name, :slug, :address, :description])
+    params.expect(store: [:name, :slug, :address, :description, :banner_image])
   end
 end

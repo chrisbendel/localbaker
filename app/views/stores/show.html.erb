@@ -34,7 +34,7 @@
   <div class="group justify-between items-center">
     <div class="stack-sm">
       <h2><%= @store.name %></h2>
-      <%= link_to "View storefront →", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank" %>
+      <%= link_to "View storefront →", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank", rel: "noopener noreferrer" %>
     </div>
     <div class="group">
       <%= link_to "Settings", settings_store_path, class: "button secondary" %>
@@ -82,7 +82,7 @@
               <%= link_to event.name, event_path(event), class: "font-bold" %>
               <div class="group items-center">
                 <span class="text-sm"><%= pluralize(event.orders.size, "order") %></span>
-                <%= link_to "Prep list →", prep_event_path(event), target: "_blank", class: "text-sm" %>
+                <%= link_to "Prep list →", prep_event_path(event), target: "_blank", rel: "noopener noreferrer", class: "text-sm" %>
               </div>
             </div>
             <p class="text-muted text-sm">Pickup <%= nice_date(event.pickup_at) %></p>

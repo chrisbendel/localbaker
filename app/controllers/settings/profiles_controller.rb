@@ -16,7 +16,7 @@ module Settings
     private
 
     def profile_params
-      params.expect(store: [:bio, :instagram_handle, :facebook_url, :website_url])
+      params.expect(store: [:bio, :instagram_handle, :facebook_url, :website_url, :photo, :remove_photo])
     end
   end
 end

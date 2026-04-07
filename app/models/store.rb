@@ -5,7 +5,8 @@ class Store < ApplicationRecord
   has_many :orders, through: :events
 
   has_one_attached :banner_image
-  attr_accessor :remove_banner_image
+  has_one_attached :photo
+  attr_accessor :remove_banner_image, :remove_photo
 
   validates :name, presence: true
   validates :slug,
@@ -13,7 +14,7 @@ class Store < ApplicationRecord
     uniqueness: true,
     format: {with: /\A[a-z0-9-]+\z/i}
   validates :facebook_url, :website_url, :paypal_url,
-    format: {with: URI::DEFAULT_PARSER.make_regexp(%w[http https]), message: "must be a valid URL"},
+    format: {with: /\Ahttps?:\/\/.+\z/i, message: "must be a valid URL"},
     allow_blank: true
   validates :instagram_handle,
     format: {with: /\A@?[\w.]+\z/, message: "should be a valid Instagram handle"},
@@ -26,7 +27,7 @@ class Store < ApplicationRecord
   normalizes :bio, :description, :instagram_handle, :facebook_url, :website_url, :venmo_handle, :paypal_url, with: -> { it.strip.presence }
   normalizes :address, with: -> { AddressParser.normalize(it).presence }
   validate :slug_cannot_change_with_active_orders
-  before_save :purge_banner_image_if_requested
+  before_save :purge_attachments_if_requested
 
   def monetization_allowed?
     user.pro?
@@ -41,7 +42,7 @@ class Store < ApplicationRecord
   end
 
   def instagram_url
-    "https://instagram.com/#{instagram_handle}" if instagram_handle.present?
+    "https://instagram.com/#{instagram_handle.sub("@", "")}" if instagram_handle.present?
   end
 
   def venmo_url
@@ -69,7 +70,8 @@ class Store < ApplicationRecord
     end
   end
 
-  def purge_banner_image_if_requested
+  def purge_attachments_if_requested
     banner_image.purge if remove_banner_image == "1"
+    photo.purge if remove_photo == "1"
   end
 end

@@ -37,6 +37,10 @@
       <%= render "storefront/event_card", event: event, store: @store %>
     <% end %>
   </div>
+
+  <% if @events.empty? %>
+    <p class="text-muted text-center">No upcoming events scheduled right now. Check back soon!</p>
+  <% end %>
   
 </section>
 
@@ -45,8 +49,13 @@
 <section class="stack">
   <% if @store.bio.present? %>
     <section class="stack-sm">
-      <h2 class="section-title">Meet the Baker</h2>
-      <p><%= simple_format @store.bio %></p>
+      <div class="group items-center">
+        <% if @store.photo.attached? %>
+          <%= image_tag @store.photo.variant(resize_to_limit: [200, 200], format: :webp), class: "profile-photo" %>
+        <% end %>
+        <h2 class="section-title">Meet the Baker</h2>
+      </div>
+      <%= simple_format @store.bio %>
     </section>
   <% end %>
 
@@ -55,19 +64,19 @@
       <h2 class="section-title">Social & Web</h2>
       <div class="group">
         <% if @store.instagram_handle.present? %>
-          <%= link_to @store.instagram_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+          <%= link_to @store.instagram_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
             Instagram
           <% end %>
         <% end %>
 
         <% if @store.facebook_url.present? %>
-          <%= link_to @store.facebook_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+          <%= link_to @store.facebook_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
             Facebook
           <% end %>
         <% end %>
 
         <% if @store.website_url.present? %>
-          <%= link_to @store.website_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+          <%= link_to @store.website_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
             Website
           <% end %>
         <% end %>
@@ -81,13 +90,13 @@
       <p class="text-sm text-muted">You can pay for your orders using these methods at pickup or as arranged with the baker.</p>
       <div class="group">
         <% if @store.venmo_handle.present? %>
-          <%= link_to @store.venmo_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+          <%= link_to @store.venmo_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
             Venmo (<%= @store.venmo_handle %>)
           <% end %>
         <% end %>
 
         <% if @store.paypal_url.present? %>
-          <%= link_to @store.paypal_url, target: "_blank", rel: "noopener", class: "button secondary small" do %>
+          <%= link_to @store.paypal_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
             PayPal
           <% end %>
         <% end %>
