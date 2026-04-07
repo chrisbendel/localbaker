@@ -16,7 +16,9 @@ class LocationsController < ApplicationController
 
     if @latitude.present? && @longitude.present?
       @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
-        .select { |store| store.events.active_published.any? }
+        .joins(:events)
+        .merge(Event.active_published)
+        .distinct
       @events = ProximityService.events_near(@latitude, @longitude, @radius)
     else
       @stores = []

@@ -9,8 +9,7 @@ class GeocodeStoreJob < ApplicationJob
       # Mock geocoding near user's house in Colchester, VT
       store.update(
         latitude: 44.501 + rand(-0.02..0.02),
-        longitude: -73.199 + rand(-0.02..0.02),
-        geocoded_at: Time.current
+        longitude: -73.199 + rand(-0.02..0.02)
       )
       Rails.logger.info("Mock geocoded store ##{store.id}: #{store.address}")
     else
@@ -21,8 +20,7 @@ class GeocodeStoreJob < ApplicationJob
         location = result.first
         store.update(
           latitude: location.latitude,
-          longitude: location.longitude,
-          geocoded_at: Time.current
+          longitude: location.longitude
         )
       else
         Rails.logger.warn("Failed to geocode store ##{store.id}: #{store.address}")

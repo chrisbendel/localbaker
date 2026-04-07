@@ -25,7 +25,7 @@ module DeliveryZoneValidator
     return false if result.blank?
 
     location = result.first
-    
+
     # Use Geocoder native calculations for the distance
     distance = Geocoder::Calculations.distance_between(
       [store.latitude, store.longitude],

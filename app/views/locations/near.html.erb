@@ -65,8 +65,8 @@
         <% else %>
           <div class="stack">
             <% if @events.any? %>
-              <% @events.each do |event| %>
-                <%= render "locations/event_card", event: event, distance: event.distance %>
+              <% @events.each do |result| %>
+                <%= render "locations/event_card", event: result.event, distance: result.distance %>
               <% end %>
             <% else %>
               <div class="empty-state">
