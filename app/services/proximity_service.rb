@@ -2,8 +2,14 @@ class ProximityService
   EventResult = Data.define(:event, :distance)
 
   def self.stores_near(latitude, longitude, radius_miles = 25)
-    lat = latitude.to_f
-    lon = longitude.to_f
+    begin
+      lat = Float(latitude)
+      lon = Float(longitude)
+    rescue ArgumentError
+      # Invalid coordinates
+      return Store.none
+    end
+
     return Store.none unless (-90..90).cover?(lat) && (-180..180).cover?(lon)
 
     Store.geocoded.near([lat, lon], radius_miles)

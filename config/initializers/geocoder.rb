@@ -1,18 +1,22 @@
-if Rails.env.production?
-  Geocoder.configure(
-    lookup: :nominatim,
-    http_headers: {
-      user_agent: "LocalBaker (https://localbaker.app)"
-    },
-    cache: Rails.cache,
-    cache_prefix: "geocoder:",
-    cache_expiration: 7.days,
-    use_https: true,
-    timeout: 5,
-    always_raise: []
-  )
+# Configure geocoding per environment
+lookup = if Rails.env.test?
+  # Use test lookup in test environment only — no external HTTP calls
+  :test
 else
-  # Use test lookup in dev/test — no network calls, returns stubs or empty results.
-  # test_helper.rb sets a default stub for test; dev geocoding is mocked in GeocodeStoreJob.
-  Geocoder.configure(lookup: :test, ip_lookup: :test)
+  # Use Nominatim in production and development for real geocoding
+  :nominatim
 end
+
+Geocoder.configure(
+  lookup: lookup,
+  ip_lookup: Rails.env.test? ? :test : :nominatim,
+  http_headers: {
+    user_agent: "LocalBaker (https://localbaker.app)"
+  },
+  cache: Rails.cache,
+  cache_prefix: "geocoder:",
+  cache_expiration: 7.days,
+  use_https: true,
+  timeout: 5,
+  always_raise: []
+)

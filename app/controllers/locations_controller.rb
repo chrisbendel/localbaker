@@ -14,10 +14,22 @@ class LocationsController < ApplicationController
       end
     end
 
-    lat = @latitude.to_f
-    lon = @longitude.to_f
-    @latitude = nil unless @latitude.present? && (-90..90).cover?(lat) && (-180..180).cover?(lon)
-    @longitude = nil unless @longitude.present? && (-90..90).cover?(lat) && (-180..180).cover?(lon)
+    # Validate coordinates using strict parsing (not to_f which allows "abc" → 0.0)
+    begin
+      lat = Float(@latitude) if @latitude.present?
+      lon = Float(@longitude) if @longitude.present?
+
+      if lat && lon && (-90..90).cover?(lat) && (-180..180).cover?(lon)
+        # Valid coordinates, keep them
+      else
+        @latitude = nil
+        @longitude = nil
+      end
+    rescue ArgumentError
+      # Invalid coordinate format
+      @latitude = nil
+      @longitude = nil
+    end
 
     if @latitude.present? && @longitude.present?
       @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
