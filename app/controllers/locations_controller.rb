@@ -24,9 +24,11 @@ class LocationsController < ApplicationController
         .joins(:events)
         .merge(Event.active_published)
         .distinct
-        .to_a
+        .limit(10)
+
+      store_ids = @stores.distinct.pluck(:id)
       @next_events_by_store = Event.active_published
-        .where(store_id: @stores.map(&:id))
+        .where(store_id: store_ids)
         .order(:pickup_at)
         .group_by(&:store_id)
         .transform_values(&:first)

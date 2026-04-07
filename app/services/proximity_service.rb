@@ -9,14 +9,21 @@ class ProximityService
     Store.geocoded.near([lat, lon], radius_miles)
   end
 
-  def self.events_near(latitude, longitude, radius_miles = 25)
-    stores = stores_near(latitude, longitude, radius_miles).to_a
+  def self.events_near(latitude, longitude, radius_miles = 25, limit: 50)
+    stores_relation = stores_near(latitude, longitude, radius_miles)
+    # Materialize stores to extract distance data (added by Geocoder.near)
+    stores_with_distance = stores_relation.to_a
 
-    stores_by_id = stores.index_by(&:id)
+    stores_by_id = stores_with_distance.index_by(&:id)
+    store_ids = stores_by_id.keys
+
+    return [] if store_ids.empty?
 
     Event.active_published
-      .where(store_id: stores_by_id.keys)
-      .includes(:store, :event_products)
+      .where(store_id: store_ids)
+      .includes(:store)
+      .order(:pickup_at)
+      .limit(limit)
       .map do |event|
         EventResult.new(event: event, distance: stores_by_id[event.store_id]&.distance)
       end

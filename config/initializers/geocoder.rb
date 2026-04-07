@@ -6,6 +6,7 @@ if Rails.env.production?
     },
     cache: Rails.cache,
     cache_prefix: "geocoder:",
+    cache_expiration: 7.days,
     use_https: true,
     timeout: 5,
     always_raise: []

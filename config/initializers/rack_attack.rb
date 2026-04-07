@@ -1,4 +1,7 @@
 class Rack::Attack
+  # Use Rails cache store for throttle data (prevents in-memory accumulation)
+  self.cache.store = Rails.cache
+
   # Throttle all requests by IP: 300 req / 5 min
   throttle("req/ip", limit: 300, period: 5.minutes) do |req|
     req.ip
