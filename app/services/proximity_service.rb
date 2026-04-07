@@ -27,7 +27,7 @@ class ProximityService
 
     Event.active_published
       .where(store_id: store_ids)
-      .includes(:store)
+      .includes(:store, :event_products)
       .order(:pickup_at)
       .limit(limit)
       .map do |event|

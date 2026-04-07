@@ -3,7 +3,6 @@ class AddLocationAndDeliveryFeatures < ActiveRecord::Migration[8.1]
     # Location/Geocoding columns for stores
     add_column :stores, :latitude, :decimal, precision: 10, scale: 6
     add_column :stores, :longitude, :decimal, precision: 10, scale: 6
-    add_column :stores, :geocoded_at, :datetime
     add_index :stores, [:latitude, :longitude]
 
     # Delivery zone configuration for stores
