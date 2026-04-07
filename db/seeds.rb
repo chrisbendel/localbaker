@@ -102,6 +102,15 @@ if Rails.env.development?
     pickup_address: "789 Morning Ave, Springfield",
     published_at: nil
   )
+  s3_prep = store3.events.create!(
+    name: "Saturday Bagel Pack",
+    description: "Pre-order your weekend bagels. Pickup Saturday morning.",
+    orders_close_at: 2.days.ago,
+    pickup_at: 1.day.from_now,
+    pickup_address: "789 Morning Ave, Springfield",
+    published_at: nil
+  )
+
   s3_future = store3.events.create!(
     name: "Bagels & Babka",
     description: "Testing out a new chocolate babka recipe along with our classic bagels.",
@@ -143,6 +152,7 @@ if Rails.env.development?
 
   s2_products.each { |p| s2_active.event_products.create!(p) }
   s3_products.each { |p| s3_active.event_products.create!(p) }
+  s3_products.each { |p| s3_prep.event_products.create!(p) }
   s3_future_products.each { |p| s3_future.event_products.create!(p) }
 
   puts "Publishing events..."
@@ -152,6 +162,7 @@ if Rails.env.development?
   s1_prep.update!(published_at: 3.days.ago)
   s2_active.update!(published_at: 2.days.ago)
   s3_active.update!(published_at: 4.days.ago)
+  s3_prep.update!(published_at: 5.days.ago)
 
   puts "Placing sample orders..."
   # 5. Create Orders
@@ -176,11 +187,35 @@ if Rails.env.development?
     unit_price_cents: 1200
   )
 
-  # Store 1 Prep Orders
-  order_prep = s1_prep.orders.create!(user: buyer3)
-  order_prep.order_items.create!(
+  # Store 1 Prep Orders (orders closed, pickup upcoming — baker needs to start baking)
+  order_prep1 = s1_prep.orders.create!(user: buyer1)
+  order_prep1.order_items.create!(
     event_product: s1_prep.event_products.find_by(name: "Classic Sourdough"),
     quantity: 2,
+    unit_price_cents: 850
+  )
+  order_prep1.order_items.create!(
+    event_product: s1_prep.event_products.find_by(name: "Olive & Rosemary Focaccia"),
+    quantity: 1,
+    unit_price_cents: 1200
+  )
+
+  order_prep2 = s1_prep.orders.create!(user: buyer2)
+  order_prep2.order_items.create!(
+    event_product: s1_prep.event_products.find_by(name: "French Baguette"),
+    quantity: 3,
+    unit_price_cents: 400
+  )
+  order_prep2.order_items.create!(
+    event_product: s1_prep.event_products.find_by(name: "Whole Wheat Rye"),
+    quantity: 1,
+    unit_price_cents: 900
+  )
+
+  order_prep3 = s1_prep.orders.create!(user: buyer3)
+  order_prep3.order_items.create!(
+    event_product: s1_prep.event_products.find_by(name: "Classic Sourdough"),
+    quantity: 1,
     unit_price_cents: 850
   )
 
@@ -202,6 +237,26 @@ if Rails.env.development?
     event_product: s2_active.event_products.find_by(name: "Lemon Tart"),
     quantity: 1,
     unit_price_cents: 600
+  )
+
+  # Store 3 Prep Orders
+  order_s3_prep1 = s3_prep.orders.create!(user: buyer1)
+  order_s3_prep1.order_items.create!(
+    event_product: s3_prep.event_products.find_by(name: "Everything Bagel (pack of 6)"),
+    quantity: 2,
+    unit_price_cents: 1000
+  )
+  order_s3_prep1.order_items.create!(
+    event_product: s3_prep.event_products.find_by(name: "Scallion Cream Cheese (8oz)"),
+    quantity: 1,
+    unit_price_cents: 550
+  )
+
+  order_s3_prep2 = s3_prep.orders.create!(user: buyer3)
+  order_s3_prep2.order_items.create!(
+    event_product: s3_prep.event_products.find_by(name: "Plain Bagel (pack of 6)"),
+    quantity: 1,
+    unit_price_cents: 900
   )
 
   # Store 3 Orders

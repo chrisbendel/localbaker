@@ -33,43 +33,49 @@
 
     <hr class="divider">
 
-    <div>
-      <h4>Delivery Zone (Optional)</h4>
-      <p class="field-hint">Restrict delivery orders to a geographic area. Leave blank to allow delivery anywhere.</p>
-
+    <% if current_user.pro? %>
       <div>
-        <%= f.label :delivery_zone_type, "Delivery Zone Type" %>
-        <%= f.select :delivery_zone_type,
-            [["None (no restrictions)", ""], ["Radius (miles)", "radius"], ["Postal Codes", "postal_codes"]],
-            { include_blank: false } %>
+        <h4>Delivery Zone (Optional)</h4>
+        <p class="field-hint">Restrict delivery orders to a geographic area. Leave blank to allow delivery anywhere.</p>
+
+        <div>
+          <%= f.label :delivery_zone_type, "Delivery Zone Type" %>
+          <%= f.select :delivery_zone_type,
+              [["None (no restrictions)", ""], ["Radius (miles)", "radius"], ["Postal Codes", "postal_codes"]],
+              { include_blank: false } %>
+        </div>
+
+        <div id="radius-zone" style="<%= "display: none;" unless @store.delivery_zone_type == "radius" %>">
+          <%= f.label :delivery_zone_radius_miles, "Delivery Radius (miles)" %>
+          <%= f.number_field :delivery_zone_radius_miles, min: 1, step: 1 %>
+          <p class="field-hint">Customers must be within this distance from your store address.</p>
+        </div>
+
+        <div id="postal-zone" style="<%= "display: none;" unless @store.delivery_zone_type == "postal_codes" %>">
+          <%= f.label :delivery_zone_postal_codes, "Allowed ZIP Codes" %>
+          <%= f.text_area :delivery_zone_postal_codes, placeholder: "97201\n97202\n97203", rows: 6 %>
+          <p class="field-hint">List ZIP codes where you'll deliver, one per line.</p>
+        </div>
+
+        <script>
+          const typeSelect = document.querySelector('select[name="store[delivery_zone_type]"]');
+          const radiusZone = document.getElementById('radius-zone');
+          const postalZone = document.getElementById('postal-zone');
+
+          function updateZoneFields() {
+            const type = typeSelect.value;
+            radiusZone.style.display = type === 'radius' ? '' : 'none';
+            postalZone.style.display = type === 'postal_codes' ? '' : 'none';
+          }
+
+          typeSelect.addEventListener('change', updateZoneFields);
+        </script>
       </div>
-
-      <div id="radius-zone" style="<%= "display: none;" unless @store.delivery_zone_type == "radius" %>">
-        <%= f.label :delivery_zone_radius_miles, "Delivery Radius (miles)" %>
-        <%= f.number_field :delivery_zone_radius_miles, min: 1, step: 1 %>
-        <p class="field-hint">Customers must be within this distance from your store address.</p>
+    <% else %>
+      <div class="nudge">
+        <p class="text-sm">Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
       </div>
-
-      <div id="postal-zone" style="<%= "display: none;" unless @store.delivery_zone_type == "postal_codes" %>">
-        <%= f.label :delivery_zone_postal_codes, "Allowed ZIP Codes" %>
-        <%= f.text_area :delivery_zone_postal_codes, placeholder: "Enter one ZIP code per line\n97201\n97202\n97203", rows: 6 %>
-        <p class="field-hint">List ZIP codes where you'll deliver. One per line.</p>
-      </div>
-
-      <script>
-        const typeSelect = document.querySelector('select[name="store[delivery_zone_type]"]');
-        const radiusZone = document.getElementById('radius-zone');
-        const postalZone = document.getElementById('postal-zone');
-
-        function updateZoneFields() {
-          const type = typeSelect.value;
-          radiusZone.style.display = type === 'radius' ? '' : 'none';
-          postalZone.style.display = type === 'postal_codes' ? '' : 'none';
-        }
-
-        typeSelect.addEventListener('change', updateZoneFields);
-      </script>
-    </div>
+    <% end %>
 
     <hr class="divider">
 

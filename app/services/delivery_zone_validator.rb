@@ -41,7 +41,7 @@ module DeliveryZoneValidator
   def validate_postal_codes_zone(store, address)
     return false unless store.delivery_zone_postal_codes.present?
 
-    allowed_zips = store.delivery_zone_postal_codes.split(",").map(&:strip).map(&:upcase)
+    allowed_zips = store.delivery_zone_postal_codes.split(/[\n,]/).map(&:strip).map(&:upcase).reject(&:empty?)
 
     # Extract ZIP code from address (simple regex - assumes US format)
     # Matches 5-digit or 9-digit ZIP codes
