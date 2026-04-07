@@ -218,7 +218,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115932) do
     t.string "delivery_zone_type"
     t.text "description"
     t.string "facebook_url"
-    t.datetime "geocoded_at"
     t.string "instagram_handle"
     t.decimal "latitude", precision: 10, scale: 6
     t.decimal "longitude", precision: 10, scale: 6

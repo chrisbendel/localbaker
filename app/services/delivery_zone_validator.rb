@@ -41,14 +41,19 @@ module DeliveryZoneValidator
   def validate_postal_codes_zone(store, address)
     return false unless store.delivery_zone_postal_codes.present?
 
-    allowed_zips = store.delivery_zone_postal_codes.split(/[\n,]/).map(&:strip).map(&:upcase).reject(&:empty?)
+    allowed_zips = store.delivery_zone_postal_codes
+      .split(/[\n,]/)
+      .map { |z| normalize_zip(z) }
+      .compact
 
-    # Extract ZIP code from address (simple regex - assumes US format)
-    # Matches 5-digit or 9-digit ZIP codes
     zip_match = address.match(/\b(\d{5}(?:-\d{4})?)\b/)
     return false unless zip_match
 
-    zip = zip_match[1]
-    allowed_zips.include?(zip)
+    normalize_zip(zip_match[1]).in?(allowed_zips)
+  end
+
+  def normalize_zip(zip)
+    return nil if zip.blank?
+    zip.strip.match(/\A(\d{5})(?:-\d{4})?\z/)&.then { |m| m[1] }
   end
 end

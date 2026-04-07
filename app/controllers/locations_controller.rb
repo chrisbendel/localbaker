@@ -14,6 +14,11 @@ class LocationsController < ApplicationController
       end
     end
 
+    lat = @latitude.to_f
+    lon = @longitude.to_f
+    @latitude = nil unless @latitude.present? && (-90..90).cover?(lat) && (-180..180).cover?(lon)
+    @longitude = nil unless @longitude.present? && (-90..90).cover?(lat) && (-180..180).cover?(lon)
+
     if @latitude.present? && @longitude.present?
       @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
         .joins(:events)

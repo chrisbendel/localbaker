@@ -7,9 +7,9 @@ module Storefront
     def confirm
       @order = @event.orders.find_by!(user: current_user)
 
-      # Save delivery address if provided
-      if params[:delivery_address].present?
-        @order.delivery_address = params[:delivery_address]
+      # Assign delivery address (blank clears it, ignored entirely for pickup-only events)
+      if @event.delivery_enabled? && params.key?(:delivery_address)
+        @order.delivery_address = params[:delivery_address].presence
       end
 
       if @order.save && @order.confirm!
