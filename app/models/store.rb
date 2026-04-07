@@ -5,15 +5,29 @@ class Store < ApplicationRecord
   has_many :orders, through: :events
 
   has_one_attached :banner_image
-  attr_accessor :remove_banner_image
+  has_one_attached :photo
+  attr_accessor :remove_banner_image, :remove_photo
 
   validates :name, presence: true
   validates :slug,
     presence: true,
     uniqueness: true,
     format: {with: /\A[a-z0-9-]+\z/i}
+  validates :facebook_url, :website_url, :paypal_url,
+    format: {with: /\Ahttps?:\/\/.+\z/i, message: "must be a valid URL"},
+    allow_blank: true
+  validates :instagram_handle,
+    format: {with: /\A@?[\w.]+\z/, message: "should be a valid Instagram handle"},
+    allow_blank: true
+  validates :venmo_handle,
+    format: {with: /\A@?[\w-]+\z/, message: "should be a valid Venmo handle"},
+    allow_blank: true
+  validates :bio, length: {maximum: 1000}, allow_blank: true
 
-  before_validation { self.address = AddressParser.normalize(address) }
+  normalizes :bio, :description, :instagram_handle, :facebook_url, :website_url, :venmo_handle, :paypal_url, with: -> { it.strip.presence }
+  normalizes :address, with: -> { AddressParser.normalize(it).presence }
+  validate :slug_cannot_change_with_active_orders
+  before_save :purge_attachments_if_requested
 
   def monetization_allowed?
     user.pro?
@@ -27,6 +41,14 @@ class Store < ApplicationRecord
     AddressParser.city_state(address)
   end
 
+  def instagram_url
+    "https://instagram.com/#{instagram_handle.sub("@", "")}" if instagram_handle.present?
+  end
+
+  def venmo_url
+    "https://venmo.com/#{venmo_handle.sub("@", "")}" if venmo_handle.present?
+  end
+
   def onboarding_complete?
     onboarding_steps.values.all?
   end
@@ -38,5 +60,18 @@ class Store < ApplicationRecord
       products_added: events.joins(:event_products).exists?,
       event_published: events.published.exists?
     }
+  end
+
+  private
+
+  def slug_cannot_change_with_active_orders
+    if slug_changed? && persisted? && active_orders?
+      errors.add(:slug, "cannot be changed while orders are pending")
+    end
+  end
+
+  def purge_attachments_if_requested
+    banner_image.purge if remove_banner_image == "1"
+    photo.purge if remove_photo == "1"
   end
 end

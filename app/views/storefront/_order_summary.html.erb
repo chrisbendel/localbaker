@@ -38,12 +38,30 @@
 
     <% if event.orders_open? %>
       <% if order.confirmed? %>
-        <div class="stack-sm">
           <div class="group">
-            <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary small", target: "_blank", rel: "noopener" %>
+            <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary small", target: "_blank", rel: "noopener noreferrer" %>
             <%= link_to "Download .ics", calendar_storefront_event_path(store.slug, event), class: "button secondary small" %>
           </div>
           <%= button_to "Edit Order", unconfirm_storefront_event_path(store.slug, event), method: :post, class: "button-link text-muted text-sm" %>
+
+          <% if store.venmo_handle.present? || store.paypal_url.present? %>
+            <div class="stack-sm nudge">
+              <p class="text-sm font-bold">Payment</p>
+              <div class="group">
+                <% if store.venmo_handle.present? %>
+                  <%= link_to store.venmo_url, target: "_blank", rel: "noopener noreferrer", class: "text-sm" do %>
+                    Venmo (<%= store.venmo_handle %>)
+                  <% end %>
+                <% end %>
+
+                <% if store.paypal_url.present? %>
+                  <%= link_to store.paypal_url, target: "_blank", rel: "noopener noreferrer", class: "text-sm" do %>
+                    PayPal
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
         </div>
       <% else %>
         <%= button_to "Complete Order", confirm_storefront_event_path(store.slug, event), method: :post, class: "button primary w-full" %>

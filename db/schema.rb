@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_121606) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_06_005639) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -110,12 +110,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_121606) do
 
   create_table "stores", force: :cascade do |t|
     t.string "address"
+    t.text "bio"
     t.datetime "created_at", null: false
     t.text "description"
+    t.string "facebook_url"
+    t.string "instagram_handle"
     t.string "name"
+    t.string "paypal_url"
     t.string "slug"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
+    t.string "venmo_handle"
+    t.string "website_url"
     t.index ["slug"], name: "index_stores_on_slug", unique: true
     t.index ["user_id"], name: "index_stores_on_user_id", unique: true
   end

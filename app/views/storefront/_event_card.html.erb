@@ -1,0 +1,24 @@
+<%= link_to storefront_event_path(store.slug, event), class: "card stack-sm #{"sold-out" if event.past?}" do %>
+  <div class="group justify-between items-start">
+    <h3><%= event.name %></h3>
+    <% if event.past? %>
+      <span class="badge closed">Closed</span>
+    <% else %>
+      <span class="text-muted text-sm"><%= pluralize(event.event_products.count, "product") %></span>
+    <% end %>
+  </div>
+
+  <div class="stack-sm text-sm">
+    <div class="text-muted">
+      Pickup <strong><%= nice_date(event.pickup_at) %></strong>
+      <% if event.location_display.present? %>
+        &middot; <%= event.location_display %>
+      <% end %>
+    </div>
+    <% unless event.past? %>
+      <div class="text-danger">
+        Orders close <%= nice_date(event.orders_close_at) %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

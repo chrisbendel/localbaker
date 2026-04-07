@@ -1,0 +1,15 @@
+<dialog id="flash-dialog">
+  <% flash.each do |type, message| %>
+    <p class="<%= type %>"><%= message %></p>
+  <% end %>
+</dialog>
+
+<script>
+  (() => {
+    const d = document.getElementById("flash-dialog");
+    if (d && d.children.length > 0) {
+      d.show();
+      setTimeout(() => d.close(), 3000);
+    }
+  })();
+</script>

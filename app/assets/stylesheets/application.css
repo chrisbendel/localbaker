@@ -1,8 +1,31 @@
-/* ============================================================
-   LocalBaker — STYLESHEET
-   Philosophy: clean system HTML with modern CSS. No shadows,
-   minimal radius, flexbox layout, token-driven spacing/color.
-   ============================================================ */
+/* === DESIGN TOKENS === */
+:root {
+  --font: "DM Sans", system-ui, -apple-system, sans-serif;
+
+  /* Colors */
+  --text: #111;
+  --text-muted: #706860;
+  --border: #e0dbd5;
+  --border-strong: #aca49d;
+  --bg: #faf8f5;
+  --bg-subtle: #f0ede8;
+
+  /* Status — muted earthy palette */
+  --success: #5a7a5e;
+  --success-bg: #eef1ec;
+  --success-border: #bfcbbc;
+  --danger: #8f4a42;
+  --danger-bg: #f3ebe9;
+  --danger-border: #cfa49f;
+
+  /* Spacing */
+  --sp-sm: 0.5rem;
+  --sp-md: 1rem;
+  --sp-lg: 2rem;
+
+  /* Shape */
+  --radius: 3px;
+}
 
 /* === MODERN RESET (replaces normalize CDN) === */
 *,
@@ -46,37 +69,6 @@ button,
 textarea,
 select {
   font: inherit;
-}
-
-/* === TOKENS === */
-:root {
-  --font: "DM Sans", system-ui, -apple-system, sans-serif;
-
-  /* Colors */
-  --text: #111;
-  --text-muted: #706860;
-  --border: #e0dbd5;
-  --border-strong: #aca49d;
-  --bg: #faf8f5;
-  --bg-subtle: #f0ede8;
-
-  /* Status — muted earthy palette */
-  --success: #5a7a5e;
-  --success-bg: #eef1ec;
-  --success-border: #bfcbbc;
-  --danger: #8f4a42;
-  --danger-bg: #f3ebe9;
-  --danger-border: #cfa49f;
-
-  /* Spacing */
-  --sp-sm: 0.5rem;
-  --sp-md: 1rem;
-  --sp-lg: 2rem;
-
-  /* Shape */
-  --radius: 3px;
-  --radius-full: 9999px;
-
 }
 
 /* === BASE === */
@@ -345,6 +337,12 @@ pre {
   font-size: 0.9rem;
 }
 
+/* Card used as a link — strip default anchor styles */
+a.card {
+  text-decoration: none;
+  color: inherit;
+}
+
 /* === FORMS === */
 form {
   display: flex;
@@ -462,7 +460,6 @@ button.primary:hover,
   background: #333;
 }
 
-
 /* Secondary — muted */
 button.secondary,
 .button.secondary {
@@ -521,18 +518,21 @@ button.danger,
   flex-shrink: 0;
 }
 
+/* Profile photo — circle avatar */
+.profile-photo {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
 /* Horizontal rule divider */
 hr.divider {
   border: none;
   border-top: 1px solid var(--border);
-  margin-block: var(--sp-lg);
   width: 100%;
-}
-
-/* Card used as a link — strip default anchor styles */
-a.card {
-  text-decoration: none;
-  color: inherit;
 }
 
 /* === NAVIGATION === */
@@ -541,7 +541,6 @@ header {
   border-bottom: 1px solid var(--border);
   margin-bottom: var(--sp-lg);
 }
-
 
 /* Icon link (profile, etc.) */
 a.nav-icon {
@@ -555,13 +554,18 @@ a.nav-icon:hover {
   color: var(--text);
 }
 
+a.nav-logo {
+  text-decoration: none;
+  line-height: 0;
+}
+
 /* Order summary item rows */
-.order-items > div {
+.order-items>div {
   padding: var(--sp-sm) 0;
   border-bottom: 1px solid var(--border);
 }
 
-.order-items > div:first-child {
+.order-items>div:first-child {
   border-top: 1px solid var(--border);
 }
 
@@ -723,6 +727,10 @@ th:last-child {
   color: var(--success);
 }
 
+/* === VISIBILITY === */
+.hidden {
+  display: none !important;
+}
 
 /* === FLASH TOAST === */
 #flash-dialog {
@@ -732,7 +740,7 @@ th:last-child {
   left: 50%;
   transform: translateX(-50%);
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: var(--radius);
   padding: var(--sp-sm) var(--sp-lg);
   font-size: 0.875rem;
   background: var(--text);
@@ -746,15 +754,6 @@ th:last-child {
 
 #flash-dialog p {
   margin: 0;
-}
-
-/* === FOOTER === */
-footer {
-  margin-top: var(--sp-lg);
-  padding-block: var(--sp-md);
-  border-top: 1px solid var(--border);
-  font-size: 0.8rem;
-  color: var(--text-muted);
 }
 
 @keyframes slideup {
@@ -776,5 +775,71 @@ footer {
   100% {
     opacity: 0;
     transform: translate(-50%, 0);
+  }
+}
+
+/* === FOOTER === */
+footer {
+  margin-top: var(--sp-lg);
+  padding-block: var(--sp-md);
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* === SETTINGS HUB === */
+.settings-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-lg);
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav a,
+.settings-nav button {
+  display: block;
+  width: 100%;
+  padding: var(--sp-sm) var(--sp-md);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.settings-nav a:hover,
+.settings-nav button:hover {
+  background: var(--bg-subtle);
+  color: var(--text);
+}
+
+.settings-nav a.active {
+  background: var(--bg-subtle);
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .settings-layout {
+    flex-direction: row;
+    align-items: start;
+  }
+
+  .settings-sidebar {
+    flex: 0 0 200px;
+    position: sticky;
+    top: var(--sp-lg);
+  }
+
+  .settings-content {
+    flex: 1;
   }
 }

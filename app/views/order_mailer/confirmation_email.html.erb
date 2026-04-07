@@ -21,6 +21,19 @@
 
 <p>Total: <%= number_to_currency(@order.total_price) %></p>
 
+<% if @store.venmo_handle.present? || @store.paypal_url.present? %>
+  <div style="background: #eef1ec; padding: 15px; border: 1px solid #bfcbbc; margin: 20px 0;">
+    <h3>Payment Options</h3>
+    <p>LocalBaker handles orders, but payments happen directly between you and the baker.</p>
+    <% if @store.venmo_handle.present? %>
+      <p><strong>Venmo:</strong> <%= link_to @store.venmo_handle, @store.venmo_url %></p>
+    <% end %>
+    <% if @store.paypal_url.present? %>
+      <p><strong>PayPal:</strong> <%= link_to "PayPal.me Link", @store.paypal_url %></p>
+    <% end %>
+  </div>
+<% end %>
+
 <p>
   <%= link_to "View your orders", orders_url %>
 </p>

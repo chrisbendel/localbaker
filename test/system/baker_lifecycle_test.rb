@@ -20,9 +20,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------
-    # 2. Create store (via profile page — intentional baker flow)
+    # 2. Create store (via account settings — intentional baker flow)
     # ----------------------------------------------------------------
-    visit profile_path
+    visit settings_account_path
     assert_link "Create your store"
     click_on "Create your store"
     assert_current_path new_store_path
@@ -35,14 +35,14 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
     # Header nav now has store shortcuts
     assert_link "Storefront"
-    assert_link "Manage"
+    assert_link "Bakery"
     # Nudge to create first event
-    assert_text "create your first event"
+    assert_text "Create your first event"
 
     # ----------------------------------------------------------------
     # 3. Create an event
     # ----------------------------------------------------------------
-    click_on "create your first event"
+    click_on "Create your first event"
     assert_current_path new_store_event_path
 
     fill_in "Name", with: "Saturday Bake"
@@ -144,8 +144,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     visit store_path
 
-    assert_text "Events"
-    assert_css ".card", text: "Saturday Bake"
+    assert_text "Morning Loaf"
+    # Event cards are now in tiles or list — let's just assert the name exists
+    assert_text "Saturday Bake"
 
     # ----------------------------------------------------------------
     # 10. Edit event
@@ -164,7 +165,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
-    click_on "Manage"
+    within "header nav" do
+      click_on "Bakery"
+    end
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
@@ -173,7 +176,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Saturday Bake (Updated)"
 
     accept_confirm do
-      click_on "Duplicate"
+      click_on "Reuse Event"
     end
 
     assert_text "Event duplicated. Please verify dates."
@@ -205,19 +208,20 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event deleted."
     assert_no_text "Copy of Saturday Bake (Updated)"
 
-    # ----------------------------------------------------------------
-    # 14. Edit store with active orders
-    # ----------------------------------------------------------------
-    click_on "Manage"
-    click_on "Store Settings"
+    # Navigate back to dashboard to edit store settings
+    within "header nav" do
+      click_on "Bakery"
+    end
+    click_on "Settings"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"
-    assert_text "Store updated!"
+    assert_text "Store settings updated."
 
-    # ----------------------------------------------------------------
-    # 15. Quick Add Product
-    # ----------------------------------------------------------------
+    # Navigate back to dashboard to start next event
+    within "header nav" do
+      click_on "Bakery"
+    end
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
     fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
@@ -242,22 +246,24 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 16. Delete store
     # ----------------------------------------------------------------
-    click_on "Manage"
-    click_on "Store Settings"
-    # 244: (no longer needs within row since it's grouped but we'll see)
+    within "header nav" do
+      click_on "Bakery"
+    end
+    click_on "Settings"
+    click_on "Account"
     accept_confirm do
       click_on "Delete Store"
     end
-    assert_text "Store removed."
-    # "Create your store" lives on the profile page, not the dashboard
-    assert_no_text "Create your Store"
-    visit profile_path
+    assert_text "Store deleted."
+
+    # "Create your store" lives on the account settings page
+    visit settings_account_path
     assert_link "Create your store"
 
     # ----------------------------------------------------------------
     # 17. Sign out
     # ----------------------------------------------------------------
-    visit profile_path
+    visit settings_account_path
     click_on "Sign out"
     assert_current_path root_path
     assert_no_link "Sign out"

@@ -1,9 +1,11 @@
 class Stores::EventProductsController < ApplicationController
   before_action :require_authentication!
   before_action :set_store
+  before_action :require_store!
   before_action :set_event_product, only: [:edit, :update, :destroy]
   before_action :set_event
   before_action :require_store_owner!
+  before_action :ensure_event_not_past!, only: [:new, :create, :edit, :update, :destroy]
 
   def new
     @event_product = @event.event_products.new(new_event_product_params)
@@ -52,6 +54,10 @@ class Stores::EventProductsController < ApplicationController
     @store = current_user.store
   end
 
+  def require_store!
+    redirect_to new_store_path, alert: "You must create a store first." unless @store
+  end
+
   # Load @event_product only for shallow routes
   def set_event_product
     return unless params[:id]
@@ -72,6 +78,12 @@ class Stores::EventProductsController < ApplicationController
   def require_store_owner!
     return if current_user == @store.user
     redirect_to event_path(@event), alert: "Not allowed."
+  end
+
+  def ensure_event_not_past!
+    if @event.past?
+      redirect_to event_path(@event), alert: "Past events cannot be edited."
+    end
   end
 
   def new_event_product_params

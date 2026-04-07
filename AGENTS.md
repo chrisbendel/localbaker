@@ -153,7 +153,7 @@ Key controllers:
 layouts/application.html.erb         — container, header, flash toast (z-index + safe-area-inset for mobile)
 application/_header.html.erb         — logo + nav (Manage gated on store.persisted?; bag icon with upcoming order count)
 storefront/_store_hero.html.erb      — store name + back link
-storefront/_event_list_item.html.erb — public event card
+storefront/_event_card.html.erb      — public event card
 storefront/_event_details.html.erb   — event info card on order page (pickup location with maps link)
 storefront/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
 storefront/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom
@@ -219,7 +219,8 @@ The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`
 - **Prices**: Stored as integer cents (`price_cents`). Use `price_formatted` and `number_to_currency` helpers for display.
 - **Inventory**: `EventProduct#remaining` and `sold` are calculated, not stored. `with_lock` used in `OrderItemsController` to prevent race conditions.
 - **Authorization**: No gem — manual `current_user == @store.user` ownership checks. `require_authentication!` before_action for protected routes.
-- **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are a code smell.
+- **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are strictly forbidden. Use layout primitives (.stack/.group) to handle spacing.
+- **Flexbox First**: Use `.stack` and `.group` as the primary layout engines. Only use CSS Grid (`.grid`) when a multi-column grid layout is explicitly required.
 
 ## Development Workflow
 

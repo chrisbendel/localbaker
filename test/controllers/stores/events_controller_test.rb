@@ -21,7 +21,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   test "GET index shows events" do
     get store_events_path
     assert_response :success
-    assert_select "h1", /Events/i
+    assert_select "h1", /All Events/i
   end
 
   test "GET show displays the event" do
@@ -224,5 +224,40 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to event_path(@event)
     @event.reload
     assert @event.published?
+  end
+
+  # --- ensure_event_not_past! guard ---
+
+  test "GET edit is blocked for past events" do
+    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    get edit_event_path(@event)
+    assert_redirected_to event_path(@event)
+    follow_redirect!
+    assert_select ".alert", /Past events cannot be edited/i
+  end
+
+  test "PATCH update is blocked for past events" do
+    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    patch event_path(@event), params: {event: {name: "Hacked"}}
+    assert_redirected_to event_path(@event)
+    @event.reload
+    assert_equal "Bread Pickup", @event.name
+  end
+
+  test "DELETE destroy is blocked for past events" do
+    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    assert_no_difference "@store.events.count" do
+      delete event_path(@event)
+    end
+    assert_redirected_to event_path(@event)
+  end
+
+  test "POST publish is blocked for past events" do
+    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
+    post publish_event_path(@event)
+    assert_redirected_to event_path(@event)
+    follow_redirect!
+    assert_select ".alert", /Past events cannot be edited/i
   end
 end
