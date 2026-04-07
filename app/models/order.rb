@@ -19,16 +19,6 @@ class Order < ApplicationRecord
     DeliveryZoneValidator.valid_for_delivery?(event.store, delivery_address)
   end
 
-  private
-
-  def delivery_address_within_zone
-    if delivery_address.present? && event.store.delivery_zone_type.present?
-      unless delivery_address_within_zone?
-        errors.add(:delivery_address, "is outside the delivery zone")
-      end
-    end
-  end
-
   def total_price_cents
     order_items.sum do |item|
       item.quantity * item.unit_price_cents
@@ -49,5 +39,15 @@ class Order < ApplicationRecord
 
   def unconfirm!
     update!(confirmed_at: nil)
+  end
+
+  private
+
+  def delivery_address_within_zone
+    if delivery_address.present? && event.store.delivery_zone_type.present?
+      unless delivery_address_within_zone?
+        errors.add(:delivery_address, "is outside the delivery zone")
+      end
+    end
   end
 end

@@ -13,6 +13,18 @@ end
 
 require "rails/test_help"
 
+Geocoder.configure(lookup: :test, ip_lookup: :test)
+Geocoder::Lookup::Test.set_default_stub([
+  {
+    "coordinates" => [44.501, -73.199],
+    "address" => "Colchester, VT, USA",
+    "state" => "Vermont",
+    "state_code" => "VT",
+    "country" => "United States",
+    "country_code" => "US"
+  }
+])
+
 module ActiveSupport
   class TestCase
     # Run tests in parallel with specified workers
