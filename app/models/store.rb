@@ -1,5 +1,6 @@
 class Store < ApplicationRecord
   belongs_to :user
+  geocoded_by :address
   has_many :events, dependent: :destroy
   has_many :notifications, class_name: "StoreNotification", dependent: :destroy
   has_many :orders, through: :events

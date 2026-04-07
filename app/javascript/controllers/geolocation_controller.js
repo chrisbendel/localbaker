@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["addressInput"]
+  static targets = ["addressInput", "locationButton", "latitude", "longitude", "form"]
 
   requestLocation(event) {
     event.preventDefault()
@@ -12,50 +12,32 @@ export default class extends Controller {
     }
 
     // Show loading state
-    const button = event.target
-    const originalText = button.textContent
-    button.textContent = "📍 Getting location..."
-    button.disabled = true
+    const originalText = this.locationButtonTarget.textContent
+    this.locationButtonTarget.textContent = "Getting location..."
+    this.locationButtonTarget.disabled = true
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords
-        this.submitWithCoordinates(latitude, longitude, button, originalText)
+        this.submitWithCoordinates(latitude, longitude)
       },
       (error) => {
         console.error("Geolocation error:", error)
         alert("Unable to get your location. Please enter your address manually.")
-        button.textContent = originalText
-        button.disabled = false
+        this.locationButtonTarget.textContent = originalText
+        this.locationButtonTarget.disabled = false
       }
     )
   }
 
-  submitWithCoordinates(latitude, longitude, button, originalText) {
-    // Store coordinates in hidden inputs
-    const form = button.closest("form")
-
-    let latInput = form.querySelector('input[name="latitude"]')
-    let lngInput = form.querySelector('input[name="longitude"]')
-
-    if (!latInput) {
-      latInput = document.createElement("input")
-      latInput.type = "hidden"
-      latInput.name = "latitude"
-      form.appendChild(latInput)
-    }
-
-    if (!lngInput) {
-      lngInput = document.createElement("input")
-      lngInput.type = "hidden"
-      lngInput.name = "longitude"
-      form.appendChild(lngInput)
-    }
-
-    latInput.value = latitude
-    lngInput.value = longitude
+  submitWithCoordinates(latitude, longitude) {
+    this.latitudeTarget.value = latitude
+    this.longitudeTarget.value = longitude
+    
+    // Clear the address input so we don't accidentally prioritize it
+    this.addressInputTarget.value = ""
 
     // Submit the form
-    form.submit()
+    this.formTarget.submit()
   }
 }

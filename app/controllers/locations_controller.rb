@@ -2,8 +2,17 @@ class LocationsController < ApplicationController
   def near
     @latitude = params[:latitude]
     @longitude = params[:longitude]
-    @radius = params[:radius].to_i.presence || 25
+    @address = params[:address]
+    @radius = (params[:radius].presence || 25).to_i
     @tab = params[:tab].presence || "bakeries"
+
+    if @address.present?
+      results = Geocoder.search(@address)
+      if results.any?
+        @latitude = results.first.latitude
+        @longitude = results.first.longitude
+      end
+    end
 
     if @latitude.present? && @longitude.present?
       @stores = ProximityService.stores_near(@latitude, @longitude, @radius)

@@ -1,27 +1,23 @@
-<a href="<%= storefront_event_path(event.store.slug, event.id) %>" class="block bg-white rounded-lg border border-gray-200 p-6 hover:border-orange-500 hover:shadow-lg transition">
-  <div class="flex items-start justify-between">
-    <div class="flex-1">
-      <h3 class="text-lg font-bold text-gray-900"><%= event.name %></h3>
-      <p class="text-gray-600 mt-1"><%= event.store.name %></p>
-      <p class="text-sm text-gray-500"><%= event.store.location_display %></p>
+<%= link_to storefront_event_path(event.store.slug, event.id), class: "card block decor-none" do %>
+  <div class="stack-sm">
+    <h3 class="section-title"><%= event.name %></h3>
+    <p class="text-sm font-bold"><%= event.store.name %></p>
+    <p class="text-muted"><%= event.store.location_display %></p>
 
-      <% if distance.present? %>
-        <p class="text-sm text-gray-500 mt-2">
-          📍 <%= number_to_human(distance, units: :distance, precision: 1) %> away
-        </p>
-      <% end %>
-
-      <p class="text-sm text-gray-600 mt-3">
-        📅 <time datetime="<%= event.pickup_at.iso8601 %>">
-          <%= event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
-        </time>
+    <% if distance.present? %>
+      <p class="text-sm">
+        <%= number_with_precision(distance, precision: 1) %> miles away
       </p>
+    <% end %>
 
-      <% if event.event_products.any? %>
-        <p class="text-sm text-gray-600 mt-2">
-          🧁 <%= pluralize(event.event_products.count, "product") %>
-        </p>
-      <% end %>
-    </div>
+    <p class="text-sm font-bold">
+      Pickup: <%= event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
+    </p>
+
+    <% if event.event_products.any? %>
+      <p class="text-sm text-muted">
+        <%= pluralize(event.event_products.count, "product") %> available
+      </p>
+    <% end %>
   </div>
-</a>
+<% end %>

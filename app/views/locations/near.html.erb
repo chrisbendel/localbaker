@@ -1,139 +1,90 @@
-<div class="container mx-auto px-4 py-12" data-controller="geolocation">
-  <div class="max-w-2xl mx-auto">
-    <h1 class="text-4xl font-bold mb-2">Bakeries & Events Near You</h1>
-    <p class="text-gray-600 mb-8">Find fresh baked goods and upcoming bake events in your area.</p>
+<% content_for :title, "Bakeries Near You" %>
 
-    <!-- Location Entry Form -->
-    <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-      <form id="location-form" class="space-y-4">
-        <div>
-          <label for="address-input" class="block text-sm font-medium text-gray-700 mb-2">
-            Find bakeries near...
-          </label>
-          <input
-            type="text"
-            id="address-input"
-            name="address"
-            placeholder="City, state or zip code"
-            data-geolocation-target="addressInput"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          />
+<div class="container" data-controller="geolocation">
+  <div class="stack-lg">
+    <header class="stack-sm">
+      <h1>Bakeries & Events Near You</h1>
+      <p class="text-muted">Find fresh baked goods and upcoming bake events in your area.</p>
+    </header>
+
+    <div class="panel stack">
+      <%= form_with url: near_path, method: :get, class: "stack", data: { geolocation_target: "form" } do |f| %>
+        <div class="stack-sm">
+          <%= f.label :address, "Find bakeries near..." %>
+          <%= f.text_field :address, 
+              value: @address, 
+              placeholder: "City, state or zip code", 
+              data: { geolocation_target: "addressInput" } %>
         </div>
 
-        <div class="flex gap-2">
-          <button
-            type="button"
-            id="use-location-btn"
-            data-action="geolocation#requestLocation"
-            class="flex-1 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-          >
-            📍 Use My Location
+        <div class="group">
+          <button type="button" 
+                  class="button secondary" 
+                  data-action="geolocation#requestLocation"
+                  data-geolocation-target="locationButton">
+            Use My Location
           </button>
-          <button
-            type="submit"
-            class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 rounded-lg hover:bg-gray-300 transition"
-          >
-            🔍 Search
-          </button>
+          <%= f.submit "Search", class: "button primary" %>
         </div>
 
-        <% if @latitude.present? %>
-          <input type="hidden" name="latitude" value="<%= @latitude %>">
-          <input type="hidden" name="longitude" value="<%= @longitude %>">
-        <% end %>
-      </form>
+        <%= f.hidden_field :latitude, value: @latitude, data: { geolocation_target: "latitude" } %>
+        <%= f.hidden_field :longitude, value: @longitude, data: { geolocation_target: "longitude" } %>
+      <% end %>
 
       <% if @latitude.present? && @longitude.present? %>
-        <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm text-blue-700">
+        <p class="text-sm text-muted">
           Showing results within <%= @radius %> miles
-        </div>
+        </p>
       <% end %>
     </div>
 
-    <!-- Tabs -->
     <% if @stores.any? || @events.any? %>
-      <div class="flex gap-4 mb-6 border-b border-gray-200">
-        <button
-          data-tab="bakeries"
-          class="px-4 py-2 font-medium <%= 'border-b-2 border-orange-500 text-orange-600' if @tab == 'bakeries' %>"
-        >
-          🥐 Bakeries (<%= @stores.length %>)
-        </button>
-        <button
-          data-tab="events"
-          class="px-4 py-2 font-medium <%= 'border-b-2 border-orange-500 text-orange-600' if @tab == 'events' %>"
-        >
-          📅 Events (<%= @events.length %>)
-        </button>
-      </div>
-    <% end %>
+      <div class="stack">
+        <div class="group border-bottom">
+          <%= link_to "Bakeries (#{@stores.length})", 
+              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "bakeries"), 
+              class: "button #{(@tab == 'bakeries') ? 'primary' : 'secondary'}" %>
+          
+          <%= link_to "Events (#{@events.length})", 
+              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "events"), 
+              class: "button #{(@tab == 'events') ? 'primary' : 'secondary'}" %>
+        </div>
 
-    <!-- Results -->
-    <% if @latitude.blank? || @longitude.blank? %>
-      <div class="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
-        <p class="text-gray-600 mb-2">Enter your location to discover bakeries and events near you.</p>
-        <p class="text-sm text-gray-500">Use "Portland, OR" or your zip code</p>
+        <% if @tab == "bakeries" %>
+          <div class="stack">
+            <% if @stores.any? %>
+              <% @stores.each do |store| %>
+                <%= render "locations/bakery_card", store: store, distance: store.distance %>
+              <% end %>
+            <% else %>
+              <div class="empty-state">
+                <p class="text-muted">No bakeries with upcoming events found nearby.</p>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="stack">
+            <% if @events.any? %>
+              <% @events.each do |event| %>
+                <%= render "locations/event_card", event: event, distance: event.distance %>
+              <% end %>
+            <% else %>
+              <div class="empty-state">
+                <p class="text-muted">No events found nearby.</p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
       </div>
-    <% elsif @stores.empty? && @events.empty? %>
-      <div class="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
-        <p class="text-gray-600 mb-2">No bakeries or events found within <%= @radius %> miles.</p>
-        <p class="text-sm text-gray-500">Try expanding your search radius or trying a different location.</p>
+    <% elsif @latitude.present? %>
+      <div class="empty-state stack-sm">
+        <p class="text-muted">No bakeries or events found within <%= @radius %> miles.</p>
+        <p class="text-sm">Try expanding your search radius or trying a different location.</p>
       </div>
     <% else %>
-      <!-- Bakeries Tab -->
-      <div id="bakeries-tab" class="<%= 'hidden' if @tab != 'bakeries' %>">
-        <% if @stores.any? %>
-          <div class="space-y-4">
-            <% @stores.each do |store| %>
-              <%= render "locations/bakery_card", store: store, distance: store.distance %>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
-            <p class="text-gray-600">No bakeries with upcoming events found nearby.</p>
-          </div>
-        <% end %>
-      </div>
-
-      <!-- Events Tab -->
-      <div id="events-tab" class="<%= 'hidden' if @tab != 'events' %>">
-        <% if @events.any? %>
-          <div class="space-y-4">
-            <% @events.each do |event| %>
-              <%= render "locations/event_card", event: event, distance: event.distance %>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="bg-gray-50 rounded-lg border border-gray-200 p-8 text-center">
-            <p class="text-gray-600">No events found nearby.</p>
-          </div>
-        <% end %>
+       <div class="empty-state">
+        <p class="text-muted">Enter your location to discover bakeries and events near you.</p>
       </div>
     <% end %>
   </div>
 </div>
-
-<script>
-  document.querySelectorAll('[data-tab]').forEach(button => {
-    button.addEventListener('click', () => {
-      const tab = button.dataset.tab;
-      document.querySelectorAll('[id$="-tab"]').forEach(t => t.classList.add('hidden'));
-      document.getElementById(tab + '-tab').classList.remove('hidden');
-
-      // Update URL without reload
-      const params = new URLSearchParams(window.location.search);
-      params.set('tab', tab);
-      window.history.replaceState({}, '', '?' + params.toString());
-    });
-  });
-
-  document.getElementById('location-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const address = document.getElementById('address-input').value;
-    if (address.trim()) {
-      // For now, redirect to /near with the address
-      // TODO: Implement reverse geocoding or API call to convert address to lat/lng
-      alert('Address search coming soon. For now, use "Use My Location" to find bakeries near you.');
-    }
-  });
-</script>

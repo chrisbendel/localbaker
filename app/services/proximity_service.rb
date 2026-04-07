@@ -1,38 +1,26 @@
 class ProximityService
-  # Earth's radius in miles
-  EARTH_RADIUS_MILES = 3959
-
   def self.stores_near(latitude, longitude, radius_miles = 25)
-    Store.geocoded.where(haversine_distance_sql(latitude, longitude) + " <= ?", radius_miles)
-      .select("stores.*, (#{haversine_distance_sql(latitude, longitude)}) as distance")
-      .order("distance ASC")
+    Store.geocoded.near([latitude.to_f, longitude.to_f], radius_miles)
   end
 
   def self.events_near(latitude, longitude, radius_miles = 25)
+    # Get stores in range first
+    stores = stores_near(latitude, longitude, radius_miles).to_a
+
+    # Return events for those stores, calculating distance based on the store's position
     Event.active_published
-      .joins(:store)
-      .where(Store.arel_table[:id].in(stores_near(latitude, longitude, radius_miles).select(:id)))
-      .select("events.*, stores.*, (#{haversine_distance_sql(latitude, longitude)}) as distance")
-      .order("events.pickup_at ASC, distance ASC")
-  end
-
-  private
-
-  def self.haversine_distance_sql(latitude, longitude)
-    lat = latitude.to_f
-    lng = longitude.to_f
-    radius = EARTH_RADIUS_MILES
-
-    # Haversine formula converted to SQL
-    # Returns distance in miles between store coordinates and provided lat/lng
-    <<-SQL
-      #{radius} * 2 * ASIN(
-        SQRT(
-          POW(SIN(RADIANS((stores.latitude - #{lat}) / 2)), 2) +
-          COS(RADIANS(#{lat})) * COS(RADIANS(stores.latitude)) *
-          POW(SIN(RADIANS((stores.longitude - #{lng}) / 2)), 2)
-        )
-      )
-    SQL
+      .where(store_id: stores.map(&:id))
+      .includes(:store)
+      .map do |event|
+        # Attach distance to the event object for the view
+        store_match = stores.find { |s| s.id == event.store_id }
+        if store_match
+          event.define_singleton_method(:distance) { store_match.distance }
+        else
+          event.define_singleton_method(:distance) { nil }
+        end
+        event
+      end
+      .sort_by { |event| [event.pickup_at, event.distance || 999] }
   end
 end
