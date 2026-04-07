@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  pay_customer default_payment_processor: :stripe
+
   FREE_EVENT_LIMIT = 1
 
   has_one :store, dependent: :destroy
