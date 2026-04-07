@@ -11,7 +11,8 @@ class BillingController < ApplicationController
       mode: "subscription",
       line_items: [{price: stripe_pro_price_id, quantity: 1}],
       success_url: billing_success_url,
-      cancel_url: billing_upgrade_url
+      cancel_url: billing_upgrade_url,
+      allow_promotion_codes: true
     )
     redirect_to checkout_session.url, allow_other_host: true
   rescue => e
