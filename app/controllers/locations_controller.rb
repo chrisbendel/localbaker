@@ -32,13 +32,16 @@ class LocationsController < ApplicationController
     end
 
     if @latitude.present? && @longitude.present?
-      @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
+      # Get nearby stores with published events (limit before materializing to save memory)
+      nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
         .joins(:events)
         .merge(Event.active_published)
+        .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
         .distinct
         .limit(10)
 
-      store_ids = @stores.distinct.pluck(:id)
+      @stores = nearby_stores
+      store_ids = @stores.pluck(:id)
       @next_events_by_store = Event.active_published
         .where(store_id: store_ids)
         .order(:pickup_at)
