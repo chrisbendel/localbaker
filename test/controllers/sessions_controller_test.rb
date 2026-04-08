@@ -22,7 +22,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = User.create!(email: "code@example.com")
 
     ActionMailer::Base.deliveries.clear
-    post session_path, params: {email: user.email}
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email}
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
@@ -39,7 +41,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Request code
     ActionMailer::Base.deliveries.clear
-    post session_path, params: {email: user.email}
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email}
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
@@ -56,7 +60,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     ActionMailer::Base.deliveries.clear
     get new_session_path, params: {return_to: "/shop/my-bakery"}
-    post session_path, params: {email: user.email}
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email}
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
@@ -69,7 +75,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     user = User.create!(email: "noreturn@example.com")
 
     ActionMailer::Base.deliveries.clear
-    post session_path, params: {email: user.email}
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email}
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
@@ -83,7 +91,9 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     ActionMailer::Base.deliveries.clear
     get new_session_path, params: {return_to: "https://evil.com"}
-    post session_path, params: {email: user.email}
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email}
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
