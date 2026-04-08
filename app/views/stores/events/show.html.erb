@@ -153,6 +153,9 @@
             <th>Customer</th>
             <th>Items</th>
             <th>Total</th>
+            <% if @event.delivery_enabled? %>
+              <th>Delivery Address</th>
+            <% end %>
             <th>Placed</th>
           </tr>
         </thead>
@@ -166,6 +169,15 @@
                 <% end %>
               </td>
               <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
+              <% if @event.delivery_enabled? %>
+                <td data-label="Delivery Address">
+                  <% if order.delivery_address.present? %>
+                    <span class="text-sm"><%= order.delivery_address %></span>
+                  <% else %>
+                    <span class="text-sm text-muted">Pickup</span>
+                  <% end %>
+                </td>
+              <% end %>
               <td data-label="Placed"><%= nice_date(order.created_at) %></td>
             </tr>
           <% end %>

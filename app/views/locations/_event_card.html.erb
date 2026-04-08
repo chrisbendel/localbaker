@@ -1,0 +1,23 @@
+<%= link_to storefront_event_path(event.store.slug, event.id), class: "card block decor-none" do %>
+  <div class="stack-sm">
+    <h3 class="section-title"><%= event.name %></h3>
+    <p class="text-sm font-bold"><%= event.store.name %></p>
+    <p class="text-muted"><%= event.store.location_display %></p>
+
+    <% if distance.present? %>
+      <p class="text-sm">
+        <%= number_with_precision(distance, precision: 1) %> miles away
+      </p>
+    <% end %>
+
+    <p class="text-sm font-bold">
+      Pickup: <%= event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
+    </p>
+
+    <% if (products_count = event.event_products.size) > 0 %>
+      <p class="text-sm text-muted">
+        <%= pluralize(products_count, "product") %> available
+      </p>
+    <% end %>
+  </div>
+<% end %>

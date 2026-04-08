@@ -64,7 +64,18 @@
           <% end %>
         </div>
       <% else %>
-        <%= button_to "Complete Order", confirm_storefront_event_path(store.slug, event), method: :post, class: "button primary w-full" %>
+        <%= form_with url: confirm_storefront_event_path(store.slug, event), method: :post, local: true do |f| %>
+          <% if event.delivery_enabled? %>
+            <div class="stack-sm">
+              <%= f.label :delivery_address, "Delivery Address (Optional)", class: "text-sm font-bold" %>
+              <%= f.text_field :delivery_address,
+                  placeholder: "Street address, city, state, zip",
+                  value: order.delivery_address %>
+              <p class="text-xs text-muted">Leave blank for pickup. Enter an address for delivery.</p>
+            </div>
+          <% end %>
+          <%= f.submit "Complete Order", class: "button primary w-full" %>
+        <% end %>
       <% end %>
     <% end %>
   <% else %>

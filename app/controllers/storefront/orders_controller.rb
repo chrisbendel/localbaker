@@ -7,11 +7,17 @@ module Storefront
     def confirm
       @order = @event.orders.find_by!(user: current_user)
 
-      if @order.confirm!
+      # Assign delivery address (blank clears it, ignored entirely for pickup-only events)
+      if @event.delivery_enabled? && params.key?(:delivery_address)
+        @order.delivery_address = params[:delivery_address].presence
+      end
+
+      if @order.save && @order.confirm!
         OrderMailer.with(order: @order).confirmation_email.deliver_later
         redirect_to storefront_event_path(@store.slug, @event), notice: "Order confirmed! We've sent a receipt to your email."
       else
-        redirect_to storefront_event_path(@store.slug, @event), alert: "Could not confirm order. Please try again."
+        error_message = @order.errors.full_messages.to_sentence.presence || "Could not confirm order. Please try again."
+        redirect_to storefront_event_path(@store.slug, @event), alert: error_message
       end
     end
 

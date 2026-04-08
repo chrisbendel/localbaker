@@ -1,0 +1,90 @@
+<% content_for :title, "Bakeries Near You" %>
+
+<div class="container" data-controller="geolocation">
+  <div class="stack-lg">
+    <section class="stack-sm">
+      <h1>Bakeries & Events Near You</h1>
+      <p class="text-muted">Find fresh baked goods and upcoming bake events in your area.</p>
+    </section>
+
+    <div class="panel stack">
+      <%= form_with url: near_path, method: :get, class: "stack", data: { geolocation_target: "form" } do |f| %>
+        <div class="stack-sm">
+          <%= f.label :address, "Find bakeries near..." %>
+          <%= f.text_field :address, 
+              value: @address, 
+              placeholder: "City, state or zip code", 
+              data: { geolocation_target: "addressInput" } %>
+        </div>
+
+        <div class="group">
+          <button type="button" 
+                  class="button secondary" 
+                  data-action="geolocation#requestLocation"
+                  data-geolocation-target="locationButton">
+            Use My Location
+          </button>
+          <%= f.submit "Search", class: "button primary" %>
+        </div>
+
+        <%= f.hidden_field :latitude, value: @latitude, data: { geolocation_target: "latitude" } %>
+        <%= f.hidden_field :longitude, value: @longitude, data: { geolocation_target: "longitude" } %>
+      <% end %>
+
+      <% if @latitude.present? && @longitude.present? %>
+        <p class="text-sm text-muted">
+          Showing results within <%= @radius %> miles
+        </p>
+      <% end %>
+    </div>
+
+    <% if @stores.any? || @events.any? %>
+      <div class="stack">
+        <div class="group">
+          <%= link_to "Bakeries (#{@stores.length})", 
+              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "bakeries"), 
+              class: "button #{(@tab == 'bakeries') ? 'primary' : 'secondary'}" %>
+          
+          <%= link_to "Events (#{@events.length})", 
+              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "events"), 
+              class: "button #{(@tab == 'events') ? 'primary' : 'secondary'}" %>
+        </div>
+
+        <% if @tab == "bakeries" %>
+          <div class="stack">
+            <% if @stores.any? %>
+              <% @stores.each do |store| %>
+                <%= render "locations/bakery_card", store: store, distance: store.distance, upcoming_event: @next_events_by_store[store.id] %>
+              <% end %>
+            <% else %>
+              <div class="empty-state">
+                <p class="text-muted">No bakeries with upcoming events found nearby.</p>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="stack">
+            <% if @events.any? %>
+              <% @events.each do |result| %>
+                <%= render "locations/event_card", event: result.event, distance: result.distance %>
+              <% end %>
+            <% else %>
+              <div class="empty-state">
+                <p class="text-muted">No events found nearby.</p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% elsif @latitude.present? %>
+      <div class="empty-state stack-sm">
+        <p class="text-muted">No bakeries or events found within <%= @radius %> miles.</p>
+        <p class="text-sm">Try expanding your search radius or trying a different location.</p>
+      </div>
+    <% else %>
+       <div class="empty-state">
+        <p class="text-muted">Enter your location to discover bakeries and events near you.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

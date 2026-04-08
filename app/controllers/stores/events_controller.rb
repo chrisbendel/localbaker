@@ -94,13 +94,8 @@ class Stores::EventsController < ApplicationController
   end
 
   def event_params
-    params.require(:event).permit(
-      :name,
-      :description,
-      :orders_close_at,
-      :pickup_at,
-      :repeat_interval,
-      :pickup_address
-    )
+    permitted = [:name, :description, :orders_close_at, :pickup_at, :repeat_interval, :pickup_address]
+    permitted << :delivery_enabled if current_user.pro?
+    params.require(:event).permit(*permitted)
   end
 end

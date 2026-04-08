@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_115930) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_07_115932) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -51,6 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115930) do
 
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "delivery_enabled", default: false
     t.text "description"
     t.string "name"
     t.datetime "orders_close_at"
@@ -88,6 +89,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115930) do
   create_table "orders", force: :cascade do |t|
     t.datetime "confirmed_at"
     t.datetime "created_at", null: false
+    t.text "delivery_address"
     t.integer "event_id", null: false
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
@@ -211,9 +213,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115930) do
     t.string "address"
     t.text "bio"
     t.datetime "created_at", null: false
+    t.text "delivery_zone_postal_codes"
+    t.integer "delivery_zone_radius_miles", default: 25
+    t.string "delivery_zone_type"
     t.text "description"
     t.string "facebook_url"
     t.string "instagram_handle"
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
     t.string "name"
     t.string "paypal_url"
     t.string "slug"
@@ -221,6 +228,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115930) do
     t.integer "user_id", null: false
     t.string "venmo_handle"
     t.string "website_url"
+    t.index ["latitude", "longitude"], name: "index_stores_on_latitude_and_longitude"
     t.index ["slug"], name: "index_stores_on_slug", unique: true
     t.index ["user_id"], name: "index_stores_on_user_id", unique: true
   end
