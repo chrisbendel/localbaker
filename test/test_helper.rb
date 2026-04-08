@@ -36,8 +36,11 @@ module ActiveSupport
       # Ensure a clean mailbox for reliable extraction
       ActionMailer::Base.deliveries.clear
 
-      post session_path, params: {email: user.email}
-      assert_response :redirect
+      # Process enqueued jobs (deliver_later queues via SolidQueue/ActiveJob)
+      perform_enqueued_jobs do
+        post session_path, params: {email: user.email}
+        assert_response :redirect
+      end
 
       # Extract the generated login code from the last delivered email
       mail = ActionMailer::Base.deliveries.last

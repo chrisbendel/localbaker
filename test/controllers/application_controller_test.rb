@@ -10,7 +10,9 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
   test "authenticated user can access dashboard" do
     user = User.create!(email: "test@example.com")
     ActionMailer::Base.deliveries.clear
-    post session_path, params: {email: user.email} # creates login_code + sets login_email
+    perform_enqueued_jobs do
+      post session_path, params: {email: user.email} # creates login_code + sets login_email
+    end
     mail = ActionMailer::Base.deliveries.last
     body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
     code = body_text[/\b\d{6}\b/]
