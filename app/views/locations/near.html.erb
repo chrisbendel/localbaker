@@ -2,10 +2,10 @@
 
 <div class="container" data-controller="geolocation">
   <div class="stack-lg">
-    <header class="stack-sm">
+    <section class="stack-sm">
       <h1>Bakeries & Events Near You</h1>
       <p class="text-muted">Find fresh baked goods and upcoming bake events in your area.</p>
-    </header>
+    </section>
 
     <div class="panel stack">
       <%= form_with url: near_path, method: :get, class: "stack", data: { geolocation_target: "form" } do |f| %>
