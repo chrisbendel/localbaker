@@ -23,7 +23,6 @@ class SessionsController < ApplicationController
       return render :new, status: :too_many_requests
     end
 
-    # Send the code asynchronously in production:
     SessionMailer.with(user: user).login_code(user, login_code.plain_code).deliver_later
 
     # You could store something like last_sent_email in session to prefill the verification form
