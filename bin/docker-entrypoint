@@ -8,8 +8,8 @@ fi
 
 # Restore the database if it does not exist and R2 credentials are set
 if [ ! -f /data/production.sqlite3 ] && [ -n "$CLOUDFLARE_R2_ACCESS_KEY_ID" ]; then
-    echo "Restoring database from Litestream..."
-    litestream restore -config /etc/litestream.yml /data/production.sqlite3
+    echo "Attempting to restore database from Litestream..."
+    litestream restore -config /etc/litestream.yml /data/production.sqlite3 || echo "No backups found, will create fresh database"
 fi
 
 # If running the rails server then create or migrate existing database
