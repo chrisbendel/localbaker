@@ -5,7 +5,7 @@
 dbs:
   - path: /data/production.sqlite3
     retention: 360h  # Keep last 15 days of backups, auto-purge older ones
-    sync-interval: 4h
+    sync-interval: 1h
     replicas:
       - type: s3
         bucket: localbaker-litestream-backups
