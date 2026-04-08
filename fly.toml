@@ -11,6 +11,8 @@ console_command = '/rails/bin/rails console'
 
 [env]
   PORT = "3000"
+  RAILS_MAX_THREADS = "2"
+  LD_PRELOAD = "/usr/lib/x86_64-linux-gnu/libjemalloc.so.2"
 
 [[mounts]]
   source = 'data'
