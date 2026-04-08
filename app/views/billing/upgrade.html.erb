@@ -26,7 +26,9 @@
         <li>Discount codes</li>
       </ul>
       <% if current_user.free? %>
-        <%= button_to "Upgrade to Pro · $9/month", billing_checkout_path, method: :post, class: "button primary", data: { turbo: false } %>
+        <div class="group">
+          <%= button_to "Upgrade to Pro · $9/month", billing_checkout_path, method: :post, class: "button primary", data: { turbo: false } %>
+        </div>
       <% end %>
     </div>
   </div>
