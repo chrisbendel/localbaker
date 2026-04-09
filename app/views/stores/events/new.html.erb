@@ -1,9 +1,5 @@
-<%= render_breadcrumbs([
-  { name: @store.name, path: store_path },
-  { name: "New Event" }
-]) %>
 
-<h1>New Event</h1>
+<h3>New Event</h3>
 
 <%= form_with model: [@store, @event], local: true do |form| %>
   <div>

@@ -1,13 +1,11 @@
-module Settings
-  class StoresController < BaseController
-    before_action :require_store!
-
+module Stores
+  class SettingsController < BaseController
     def show
     end
 
     def update
       if @store.update(store_params)
-        redirect_to settings_store_path, notice: "Store settings updated."
+        redirect_to store_settings_path, notice: "Store settings updated."
       else
         render :show, status: :unprocessable_entity
       end

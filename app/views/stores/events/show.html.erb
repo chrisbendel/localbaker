@@ -1,14 +1,9 @@
 <% content_for :title, @event.name %>
 
-<%= render_breadcrumbs([
-  { name: @store.name, path: store_path },
-  { name: @event.name }
-]) %>
-
 <div class="group justify-between items-start">
   <div class="stack-sm">
     <div class="group items-center">
-      <h2><%= @event.name %></h2>
+      <h3><%= @event.name %></h4>
       <% if @event.draft? %>
         <span class="badge draft">Draft</span>
       <% end %>
@@ -63,7 +58,7 @@
 <hr class="divider">
 
 <div class="group justify-between items-baseline">
-  <h3>Products</h3>
+  <h4 class="section-title">Products</h4>
   <% if current_user == @store.user && !@event.past? %>
     <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button primary" %>
   <% end %>
@@ -130,7 +125,7 @@
 
   <div class="stack-sm">
     <div class="group justify-between items-baseline">
-      <h3>Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h3>
+      <h4 class="section-title">Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h4>
       <% if @orders.any? %>
         <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button secondary" %>
       <% end %>

@@ -1,10 +1,5 @@
-<%= render_breadcrumbs([
-  { name: @store.name, path: store_path },
-  { name: @event.name, path: event_path(@event) },
-  { name: "Edit" }
-]) %>
 
-<h1>Edit Event</h1>
+<h3>Edit Event</h3>
 
 <%= form_with model: [@event], local: true do |form| %>
   <div>

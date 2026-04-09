@@ -1,12 +1,7 @@
 <% content_for :title, "#{@store.name} — All Events" %>
 
-<%= render_breadcrumbs([
-  { name: "Bakery", path: store_path },
-  { name: "All Events" }
-]) %>
-
-<div class="group justify-between items-baseline">
-  <h1>All Events</h1>
+<div class="group justify-between items-center">
+  <h3>Events</h4>
   <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
 </div>
 
@@ -15,7 +10,7 @@
   <% active_events = @events.reject(&:past?).reject(&:draft?) %>
   <% if active_events.any? %>
     <div class="stack-sm">
-      <h3 class="section-title">Active Bakes</h3>
+      <h4 class="section-title">Active Bakes</h4>
       <table class="responsive-table">
         <thead>
           <tr>
@@ -49,7 +44,7 @@
   <% draft_events = @events.select(&:draft?) %>
   <% if draft_events.any? %>
     <div class="stack-sm">
-      <h3 class="section-title">Drafts</h3>
+      <h4 class="section-title">Drafts</h4>
       <table class="responsive-table">
         <thead>
           <tr>
@@ -77,7 +72,7 @@
   <% past_events = @events.select(&:past?) %>
   <% if past_events.any? %>
     <div class="stack-sm">
-      <h3 class="section-title">Past Bakes</h3>
+      <h4 class="section-title">Past Bakes</h4>
       <table class="responsive-table">
         <thead>
           <tr>

@@ -11,7 +11,7 @@
       </div>
       <div class="stack-sm">
         <% [
-          [steps[:store_setup],     "Add your store address and description", settings_store_path],
+          [steps[:store_setup],     "Add your store address and description", store_settings_path],
           [steps[:event_created],   "Create your first event",                new_store_event_path],
           [steps[:products_added],  "Add products to an event",               store_events_path],
           [steps[:event_published], "Publish and share your store",           store_events_path]
@@ -33,11 +33,10 @@
   <%# Dashboard Header %>
   <div class="group justify-between items-center">
     <div class="stack-sm">
-      <h2><%= @store.name %></h2>
-      <%= link_to "View storefront →", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank", rel: "noopener noreferrer" %>
+      <h3><%= @store.name %></h3>
     </div>
     <div class="group">
-      <%= link_to "Settings", settings_store_path, class: "button secondary" %>
+      <%= link_to "Settings", store_settings_path, class: "button secondary" %>
       <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
     </div>
   </div>

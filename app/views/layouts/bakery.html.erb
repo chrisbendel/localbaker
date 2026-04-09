@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= content_for(:title) || "Bakery Management | LocalBaker" %></title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="LocalBaker">
+  <meta name="mobile-web-app-capable" content="yes">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= yield :head %>
+
+  <%= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+  <link rel="icon" href="/baguette.png" type="image/png">
+  <link rel="icon" href="/baguette.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/baguette.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <%= stylesheet_link_tag :application, "data-turbo-track": "reload" %>
+  <%= javascript_importmap_tags %>
+</head>
+
+<body class="container">
+  <%= render "application/header" %>
+
+  <main>
+    <%= render "application/flash_dialog" %>
+
+    <div class="settings-layout">
+      <aside class="settings-sidebar">
+        <%= render "stores/sidebar" %>
+      </aside>
+
+      <section class="settings-content stack">
+        <%= yield %>
+      </section>
+    </div>
+  </main>
+
+  <%= render "application/footer" %>
+</body>
+</html>

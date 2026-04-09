@@ -13,14 +13,14 @@ class BakerProfileTest < ApplicationSystemTestCase
   test "baker can update profile and payment info" do
     sign_in_via_browser(@baker)
     # 1. Update Bio
-    visit settings_profile_path
+    visit store_profile_path
     fill_in "Baker Bio", with: "Baking bread in my backyard oven since 2020."
     fill_in "Instagram Handle", with: "@crusty_loaf"
     click_on "Save Changes"
     assert_text "Baker profile updated."
 
     # 2. Update Payments
-    visit settings_payments_path
+    visit store_payments_path
     fill_in "Venmo Handle", with: "@crusty-baker"
     click_on "Save Changes"
     assert_text "Payment options updated."
