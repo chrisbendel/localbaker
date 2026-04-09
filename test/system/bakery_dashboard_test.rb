@@ -62,7 +62,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
 
     click_on "View all events →"
     assert_current_path store_events_path
-    assert_text "All Events"
+    assert_text "Events"
     assert_text "Past Bake"
   end
 

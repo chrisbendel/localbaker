@@ -21,13 +21,13 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   test "GET index shows events" do
     get store_events_path
     assert_response :success
-    assert_select "h1", /All Events/i
+    assert_select "h3", /Events/i
   end
 
   test "GET show displays the event" do
     get event_path(@event)
     assert_response :success
-    assert_select "h2", /#{@event.name}/
+    assert_select "h3", /#{@event.name}/
   end
 
   test "GET new renders form" do

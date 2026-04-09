@@ -36,7 +36,7 @@
       <h3><%= @store.name %></h3>
     </div>
     <div class="group">
-      <%= link_to "View Storefront", storefront_path(@store.slug), class: "button secondary", target: "_blank", rel: "noopener noreferrer" %>
+      <%= link_to "View Storefront", storefront_path(@store.slug), class: "button secondary" %>
       <%= link_to "Settings", store_settings_path, class: "button secondary" %>
       <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
     </div>

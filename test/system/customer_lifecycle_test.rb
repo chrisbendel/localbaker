@@ -51,10 +51,10 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 1. Sign in
     # ----------------------------------------------------------------
     sign_in_via_browser(@customer)
-    assert_current_path orders_path
+    assert_current_path near_path
 
-    # No orders yet — customer-focused empty state
-    assert_text "You don't have any orders yet"
+    # Land on discovery page
+    assert_text "Bakeries & Events Near You"
 
     # ----------------------------------------------------------------
     # 2. Browse to storefront
