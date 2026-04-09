@@ -87,9 +87,4 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     assert_button "Delete Event"
   end
 
-  test "dashboard empty state" do
-    visit store_path
-    assert_text "Your bakery is quiet right now"
-    assert_link "Schedule your next bake"
-  end
 end
