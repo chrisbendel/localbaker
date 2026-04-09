@@ -16,4 +16,16 @@ class Rack::Attack
   self.throttled_responder = lambda do |req|
     [429, {"Content-Type" => "text/plain"}, ["Too many requests. Please try again later."]]
   end
+
+  # Block suspicious requests looking for WordPress/PHP
+  blocklist("block wordpress") do |req|
+    # Block any request containing WordPress patterns or ending in .php
+    # These are high-confidence indicators of malicious/automated scanning
+    req.path.include?("wp-admin") ||
+      req.path.include?("wp-login") ||
+      req.path.include?("wp-content") ||
+      req.path.include?("wp-includes") ||
+      req.path.include?("wordpress") ||
+      req.path.match?(/\.php$/i)
+  end
 end
