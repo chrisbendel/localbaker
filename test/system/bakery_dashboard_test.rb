@@ -86,5 +86,4 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     assert_button "Reuse Event"
     assert_button "Delete Event"
   end
-
 end

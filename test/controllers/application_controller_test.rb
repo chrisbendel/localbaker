@@ -6,5 +6,4 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
     assert_equal "Sign in to continue.", flash[:alert]
   end
-
 end
