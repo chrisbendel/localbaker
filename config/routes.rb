@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   resource :contact, only: [:new, :create]
 
   resources :orders, only: [:index]
-  root to: "pages#root" # Redirecting to a dynamic root
+  root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
   get "about", to: "pages#about", as: :about
   get "near", to: "locations#near", as: :near

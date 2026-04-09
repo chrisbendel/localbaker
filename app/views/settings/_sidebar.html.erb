@@ -1,8 +1,5 @@
 <nav class="settings-nav">
   <%= nav_link_to "Account", settings_account_path %>
-
-  <div class="stack-sm">
-    <hr class="divider">
-    <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted" %>
-  </div>
+  <span class="sep"></span>
+  <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted" %>
 </nav>

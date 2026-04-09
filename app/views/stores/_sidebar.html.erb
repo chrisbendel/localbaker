@@ -1,12 +1,11 @@
 <nav class="settings-nav">
   <%= nav_link_to "Dashboard", store_path %>
+  <span class="sep"></span>
   <%= nav_link_to "Events", store_events_path %>
+  <span class="sep"></span>
   <%= nav_link_to "Store Info", store_settings_path %>
+  <span class="sep"></span>
   <%= nav_link_to "Baker Profile", store_profile_path %>
+  <span class="sep"></span>
   <%= nav_link_to "Payments", store_payments_path %>
-  
-  <div class="stack-sm">
-    <hr class="divider">
-    <%= link_to "View Storefront", storefront_path(@store.slug), class: "button secondary small", target: "_blank", rel: "noopener noreferrer" %>
-  </div>
 </nav>

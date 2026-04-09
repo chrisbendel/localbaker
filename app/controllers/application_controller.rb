@@ -40,7 +40,12 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path
     path = session.delete(:return_to)
-    # Only redirect to internal paths to prevent open redirect attacks
-    (path&.start_with?("/") && path != new_session_path) ? path : root_path
+    return path if path&.start_with?("/") && path != new_session_path
+
+    if current_user.store&.persisted?
+      store_path
+    else
+      near_path
+    end
   end
 end
