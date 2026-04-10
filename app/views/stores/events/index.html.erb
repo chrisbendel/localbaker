@@ -1,7 +1,7 @@
 <% content_for :title, "#{@store.name} — All Events" %>
 
 <div class="group justify-between items-center">
-  <h3>Events</h4>
+  <h3>Events</h3>
   <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
 </div>
 
@@ -10,7 +10,7 @@
   <% active_events = @events.reject(&:past?).reject(&:draft?) %>
   <% if active_events.any? %>
     <div class="stack-sm">
-      <h4 class="section-title">Active Bakes</h4>
+      <h4>Active Bakes</h4>
       <table class="responsive-table">
         <thead>
           <tr>
@@ -23,7 +23,7 @@
           <% active_events.each do |event| %>
             <tr id="<%= dom_id(event) %>">
               <td data-label="Name">
-                <%= link_to event.name, event_path(event), class: "font-bold" %>
+                <strong><%= link_to event.name, event_path(event) %></strong>
               </td>
               <td data-label="Orders Close">
                 <% if event.orders_close_at.present? %>
@@ -44,7 +44,7 @@
   <% draft_events = @events.select(&:draft?) %>
   <% if draft_events.any? %>
     <div class="stack-sm">
-      <h4 class="section-title">Drafts</h4>
+      <h4>Drafts</h4>
       <table class="responsive-table">
         <thead>
           <tr>
@@ -57,7 +57,7 @@
           <% draft_events.each do |event| %>
             <tr id="<%= dom_id(event) %>">
               <td data-label="Name">
-                <%= link_to event.name, event_path(event), class: "font-bold" %>
+                <strong><%= link_to event.name, event_path(event) %></strong>
               </td>
               <td data-label="Orders Close"><span class="text-muted">—</span></td>
               <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
@@ -72,7 +72,7 @@
   <% past_events = @events.select(&:past?) %>
   <% if past_events.any? %>
     <div class="stack-sm">
-      <h4 class="section-title">Past Bakes</h4>
+      <h4>Past Bakes</h4>
       <table class="responsive-table">
         <thead>
           <tr>
@@ -85,7 +85,7 @@
           <% past_events.each do |event| %>
             <tr id="<%= dom_id(event) %>">
               <td data-label="Name">
-                <%= link_to event.name, event_path(event), class: "font-bold" %>
+                <strong><%= link_to event.name, event_path(event) %></strong>
               </td>
               <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
               <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
@@ -98,7 +98,7 @@
 
   <% if @events.empty? %>
     <div class="empty-state stack-sm">
-      <p class="text-muted">Events are how you sell. Create one to set a pickup date, add products, and start taking orders.</p>
+      <p>Events are how you sell. Create one to set a pickup date, add products, and start taking orders.</p>
       <%= link_to "Create your first event", new_store_event_path, class: "button primary" %>
     </div>
   <% end %>

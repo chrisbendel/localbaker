@@ -86,7 +86,15 @@ module Stores
     def event_params
       permitted = [:name, :description, :orders_close_at, :pickup_at, :repeat_interval, :pickup_address]
       permitted << :delivery_enabled if current_user.pro?
-      params.require(:event).permit(*permitted)
+      p = params.require(:event).permit(*permitted)
+
+      # date_field submits a bare date string (no time). Coerce to end of day so
+      # orders stay open through the full date the baker selected, not just midnight UTC.
+      if p[:orders_close_at].present?
+        p[:orders_close_at] = Date.parse(p[:orders_close_at]).end_of_day
+      end
+
+      p
     end
   end
 end

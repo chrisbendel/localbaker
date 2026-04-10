@@ -140,6 +140,30 @@ class EventTest < ActiveSupport::TestCase
     refute_includes Event.active_published, @event
   end
 
+  # --- orders_open scope ---
+
+  test "orders_open includes published events with future orders_close_at" do
+    @event.save!
+    @event.event_products.create!(name: "Item", price_cents: 1000, quantity: 5)
+    @event.publish!
+    assert @event.orders_open?
+    assert_includes Event.orders_open, @event
+  end
+
+  test "orders_open excludes draft events even if future orders_close_at" do
+    @event.save!
+    refute_includes Event.orders_open, @event
+  end
+
+  test "orders_open excludes published events with past orders_close_at" do
+    @event.orders_close_at = 2.days.ago
+    @event.pickup_at = 1.day.ago
+    @event.save!(validate: false)
+    @event.update_column(:published_at, Time.current)
+    refute @event.orders_open?
+    refute_includes Event.orders_open, @event
+  end
+
   # --- past scope ---
 
   test "past includes published events with pickup in the last 30 days" do

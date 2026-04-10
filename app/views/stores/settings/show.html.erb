@@ -59,7 +59,7 @@
       </div>
     <% else %>
       <div class="nudge">
-        <p class="text-sm">Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
+        <p>Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
       </div>
     <% end %>
 
@@ -87,8 +87,8 @@
   <hr class="divider">
 
   <div class="card stack-sm">
-    <p class="font-bold text-danger">Delete Store</p>
-    <p class="text-sm text-muted">Permanently remove your storefront and all its data. This cannot be undone.</p>
+    <strong>Delete Store</strong>
+    <p>Permanently remove your storefront and all its data. This cannot be undone.</p>
     <div class="group">
       <%= button_to "Delete Store", store_path(@store), method: :delete, class: "button danger",
           data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>

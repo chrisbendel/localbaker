@@ -140,7 +140,7 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Create past event (no active orders)
-    past_event = store.events.create!(name: "Past", orders_close_at: 1.day.ago, pickup_at: 1.day.ago)
+    past_event = store.events.create!(name: "Past", orders_close_at: 2.days.ago, pickup_at: 1.day.ago)
     past_event.orders.create!(user: User.create!(email: "customer1@example.com"))
 
     assert_equal false, store.active_orders?
@@ -380,7 +380,7 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "original")
 
     # Create a past event with orders
-    past_event = store.events.create!(name: "Past", orders_close_at: 1.day.ago, pickup_at: 1.day.ago)
+    past_event = store.events.create!(name: "Past", orders_close_at: 2.days.ago, pickup_at: 1.day.ago)
     past_event.orders.create!(user: User.create!(email: "customer@example.com"))
 
     # Verify no active orders

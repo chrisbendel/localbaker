@@ -1,18 +1,18 @@
 <section class="panel stack-sm">
   <% if order&.order_items&.any? %>
     <div class="group justify-between items-baseline">
-      <span class="text-sm font-bold">
+      <strong>
         <%= order.confirmed? ? "Order confirmed" : "Your order" %>
-      </span>
-      <span class="font-bold"><%= number_to_currency(order.total_price) %></span>
+      </strong>
+      <strong><%= number_to_currency(order.total_price) %></strong>
     </div>
 
     <div class="order-items">
       <% order.order_items.includes(:event_product).each do |item| %>
         <div class="group justify-between items-center">
-          <span class="text-sm"><%= item.event_product.name %></span>
+          <span><%= item.event_product.name %></span>
           <span class="group items-center">
-            <span class="text-sm text-muted">×<%= item.quantity %></span>
+            <small>×<%= item.quantity %></small>
             <% if event.orders_open? && !order.confirmed? %>
               <%= button_to storefront_order_item_path(store.slug, item),
                   method: :delete,
@@ -32,30 +32,28 @@
       <% end %>
     </div>
 
-    <p class="text-sm text-muted">
-      Pickup <%= pickup_datetime(event.pickup_at) %>
-    </p>
+    <p><small>Pickup <%= fuzzy_date(event.pickup_at) %> &middot; <%= pickup_datetime(event.pickup_at) %></small></p>
 
     <% if event.orders_open? %>
       <% if order.confirmed? %>
           <div class="group">
-            <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary small", target: "_blank", rel: "noopener noreferrer" %>
-            <%= link_to "Download .ics", calendar_storefront_event_path(store.slug, event), class: "button secondary small" %>
+            <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary", target: "_blank", rel: "noopener noreferrer" %>
+            <%= link_to "Download .ics", calendar_storefront_event_path(store.slug, event), class: "button secondary" %>
           </div>
-          <%= button_to "Edit Order", unconfirm_storefront_event_path(store.slug, event), method: :post, class: "button-link text-muted text-sm" %>
+          <%= button_to "Edit Order", unconfirm_storefront_event_path(store.slug, event), method: :post, class: "button-link text-muted" %>
 
           <% if store.venmo_handle.present? || store.paypal_url.present? %>
             <div class="stack-sm nudge">
-              <p class="text-sm font-bold">Payment</p>
+              <h4>Payment</h4>
               <div class="group">
                 <% if store.venmo_handle.present? %>
-                  <%= link_to store.venmo_url, target: "_blank", rel: "noopener noreferrer", class: "text-sm" do %>
+                  <%= link_to store.venmo_url, target: "_blank", rel: "noopener noreferrer" do %>
                     Venmo (<%= store.venmo_handle %>)
                   <% end %>
                 <% end %>
 
                 <% if store.paypal_url.present? %>
-                  <%= link_to store.paypal_url, target: "_blank", rel: "noopener noreferrer", class: "text-sm" do %>
+                  <%= link_to store.paypal_url, target: "_blank", rel: "noopener noreferrer" do %>
                     PayPal
                   <% end %>
                 <% end %>
@@ -67,18 +65,18 @@
         <%= form_with url: confirm_storefront_event_path(store.slug, event), method: :post, local: true do |f| %>
           <% if event.delivery_enabled? %>
             <div class="stack-sm">
-              <%= f.label :delivery_address, "Delivery Address (Optional)", class: "text-sm font-bold" %>
+              <%= f.label :delivery_address, "Delivery Address (Optional)" %>
               <%= f.text_field :delivery_address,
                   placeholder: "Street address, city, state, zip",
                   value: order.delivery_address %>
-              <p class="text-xs text-muted">Leave blank for pickup. Enter an address for delivery.</p>
+              <small>Leave blank for pickup. Enter an address for delivery.</small>
             </div>
           <% end %>
-          <%= f.submit "Complete Order", class: "button primary w-full" %>
+          <%= f.submit "Complete Order", class: "button primary full" %>
         <% end %>
       <% end %>
     <% end %>
   <% else %>
-    <p class="text-sm text-muted">No items yet.</p>
+    <p><small>No items yet.</small></p>
   <% end %>
 </section>

@@ -96,7 +96,7 @@ The palette is earthy/warm-toned rather than generic Bootstrap greens/reds.
 
 ### Typography Helpers
 
-`.text-muted`, `.text-sm`, `.text-lg`, `.text-danger`, `.text-success`, `.font-bold`, `.text-center`, `.text-right`, `.section-title`
+`.text-muted`, `.text-sm`, `.text-lg`, `.text-danger`, `.text-success`, `.font-bold`, `.text-center`, `.text-right`
 
 ### Tables
 

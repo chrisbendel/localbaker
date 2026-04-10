@@ -41,7 +41,7 @@ class RecurringEventsTest < ApplicationSystemTestCase
     visit store_path
     assert_text "Weekly Sourdough"
     assert_text "Copy of Weekly Sourdough"
-    assert_text "Drafts"
+    assert_text(/drafts/i)
 
     # Verify dates of the new draft
     click_on "Copy of Weekly Sourdough"

@@ -30,8 +30,8 @@ class BakerProfileTest < ApplicationSystemTestCase
 
     assert_text "Meet the Baker"
     assert_text "Baking bread in my backyard oven since 2020."
-    assert_link "Instagram"
-    assert_text "Venmo (@crusty-baker)"
+    assert_selector "a[title='Instagram @crusty_loaf']"
+    assert_selector "a[title='Venmo @crusty-baker']"
 
     # Create an event and order to verify payment links in summary
     @event = @store.events.create!(

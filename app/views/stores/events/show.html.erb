@@ -3,7 +3,7 @@
 <div class="group justify-between items-start">
   <div class="stack-sm">
     <div class="group items-center">
-      <h3><%= @event.name %></h4>
+      <h3><%= @event.name %></h3>
       <% if @event.draft? %>
         <span class="badge draft">Draft</span>
       <% end %>
@@ -33,21 +33,19 @@
 <% if @event.past? %>
   <div class="nudge">
     <div class="group items-center">
-      <span class="text-sm">This is a past event. Details are read-only.</span>
+      <small>This is a past event. Details are read-only.</small>
     </div>
   </div>
 <% end %>
 
 <div class="stack-sm">
-  <p class="text-muted">
+  <small>
     Orders close <%= nice_date(@event.orders_close_at) %> &middot;
     Pickup <%= pickup_datetime(@event.pickup_at) %>
-  </p>
+  </small>
   <%= render "application/address_line", model: @event, show_full: true %>
   <% if @event.repeat_interval.present? && !@event.no_repeat? %>
-    <p class="text-success text-sm font-bold">
-      Repeats <%= @event.repeat_interval.humanize %>
-    </p>
+    <small>Repeats <%= @event.repeat_interval.humanize %></small>
   <% end %>
 </div>
 
@@ -58,7 +56,7 @@
 <hr class="divider">
 
 <div class="group justify-between items-baseline">
-  <h4 class="section-title">Products</h4>
+  <h4>Products</h4>
   <% if current_user == @store.user && !@event.past? %>
     <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button primary" %>
   <% end %>
@@ -102,7 +100,7 @@
   </table>
 <% else %>
   <div class="empty-state stack-sm">
-    <p class="text-muted">No products yet. Add at least one product before you can publish this event.</p>
+    <p>No products yet. Add at least one product before you can publish this event.</p>
     <% if current_user == @store.user %>
       <%= link_to "Add a product", new_event_event_product_path(@event), class: "button primary" %>
     <% end %>
@@ -125,7 +123,7 @@
 
   <div class="stack-sm">
     <div class="group justify-between items-baseline">
-      <h4 class="section-title">Orders <% if @orders.any? %><span class="text-muted text-sm">(<%= @orders.count %>)</span><% end %></h4>
+      <h4>Orders <% if @orders.any? %><small>(<%= @orders.count %>)</small><% end %></h4>
       <% if @orders.any? %>
         <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button secondary" %>
       <% end %>
@@ -133,9 +131,9 @@
 
     <% if @orders.any? %>
       <div class="panel stack-sm">
-        <p class="text-sm font-bold">Prep summary</p>
+        <h4>Prep summary</h4>
         <% @event.event_products.each do |product| %>
-          <div class="group justify-between text-sm">
+          <div class="group justify-between">
             <span><%= product.name %></span>
             <span><strong><%= product.sold %></strong> / <%= product.quantity %></span>
           </div>
@@ -160,16 +158,16 @@
               <td data-label="Customer"><%= order.user.email %></td>
               <td data-label="Items">
                 <% order.order_items.each do |item| %>
-                  <div class="text-sm"><%= item.event_product.name %> &times; <%= item.quantity %></div>
+                  <small><%= item.event_product.name %> &times; <%= item.quantity %></small>
                 <% end %>
               </td>
               <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
               <% if @event.delivery_enabled? %>
                 <td data-label="Delivery Address">
                   <% if order.delivery_address.present? %>
-                    <span class="text-sm"><%= order.delivery_address %></span>
+                    <span><%= order.delivery_address %></span>
                   <% else %>
-                    <span class="text-sm text-muted">Pickup</span>
+                    <small>Pickup</small>
                   <% end %>
                 </td>
               <% end %>
@@ -180,7 +178,7 @@
       </table>
     <% else %>
       <div class="empty-state stack-sm">
-        <p class="text-muted">No orders yet. Share your store link so customers can place orders.</p>
+        <p>No orders yet. Share your store link so customers can place orders.</p>
       </div>
     <% end %>
   </div>

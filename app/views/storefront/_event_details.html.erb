@@ -5,7 +5,7 @@
     <p><%= event.description %></p>
   <% end %>
 
-  <div class="stack-sm text-muted text-sm">
+  <div class="stack-sm">
     <% if event.location_display.present? %>
       <%= render "application/address_line", model: event, show_full: true %>
     <% end %>

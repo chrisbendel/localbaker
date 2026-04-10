@@ -17,7 +17,7 @@
       <p class="field-hint">Your login email. Contact support if you need to update this.</p>
     </div>
 
-    <div>
+    <div class="group">
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
   <% end %>
@@ -25,8 +25,8 @@
   <% if !current_user.store&.persisted? %>
     <hr class="divider">
     <div class="card stack-sm">
-      <p class="font-bold">Are you a baker?</p>
-      <p class="text-sm text-muted">Create a storefront to start taking pre-orders for your next bake.</p>
+      <strong>Are you a baker?</strong>
+      <p>Create a storefront to start taking pre-orders for your next bake.</p>
       <div class="group">
         <%= link_to "Create your store", new_store_path, class: "button" %>
       </div>

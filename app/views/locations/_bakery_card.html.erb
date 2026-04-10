@@ -1,25 +1,26 @@
 <%= link_to storefront_path(store.slug), class: "card block decor-none" do %>
   <div class="group justify-between items-start">
     <div class="stack-sm">
-      <h3 class="section-title"><%= store.name %></h3>
-      <p class="text-muted"><%= store.location_display %></p>
+      <div class="stack-xs">
+        <h3><%= store.name %></h3>
+        <small><%= store.location_display %></small>
 
-      <% if distance.present? %>
-        <p class="text-sm">
-          <%= number_with_precision(distance, precision: 1) %> miles away
-        </p>
-      <% end %>
+        <% if distance.present? %>
+          <small><%= number_with_precision(distance, precision: 1) %> miles away</small>
+        <% end %>
+      </div>
 
-      <% upcoming_event = local_assigns[:upcoming_event] || store.events.active_published.order(:pickup_at).first %>
+      <% upcoming_event = local_assigns[:upcoming_event] || store.events.orders_open.order(:pickup_at).first %>
       <% if upcoming_event %>
-        <p class="text-sm font-bold">
-          Next pickup: <%= upcoming_event.pickup_at.strftime("%a, %b %-d at %l:%M %p") %>
-        </p>
+        <div class="stack-xs">
+          <p>Order by: <strong><%= upcoming_event.orders_close_at.strftime("%A, %b %-d") %></strong></p>
+          <small class="text-muted">(Pickup: <%= upcoming_event.pickup_at.strftime("%b %-d") %>)</small>
+        </div>
       <% end %>
     </div>
 
     <% if store.photo.attached? %>
-       <%= image_tag store.photo, alt: store.name, class: "img-thumb", style: "width: 80px; height: 80px;" %>
+       <%= image_tag store.photo, alt: store.name, class: "img-thumb-lg" %>
     <% end %>
   </div>
 <% end %>

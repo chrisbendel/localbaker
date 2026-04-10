@@ -5,7 +5,7 @@
     <h3>Payment Options</h3>
   </div>
 
-  <p class="text-muted text-sm">Help customers find your preferred payment methods. LocalBaker handles orders, but payments happen directly between you and your customers.</p>
+  <p>Help customers find your preferred payment methods. LocalBaker handles orders, but payments happen directly between you and your customers.</p>
 
   <%= form_with model: @store, url: store_payments_path do |f| %>
     <div >
@@ -26,8 +26,8 @@
   <% if current_user.pro? || current_user.pay_subscriptions.any? %>
     <hr class="divider">
     <div class="card stack-sm">
-      <p class="font-bold">Pro Subscription</p>
-      <p class="text-sm text-muted">You're on the Pro plan. Manage your billing, update payment details, or cancel from the billing portal.</p>
+      <strong>Pro Subscription</strong>
+      <p>You're on the Pro plan. Manage your billing, update payment details, or cancel from the billing portal.</p>
       <div class="group">
         <%= button_to "Manage Subscription", billing_portal_path, method: :post, class: "button", data: { turbo: false } %>
       </div>

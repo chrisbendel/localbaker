@@ -35,14 +35,14 @@ class LocationsController < ApplicationController
       # Get nearby stores with published events (limit before materializing to save memory)
       nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
         .joins(:events)
-        .merge(Event.active_published)
+        .merge(Event.ordering_open)
         .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
         .distinct
         .limit(10)
 
       @stores = nearby_stores
       store_ids = @stores.pluck(:id)
-      @next_events_by_store = Event.active_published
+      @next_events_by_store = Event.ordering_open
         .where(store_id: store_ids)
         .order(:pickup_at)
         .group_by(&:store_id)

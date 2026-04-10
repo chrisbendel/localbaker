@@ -76,7 +76,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 4. Open the event
     # ----------------------------------------------------------------
     click_on "Sunday Bake"
-    assert_text "Products"
+    assert_text(/products/i)
     assert_text "Sourdough"
     assert_text "Focaccia"
     assert_text "No items yet"
@@ -174,7 +174,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
 
     # Clicking the order card goes to the storefront event
     find(".card", text: "The Bread Barn").click
-    assert_text "Products"
+    assert_text(/products/i)
     assert_text "Your order"
 
     # ----------------------------------------------------------------

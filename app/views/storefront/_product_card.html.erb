@@ -6,11 +6,11 @@
     <div>
       <h3><%= product.name %></h3>
       <div>
-        <span class="text-lg"><%= product.price_formatted %></span>
+        <strong><%= product.price_formatted %></strong>
         <% if product.available? %>
-          <span class="text-muted text-sm"> · <%= product.remaining %> left</span>
+          <small> · <%= product.remaining %> left</small>
         <% else %>
-          <span class="text-muted text-sm"> · Sold out</span>
+          <small> · Sold out</small>
         <% end %>
       </div>
     </div>
@@ -18,7 +18,7 @@
     <% if event.orders_open? && product.available? %>
       <% if authenticated? %>
         <%= form_with url: storefront_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
-          <button class="primary">Add to Order</button>
+          <button class="button primary">Add to Order</button>
         <% end %>
       <% end %>
     <% end %>
