@@ -24,6 +24,41 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 - **Token-driven CSS**: All colors, spacing, and shape values come from CSS custom properties defined in `:root`. No hardcoded values in views or components.
 - **Modular Design**: Rails partials as components. Keep partials focused and reusable.
 - **No Dropdowns**: Avoid JS-dependent UI patterns. Native `<select>` is fine; custom JS dropdowns are not.
+
+## Design System Constraints
+
+**The design system is intentionally minimal and closed. Do not expand it without explicit instruction.**
+
+### Spacing & Layout — NEVER add new sizes or variants
+
+The spacing scale has exactly three sizes: `sm`, `(base)`, `lg`. The layout primitives (`.stack-*`, `.group-*`) mirror this exactly. This is a deliberate constraint, not an oversight.
+
+**Prohibited without explicit user approval:**
+- New spacing tokens (`--sp-xs`, `--sp-xl`, `--sp-2xl`, etc.)
+- New layout class variants (`.stack-xs`, `.group-tight`, `.stack-xl`, etc.)
+- New gap/spacing utility classes (`.gap-xs`, `.gap-md`, etc.)
+- Inline `style=` attributes for spacing or layout
+
+**When you think you need a new size, work through this first:**
+1. Would `sm` or `lg` be close enough? Slight visual difference is acceptable.
+2. Can the parent or child element be restructured to avoid the need?
+3. Is the element itself the wrong choice — e.g., would a different semantic element or class solve it?
+
+If you genuinely cannot proceed without a new primitive, **stop and explain why** — state which existing sizes you tried and why they don't work. Do not add it silently.
+
+### CSS Classes — no new utilities without justification
+
+Before adding any new CSS class, verify it doesn't already exist in `application.css`. If you need to add one:
+- It must solve a problem that cannot be solved with existing primitives + modifier classes (`.items-center`, `.justify-between`, etc.)
+- It must be used in at least two places — single-use styling belongs inline or as a component-specific rule, not a utility
+
+### Partials & `mode:` flags — keep partials single-purpose
+
+Partials should not accept a `mode:` or `variant:` flag to render different structures. If two contexts need meaningfully different markup, use two partials or inline the simpler case. Branching inside a partial on a flag is a code smell.
+
+### Default parameters in partials
+
+Use `<% variable ||= default %>` at the top of a partial for optional locals. Never use `local_assigns[:key]` to read locals — it bypasses the explicit default and makes the interface unclear.
 - **No Emoji**: Keep the UI text-only and clean. Unicode punctuation (arrows, middots) is fine; emoji are not.
 - **Mobile First**: Toast z-index and `env(safe-area-inset-bottom)` ensure UI chrome doesn't obscure content on iOS. Order summary hoists above product list on mobile via CSS `order: -1`.
 
