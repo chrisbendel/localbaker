@@ -20,8 +20,8 @@ class OrderConfirmationTest < ApplicationSystemTestCase
     visit storefront_event_path(@store.slug, @event)
 
     # 1. Add item
-    within ".card", text: "Sourdough" do
-      click_on "Add to Order"
+    within ".card-item", text: "Sourdough" do
+      find("button[aria-label='Add to Order']").click
     end
 
     assert_text "Added Sourdough"
@@ -35,8 +35,8 @@ class OrderConfirmationTest < ApplicationSystemTestCase
     assert_selector "aside", text: "Add to Google Calendar"
 
     # 3. Add another item (should unconfirm)
-    within ".card", text: "Sourdough" do
-      click_on "Add to Order"
+    within ".card-item", text: "Sourdough" do
+      find("button[aria-label='Add to Order']").click
     end
 
     # Should reset to draft

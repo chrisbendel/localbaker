@@ -88,8 +88,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 5. Add sourdough to order
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     assert_text "Added Sourdough"
@@ -103,8 +103,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 6. Add focaccia to order
     # ----------------------------------------------------------------
-    within find(".card", text: "Focaccia") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Focaccia") do
+      find("button[aria-label='Add to Order']").click
     end
 
     within "aside" do
@@ -117,8 +117,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Add sourdough again to bump quantity to 2
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     assert_text "Added Sourdough"
@@ -148,8 +148,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 9. Add sourdough back so order has both items again
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     within "aside" do

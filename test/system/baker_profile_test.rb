@@ -25,13 +25,18 @@ class BakerProfileTest < ApplicationSystemTestCase
     click_on "Save Changes"
     assert_text "Payment options updated."
 
-    # Verify on public profile
+    # Verify on public storefront — hero shows social links and a "Meet the Baker" link
     visit storefront_path(@store.slug)
+
+    assert_link "Meet the Baker →"
+    assert_selector "a[title='Instagram @crusty_loaf']"
+    assert_selector "a[title='Venmo @crusty-baker']"
+
+    # Bio lives on the about page
+    click_on "Meet the Baker →"
 
     assert_text "Meet the Baker"
     assert_text "Baking bread in my backyard oven since 2020."
-    assert_selector "a[title='Instagram @crusty_loaf']"
-    assert_selector "a[title='Venmo @crusty-baker']"
 
     # Create an event and order to verify payment links in summary
     @event = @store.events.create!(
