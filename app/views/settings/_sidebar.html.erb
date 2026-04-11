@@ -1,5 +1,5 @@
 <nav class="settings-nav">
   <%= nav_link_to "Account", settings_account_path %>
   <span class="sep"></span>
-  <%= button_to "Sign out", session_path, method: :delete, class: "button-link text-muted" %>
+  <%= nav_link_to "My Orders", orders_path %>
 </nav>

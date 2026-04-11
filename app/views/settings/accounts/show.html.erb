@@ -32,4 +32,11 @@
       </div>
     </div>
   <% end %>
+
+  <hr class="divider">
+
+  <div class="group justify-between items-center">
+    <small class="text-muted">Signed in as <%= current_user.email %></small>
+    <%= button_to "Sign out", session_path, method: :delete, class: "button secondary" %>
+  </div>
 </div>
