@@ -7,104 +7,15 @@
   <% content_for(:og_image, root_url.chomp("/") + "/baguette-solid.png") %>
 <% end %>
 
-<% has_payment = @store.venmo_handle.present? || @store.paypal_url.present? %>
-<% has_social = @store.instagram_handle.present? || @store.facebook_url.present? || @store.website_url.present? %>
-
-<header class="stack">
-  <% if @store.banner_image.attached? %>
-    <div class="img-banner-wrap">
-      <%= image_tag @store.banner_image.variant(resize_to_limit: [1200, 800], format: :webp), class: "img-banner" %>
-    </div>
-  <% end %>
-
-  <div class="group justify-between items-center">
-    <h1><%= @store.name %></h1>
-    <div class="group items-center">
-      <% if has_payment || has_social %>
-        <div class="storefront-links group items-center">
-          <% if @store.venmo_handle.present? %>
-            <%= link_to @store.venmo_url, target: "_blank", rel: "noopener noreferrer", class: "storefront-icon-link", title: "Venmo #{@store.venmo_handle}" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M19.5 2c.8 1.4 1.2 2.8 1.2 4.6 0 5.7-4.9 13.1-8.9 18.3H4.9L1.5 3.1l6.7-.6 1.9 15.2C12 14 14.4 8.5 14.4 4.9c0-1.9-.3-3.2-.8-4.3L19.5 2z"/>
-              </svg>
-            <% end %>
-          <% end %>
-
-          <% if @store.paypal_url.present? %>
-            <%= link_to @store.paypal_url, target: "_blank", rel: "noopener noreferrer", class: "storefront-icon-link", title: "PayPal" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M7.02 21.94L7.5 19h-.02l.02-.12.5-3.14H9.9c3.92 0 6.98-1.59 7.88-6.18.03-.17.06-.34.08-.5C18.7 6.1 17.14 4.5 14.5 4.5H8.1a1 1 0 00-.99.85L4.5 19.5a.6.6 0 00.59.69h1.93v1.75zm3.32-11.56l-.54 3.43h1.55c2.15 0 3.38-.87 3.68-2.73.28-1.72-.66-2.57-2.45-2.57H10.9l-.56 1.87zm7.2-4.1c-.15.94-.47 1.74-.96 2.42-.86 1.17-2.2 1.75-3.98 1.75H11.5l-.7 4.42H9.25l-.5 3.13H7.5L7 21.94H5.09a.6.6 0 01-.59-.7l2.62-16.65a1 1 0 01.99-.84h6.4c2.64 0 4.2 1.6 3.87 3.63l-.04.2z"/>
-              </svg>
-            <% end %>
-          <% end %>
-
-          <% if @store.instagram_handle.present? %>
-            <%= link_to @store.instagram_url, target: "_blank", rel: "noopener noreferrer", class: "storefront-icon-link", title: "Instagram #{@store.instagram_handle}" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <circle cx="12" cy="12" r="4"/>
-                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
-              </svg>
-            <% end %>
-          <% end %>
-
-          <% if @store.facebook_url.present? %>
-            <%= link_to @store.facebook_url, target: "_blank", rel: "noopener noreferrer", class: "storefront-icon-link", title: "Facebook" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.887v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
-              </svg>
-            <% end %>
-          <% end %>
-
-          <% if @store.website_url.present? %>
-            <%= link_to @store.website_url, target: "_blank", rel: "noopener noreferrer", class: "storefront-icon-link", title: "Website" do %>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="2" y1="12" x2="22" y2="12"/>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-            <% end %>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if @notification.present? %>
-        <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "button secondary", title: "Unsubscribe from email updates" do %>
-          Unsubscribe
-        <% end %>
-      <% else %>
-        <%= button_to storefront_notification_path(@store.slug), method: :post, class: "button secondary", title: "Subscribe to email updates" do %>
-          Subscribe
-        <% end %>
-      <% end %>
-    </div>
-  </div>
-
-  <%= render "application/address_line", model: @store %>
-  
-  <% if @store.description.present? %>
-    <p><%= @store.description %></p>
-  <% end %>
-</header>
-
-<% if @personal_orders&.any? %>
-  <section class="stack">
-    <h4>Your Pickups</h4>
-    <div class="grid grid-cols-2">
-      <% @personal_orders.each do |order| %>
-        <%= render "storefront/event_card", event: order.event %>
-      <% end %>
-    </div>
-  </section>
-<% end %>
+<%= render "storefront/store_hero", store: @store %>
 
 <section class="stack">
   <h4>Upcoming Bakes</h4>
 
   <% if @events.any? %>
-    <div class="grid grid-cols-2">
+    <div class="flex-cols-2">
       <% @events.each do |event| %>
-        <%= render "storefront/event_card", event: event %>
+        <%= render "storefront/event_card", event: event, ordered: @ordered_event_ids&.include?(event.id) %>
       <% end %>
     </div>
   <% else %>
@@ -112,16 +23,3 @@
   <% end %>
 </section>
 
-<% if @store.bio.present? %>
-  <hr class="divider">
-
-  <section class="stack-sm">
-    <div class="group items-center">
-      <% if @store.photo.attached? %>
-        <%= image_tag @store.photo.variant(resize_to_limit: [200, 200], format: :webp), class: "profile-photo" %>
-      <% end %>
-      <h4>Meet the Baker</h4>
-    </div>
-    <%= simple_format @store.bio %>
-  </section>
-<% end %>

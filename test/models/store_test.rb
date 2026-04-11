@@ -317,8 +317,8 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Attach a banner image
-    banner_path = Rails.root.join("test/fixtures/files/banner.png")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.png", content_type: "image/png")
+    banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
+    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
     assert store.banner_image.attached?
 
     # Update with remove_banner_image flag
@@ -333,8 +333,8 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Attach a banner image
-    banner_path = Rails.root.join("test/fixtures/files/banner.png")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.png", content_type: "image/png")
+    banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
+    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
     assert store.banner_image.attached?
 
     # Update without remove_banner_image flag

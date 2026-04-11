@@ -6,6 +6,8 @@ class Event < ApplicationRecord
   validates :name, presence: true
   validates :orders_close_at, presence: true
   validates :pickup_at, presence: true
+  # TODO: Add fulfillment_type (pickup, delivery, both) and make fields dependent.
+  # If delivery_only, pickup_at and pickup_address may be nil/different.
 
   before_validation :normalize_pickup_address
 

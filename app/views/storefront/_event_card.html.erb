@@ -1,12 +1,15 @@
+<% ordered ||= false %>
 <%= link_to storefront_event_path(event.store.slug, event), class: "card block #{"sold-out" if event.past?}" do %>
   <div class="stack-sm">
     <div class="group justify-between items-start">
-      <div class="stack-xs">
+      <div class="stack-sm">
         <strong><%= event.pickup_at.strftime("%A, %b %-d") %></strong>
         <h3><%= event.name %></h3>
       </div>
       <% if event.past? %>
         <span class="badge closed">Closed</span>
+      <% elsif ordered %>
+        <span class="badge ordered">Ordered ✓</span>
       <% end %>
     </div>
 

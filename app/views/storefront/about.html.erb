@@ -1,0 +1,19 @@
+<%= content_for(:title, "Meet the Baker — #{@store.name}") %>
+<% content_for(:meta_description, "Meet the baker behind #{@store.name}. #{@store.bio&.truncate(120)}") %>
+
+<div class="stack">
+  <div class="store-letterhead">
+    <%= link_to @store.name, storefront_path(@store.slug), class: "store-name-link" %>
+  </div>
+
+  <section class="stack-sm">
+    <div class="group items-center">
+      <% if @store.photo.attached? %>
+        <%= image_tag @store.photo.variant(resize_to_limit: [200, 200], format: :webp), class: "profile-photo" %>
+      <% end %>
+      <h1>Meet the Baker</h1>
+    </div>
+
+    <%= simple_format @store.bio %>
+  </section>
+</div>

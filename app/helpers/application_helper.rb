@@ -30,6 +30,20 @@ module ApplicationHelper
     "https://www.google.com/maps/dir/?api=1&destination=#{ERB::Util.url_encode(address)}"
   end
 
+  def event_timing_summary(event)
+    pickup = pickup_datetime(event.pickup_at)
+
+    deadline_part = if event.orders_closed?
+      "Orders closed"
+    else
+      event.orders_close_at.strftime("%l:%M %p").strip
+      "Orders close #{fuzzy_date(event.orders_close_at)}"
+    end
+
+    # TODO: Refactor phrasing if event is delivery_only (e.g., "Delivery Sunday" instead of "Pick up Sunday").
+    "Pick up #{pickup} · #{deadline_part}"
+  end
+
   def nav_link_to(label, path)
     active = current_page?(path)
     link_to label, path, class: (active ? "active" : nil)

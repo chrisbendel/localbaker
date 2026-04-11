@@ -79,7 +79,6 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     assert_text(/products/i)
     assert_text "Sourdough"
     assert_text "Focaccia"
-    assert_text "No items yet"
     assert_no_text "Your order is saved"
 
     # Event-specific pickup location is shown; store address is not

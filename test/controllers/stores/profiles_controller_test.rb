@@ -124,14 +124,14 @@ module Stores
     end
 
     test "update handles photo upload" do
-      photo = fixture_file_upload("banner.png", "image/png")
+      photo = fixture_file_upload("baker.jpeg", "image/jpeg")
       patch store_profile_path, params: {store: {photo: photo}}
       assert_redirected_to store_profile_path
       assert @store.reload.photo.attached?
     end
 
     test "update handles photo removal" do
-      @store.photo.attach(io: File.open(Rails.root.join("test/fixtures/files/banner.png")), filename: "banner.png", content_type: "image/png")
+      @store.photo.attach(io: File.open(Rails.root.join("test/fixtures/files/baker.jpeg")), filename: "baker.jpeg", content_type: "image/jpeg")
       assert @store.photo.attached?
 
       patch store_profile_path, params: {store: {remove_photo: "1"}}

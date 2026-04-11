@@ -1,7 +1,7 @@
 <%= link_to storefront_path(store.slug), class: "card block decor-none" do %>
   <div class="group justify-between items-start">
     <div class="stack-sm">
-      <div class="stack-xs">
+      <div class="stack-sm">
         <h3><%= store.name %></h3>
         <small><%= store.location_display %></small>
 
@@ -12,7 +12,7 @@
 
       <% upcoming_event = local_assigns[:upcoming_event] || store.events.orders_open.order(:pickup_at).first %>
       <% if upcoming_event %>
-        <div class="stack-xs">
+        <div class="stack-sm">
           <p>Order by: <strong><%= upcoming_event.orders_close_at.strftime("%A, %b %-d") %></strong></p>
           <small class="text-muted">(Pickup: <%= upcoming_event.pickup_at.strftime("%b %-d") %>)</small>
         </div>

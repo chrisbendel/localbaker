@@ -27,7 +27,7 @@ module Stores
 
     test "update handles banner removal" do
       # Attach a dummy banner
-      @store.banner_image.attach(io: File.open(Rails.root.join("test/fixtures/files/banner.png")), filename: "banner.png", content_type: "image/png")
+      @store.banner_image.attach(io: File.open(Rails.root.join("test/fixtures/files/banner.jpeg")), filename: "banner.jpeg", content_type: "image/jpeg")
       assert @store.banner_image.attached?
 
       patch store_settings_path, params: {store: {remove_banner_image: "1"}}

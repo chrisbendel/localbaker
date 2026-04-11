@@ -31,10 +31,8 @@
   <% end %>
 
   <%# Dashboard Header %>
-  <div class="group justify-between items-center">
-    <div class="stack-sm">
-      <h1><%= @store.name %></h1>
-    </div>
+  <div class="page-header">
+    <h1><%= @store.name %></h1>
     <div class="group">
       <%= link_to "View Storefront", storefront_path(@store.slug), class: "button secondary" %>
       <%= link_to "Settings", store_settings_path, class: "button secondary" %>

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   get "unsub/:token", to: "public_unsubscribes#unsubscribe", as: :unsubscribe
 
   get "/shop/:slug", to: "storefront#show", as: :storefront
+  get "/shop/:slug/about", to: "storefront#about", as: :storefront_about
 
   scope "/shop/:slug", module: :storefront, as: :storefront do
     resource :notification, only: [:create, :destroy]
