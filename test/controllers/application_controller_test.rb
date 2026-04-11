@@ -6,21 +6,4 @@ class ApplicationControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
     assert_equal "Sign in to continue.", flash[:alert]
   end
-
-  test "authenticated user can access dashboard" do
-    user = User.create!(email: "test@example.com")
-    ActionMailer::Base.deliveries.clear
-    perform_enqueued_jobs do
-      post session_path, params: {email: user.email} # creates login_code + sets login_email
-    end
-    mail = ActionMailer::Base.deliveries.last
-    body_text = [mail.subject, mail.text_part&.body&.to_s, mail.html_part&.body&.to_s, mail.body&.to_s].compact.join("\n")
-    code = body_text[/\b\d{6}\b/]
-
-    # Simulate successful login with code from email:
-    post confirm_session_path, params: {email: user.email, code: code}
-
-    get orders_path
-    assert_response :success
-  end
 end

@@ -1,12 +1,11 @@
-<% content_for :title, "Store Info — Settings" %>
+<% content_for :title, "Store Info — Baker Portal" %>
 
 <div class="stack">
   <div class="group justify-between items-center">
     <h3>Store Info</h3>
-    <%= link_to "View Storefront", storefront_path(@store.slug), class: "text-sm text-muted", target: "_blank", rel: "noopener noreferrer" %>
   </div>
 
-  <%= form_with model: @store, url: settings_store_path do |f| %>
+  <%= form_with model: @store, url: store_settings_path do |f| %>
     <div>
       <%= f.label :name %>
       <%= f.text_field :name %>
@@ -60,7 +59,7 @@
       </div>
     <% else %>
       <div class="nudge">
-        <p class="text-sm">Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
+        <p>Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
       </div>
     <% end %>
 
@@ -84,4 +83,15 @@
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
   <% end %>
+
+  <hr class="divider">
+
+  <div class="card stack-sm">
+    <strong>Delete Store</strong>
+    <p>Permanently remove your storefront and all its data. This cannot be undone.</p>
+    <div class="group">
+      <%= button_to "Delete Store", store_path(@store), method: :delete, class: "button danger",
+          data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
+    </div>
+  </div>
 </div>

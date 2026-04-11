@@ -12,6 +12,18 @@ if Rails.env.development?
 
   puts "Seeding demo data..."
 
+  # Helper to attach local placeholder images
+  def attach_placeholder(record, trait, filename = "banner.jpeg")
+    path = Rails.root.join("test/fixtures/files", filename)
+    return unless File.exist?(path)
+
+    record.send(trait).attach(
+      io: File.open(path),
+      filename: filename,
+      content_type: "image/jpeg"
+    )
+  end
+
   # 1. Create Users
   baker1 = User.find_or_create_by!(email: "baker@example.com") { |u| u.name = "Alice Baker" }
   baker2 = User.find_or_create_by!(email: "baker2@example.com") { |u| u.name = "Bob Sweets" }
@@ -32,6 +44,8 @@ if Rails.env.development?
     s.instagram_handle = "thecrustyloaf"
     s.venmo_handle = "alicebakes"
   end
+  attach_placeholder(store1, :banner_image)
+  attach_placeholder(store1, :photo, "baker.jpeg")
 
   store2 = Store.find_or_create_by!(user: baker2) do |s|
     s.name = "The Sweet Spot"
@@ -39,6 +53,8 @@ if Rails.env.development?
     s.description = "Decadent cakes, cookies, and sweet treats perfect for any occasion."
     s.address = "456 Sugar Ln, Springfield"
   end
+  attach_placeholder(store2, :banner_image)
+  attach_placeholder(store2, :photo, "baker.jpeg")
 
   store3 = Store.find_or_create_by!(user: baker3) do |s|
     s.name = "Sunrise Bagels"
@@ -147,13 +163,31 @@ if Rails.env.development?
   ]
 
   [s1_past, s1_active, s1_future, s1_prep].each do |event|
-    s1_products.each { |p| event.event_products.create!(p) }
+    s1_products.each_with_index do |p, i|
+      product = event.event_products.create!(p)
+      attach_placeholder(product, :image, "bread.jpeg") if i.even?
+    end
   end
 
-  s2_products.each { |p| s2_active.event_products.create!(p) }
-  s3_products.each { |p| s3_active.event_products.create!(p) }
-  s3_products.each { |p| s3_prep.event_products.create!(p) }
-  s3_future_products.each { |p| s3_future.event_products.create!(p) }
+  s2_products.each_with_index do |p, i|
+    product = s2_active.event_products.create!(p)
+    attach_placeholder(product, :image) if i.even?
+  end
+
+  s3_products.each_with_index do |p, i|
+    product = s3_active.event_products.create!(p)
+    attach_placeholder(product, :image) if i.even?
+  end
+
+  s3_products.each_with_index do |p, i|
+    product = s3_prep.event_products.create!(p)
+    attach_placeholder(product, :image, "bread.jpeg") if i.even?
+  end
+
+  s3_future_products.each_with_index do |p, i|
+    product = s3_future.event_products.create!(p)
+    attach_placeholder(product, :image, "bread.jpeg") if i.even?
+  end
 
   puts "Publishing events..."
   # 4b. Publish events now that they have products

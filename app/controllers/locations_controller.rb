@@ -4,7 +4,6 @@ class LocationsController < ApplicationController
     @longitude = params[:longitude]
     @address = params[:address]
     @radius = (params[:radius].presence || 25).to_i.clamp(1, 100)
-    @tab = params[:tab].presence || "bakeries"
 
     if @address.present?
       results = Geocoder.search(@address)
@@ -35,23 +34,21 @@ class LocationsController < ApplicationController
       # Get nearby stores with published events (limit before materializing to save memory)
       nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
         .joins(:events)
-        .merge(Event.active_published)
+        .merge(Event.orders_open)
         .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
         .distinct
         .limit(10)
 
       @stores = nearby_stores
       store_ids = @stores.pluck(:id)
-      @next_events_by_store = Event.active_published
+      @next_events_by_store = Event.orders_open
         .where(store_id: store_ids)
         .order(:pickup_at)
         .group_by(&:store_id)
         .transform_values(&:first)
-      @events = ProximityService.events_near(@latitude, @longitude, @radius)
     else
       @stores = []
       @next_events_by_store = {}
-      @events = []
     end
   end
 end

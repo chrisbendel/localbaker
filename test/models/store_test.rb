@@ -140,7 +140,7 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Create past event (no active orders)
-    past_event = store.events.create!(name: "Past", orders_close_at: 1.day.ago, pickup_at: 1.day.ago)
+    past_event = store.events.create!(name: "Past", orders_close_at: 2.days.ago, pickup_at: 1.day.ago)
     past_event.orders.create!(user: User.create!(email: "customer1@example.com"))
 
     assert_equal false, store.active_orders?
@@ -317,8 +317,8 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Attach a banner image
-    banner_path = Rails.root.join("test/fixtures/files/banner.png")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.png", content_type: "image/png")
+    banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
+    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
     assert store.banner_image.attached?
 
     # Update with remove_banner_image flag
@@ -333,8 +333,8 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "test")
 
     # Attach a banner image
-    banner_path = Rails.root.join("test/fixtures/files/banner.png")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.png", content_type: "image/png")
+    banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
+    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
     assert store.banner_image.attached?
 
     # Update without remove_banner_image flag
@@ -380,7 +380,7 @@ class StoreTest < ActiveSupport::TestCase
     store = Store.create!(user: @user, name: "Test", slug: "original")
 
     # Create a past event with orders
-    past_event = store.events.create!(name: "Past", orders_close_at: 1.day.ago, pickup_at: 1.day.ago)
+    past_event = store.events.create!(name: "Past", orders_close_at: 2.days.ago, pickup_at: 1.day.ago)
     past_event.orders.create!(user: User.create!(email: "customer@example.com"))
 
     # Verify no active orders

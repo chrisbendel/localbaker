@@ -1,0 +1,15 @@
+<%= content_for(:title, "Meet the Baker — #{@store.name}") %>
+<% content_for(:meta_description, "Meet the baker behind #{@store.name}. #{@store.bio&.truncate(120)}") %>
+
+<div class="stack">
+  <section class="stack-sm">
+    <div class="group items-center">
+      <% if @store.photo.attached? %>
+        <%= image_tag @store.photo.variant(resize_to_limit: [200, 200], format: :webp), class: "profile-photo" %>
+      <% end %>
+      <h2>Meet the Baker</h2>
+    </div>
+
+    <%= simple_format @store.bio %>
+  </section>
+</div>

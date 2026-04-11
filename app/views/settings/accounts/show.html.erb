@@ -17,42 +17,26 @@
       <p class="field-hint">Your login email. Contact support if you need to update this.</p>
     </div>
 
-    <div>
+    <div class="group">
       <%= f.submit "Save Changes", class: "button primary" %>
-    </div>
-  <% end %>
-
-  <% if current_user.pro? %>
-    <hr class="divider">
-    <div class="card stack-sm">
-      <p class="font-bold">Pro Subscription</p>
-      <p class="text-sm text-muted">You're on the Pro plan. Manage your billing, update payment details, or cancel from the billing portal.</p>
-      <div class="group">
-        <%= button_to "Manage Subscription", billing_portal_path, method: :post, class: "button", data: { turbo: false } %>
-      </div>
     </div>
   <% end %>
 
   <% if !current_user.store&.persisted? %>
     <hr class="divider">
     <div class="card stack-sm">
-      <p class="font-bold">Are you a baker?</p>
-      <p class="text-sm text-muted">Create a storefront to start taking pre-orders for your next bake.</p>
+      <strong>Are you a baker?</strong>
+      <p>Create a storefront to start taking pre-orders for your next bake.</p>
       <div class="group">
         <%= link_to "Create your store", new_store_path, class: "button" %>
       </div>
     </div>
   <% end %>
 
-  <% if (store = current_user.store)&.persisted? %>
-    <hr class="divider">
-    <div class="card stack-sm">
-      <p class="font-bold text-danger">Delete Store</p>
-      <p class="text-sm text-muted">Permanently remove your storefront and all its data. This cannot be undone.</p>
-      <div class="group">
-        <%= button_to "Delete Store", store_path(store), method: :delete, class: "button danger", 
-            data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
-      </div>
-    </div>
-  <% end %>
+  <hr class="divider">
+
+  <div class="group justify-between items-center">
+    <small class="text-muted">Signed in as <%= current_user.email %></small>
+    <%= button_to "Sign out", session_path, method: :delete, class: "button secondary" %>
+  </div>
 </div>

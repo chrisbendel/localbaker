@@ -1,97 +1,88 @@
-class Stores::EventProductsController < ApplicationController
-  before_action :require_authentication!
-  before_action :set_store
-  before_action :require_store!
-  before_action :set_event_product, only: [:edit, :update, :destroy]
-  before_action :set_event
-  before_action :require_store_owner!
-  before_action :ensure_event_not_past!, only: [:new, :create, :edit, :update, :destroy]
+module Stores
+  class EventProductsController < BaseController
+    before_action :set_event_product, only: [:edit, :update, :destroy]
+    before_action :set_event
+    before_action :require_store_owner!
+    before_action :ensure_event_not_past!, only: [:new, :create, :edit, :update, :destroy]
 
-  def new
-    @event_product = @event.event_products.new(new_event_product_params)
-    @recent_products = EventProduct.joins(:event)
-      .where(events: {store_id: @store.id})
-      .order(created_at: :desc)
-      .to_a.uniq(&:name).first(10)
-  end
-
-  def create
-    @event_product = @event.event_products.new(event_product_params)
-
-    if @event_product.save
-      redirect_to event_path(@event), notice: "Product added."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
-
-  def edit
-  end
-
-  def update
-    if params[:event_product][:remove_image] == "1"
-      @event_product.image.purge
+    def new
+      @event_product = @event.event_products.new(new_event_product_params)
+      @recent_products = EventProduct.joins(:event)
+        .where(events: {store_id: @store.id})
+        .order(created_at: :desc)
+        .to_a.uniq(&:name).first(10)
     end
 
-    if @event_product.update(event_product_params)
-      redirect_to event_path(@event), notice: "Product updated."
-    else
-      render :edit, status: :unprocessable_entity
+    def create
+      @event_product = @event.event_products.new(event_product_params)
+
+      if @event_product.save
+        redirect_to event_path(@event), notice: "Product added."
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
-  end
 
-  def destroy
-    if @event_product.destroy
-      redirect_to event_path(@event), notice: "Product removed."
-    else
-      redirect_to event_path(@event), alert: "Cannot delete product: #{@event_product.errors.full_messages.to_sentence}"
+    def edit
     end
-  end
 
-  private
+    def update
+      if params[:event_product][:remove_image] == "1"
+        @event_product.image.purge
+      end
 
-  def set_store
-    @store = current_user.store
-  end
-
-  def require_store!
-    redirect_to new_store_path, alert: "You must create a store first." unless @store
-  end
-
-  # Load @event_product only for shallow routes
-  def set_event_product
-    return unless params[:id]
-    @event_product = EventProduct.find(params[:id])
-  end
-
-  # Derive @event:
-  # - From nested routes → params[:event_id]
-  # - From shallow routes → @event_product.event
-  def set_event
-    @event = if params[:event_id]
-      @store.events.find(params[:event_id])
-    else
-      @event_product.event
+      if @event_product.update(event_product_params)
+        redirect_to event_path(@event), notice: "Product updated."
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
-  end
 
-  def require_store_owner!
-    return if current_user == @store.user
-    redirect_to event_path(@event), alert: "Not allowed."
-  end
-
-  def ensure_event_not_past!
-    if @event.past?
-      redirect_to event_path(@event), alert: "Past events cannot be edited."
+    def destroy
+      if @event_product.destroy
+        redirect_to event_path(@event), notice: "Product removed."
+      else
+        redirect_to event_path(@event), alert: "Cannot delete product: #{@event_product.errors.full_messages.to_sentence}"
+      end
     end
-  end
 
-  def new_event_product_params
-    params.fetch(:event_product, {}).permit(:name, :price)
-  end
+    private
 
-  def event_product_params
-    params.require(:event_product)
-      .permit(:name, :quantity, :description, :price, :image)
+    # Load @event_product only for shallow routes
+    def set_event_product
+      return unless params[:id]
+      @event_product = EventProduct.find(params[:id])
+    end
+
+    # Derive @event:
+    # - From nested routes → params[:event_id]
+    # - From shallow routes → @event_product.event
+    def set_event
+      @event = if params[:event_id]
+        @store.events.find(params[:event_id])
+      else
+        @event_product.event
+      end
+    end
+
+    def require_store_owner!
+      return if current_user == @store.user
+      redirect_to event_path(@event), alert: "Not allowed."
+    end
+
+    def ensure_event_not_past!
+      if @event.past?
+        redirect_to event_path(@event), alert: "Past events cannot be edited."
+      end
+    end
+
+    def new_event_product_params
+      params.fetch(:event_product, {}).permit(:name, :price)
+    end
+
+    def event_product_params
+      params.require(:event_product)
+        .permit(:name, :quantity, :description, :price, :image)
+    end
   end
 end

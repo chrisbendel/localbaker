@@ -140,6 +140,30 @@ class EventTest < ActiveSupport::TestCase
     refute_includes Event.active_published, @event
   end
 
+  # --- orders_open scope ---
+
+  test "orders_open includes published events with future orders_close_at" do
+    @event.save!
+    @event.event_products.create!(name: "Item", price_cents: 1000, quantity: 5)
+    @event.publish!
+    assert @event.orders_open?
+    assert_includes Event.orders_open, @event
+  end
+
+  test "orders_open excludes draft events even if future orders_close_at" do
+    @event.save!
+    refute_includes Event.orders_open, @event
+  end
+
+  test "orders_open excludes published events with past orders_close_at" do
+    @event.orders_close_at = 2.days.ago
+    @event.pickup_at = 1.day.ago
+    @event.save!(validate: false)
+    @event.update_column(:published_at, Time.current)
+    refute @event.orders_open?
+    refute_includes Event.orders_open, @event
+  end
+
   # --- past scope ---
 
   test "past includes published events with pickup in the last 30 days" do
@@ -186,27 +210,27 @@ class EventTest < ActiveSupport::TestCase
     assert_predicate @event, :valid?
   end
 
-  test "effective_pickup_address returns the event's pickup_address when set" do
+  test "address returns the event's pickup_address when set" do
     @store.update!(address: "123 Home St, Portland, OR")
     @event.pickup_address = "The Climbing Gym, 456 Oak Ave, Portland, OR"
-    assert_equal "The Climbing Gym, 456 Oak Ave, Portland, OR", @event.effective_pickup_address
+    assert_equal "The Climbing Gym, 456 Oak Ave, Portland, OR", @event.address
   end
 
-  test "effective_pickup_address falls back to store address when event has none" do
+  test "address falls back to store address when event has none" do
     @store.update!(address: "123 Home St, Portland, OR")
     @event.pickup_address = nil
-    assert_equal "123 Home St, Portland, OR", @event.effective_pickup_address
+    assert_equal "123 Home St, Portland, OR", @event.address
   end
 
-  test "effective_pickup_address returns nil when neither event nor store has an address" do
+  test "address returns nil when neither event nor store has an address" do
     @store.update!(address: nil)
     @event.pickup_address = nil
-    assert_nil @event.effective_pickup_address
+    assert_nil @event.address
   end
 
-  test "effective_pickup_address treats blank event pickup_address as absent" do
+  test "address treats blank event pickup_address as absent" do
     @store.update!(address: "123 Home St, Portland, OR")
     @event.pickup_address = ""
-    assert_equal "123 Home St, Portland, OR", @event.effective_pickup_address
+    assert_equal "123 Home St, Portland, OR", @event.address
   end
 end

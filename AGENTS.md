@@ -24,6 +24,41 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 - **Token-driven CSS**: All colors, spacing, and shape values come from CSS custom properties defined in `:root`. No hardcoded values in views or components.
 - **Modular Design**: Rails partials as components. Keep partials focused and reusable.
 - **No Dropdowns**: Avoid JS-dependent UI patterns. Native `<select>` is fine; custom JS dropdowns are not.
+
+## Design System Constraints
+
+**The design system is intentionally minimal and closed. Do not expand it without explicit instruction.**
+
+### Spacing & Layout — NEVER add new sizes or variants
+
+The spacing scale has exactly three sizes: `sm`, `(base)`, `lg`. The layout primitives (`.stack-*`, `.group-*`) mirror this exactly. This is a deliberate constraint, not an oversight.
+
+**Prohibited without explicit user approval:**
+- New spacing tokens (`--sp-xs`, `--sp-xl`, `--sp-2xl`, etc.)
+- New layout class variants (`.stack-xs`, `.group-tight`, `.stack-xl`, etc.)
+- New gap/spacing utility classes (`.gap-xs`, `.gap-md`, etc.)
+- Inline `style=` attributes for spacing or layout
+
+**When you think you need a new size, work through this first:**
+1. Would `sm` or `lg` be close enough? Slight visual difference is acceptable.
+2. Can the parent or child element be restructured to avoid the need?
+3. Is the element itself the wrong choice — e.g., would a different semantic element or class solve it?
+
+If you genuinely cannot proceed without a new primitive, **stop and explain why** — state which existing sizes you tried and why they don't work. Do not add it silently.
+
+### CSS Classes — no new utilities without justification
+
+Before adding any new CSS class, verify it doesn't already exist in `application.css`. If you need to add one:
+- It must solve a problem that cannot be solved with existing primitives + modifier classes (`.items-center`, `.justify-between`, etc.)
+- It must be used in at least two places — single-use styling belongs inline or as a component-specific rule, not a utility
+
+### Partials & `mode:` flags — keep partials single-purpose
+
+Partials should not accept a `mode:` or `variant:` flag to render different structures. If two contexts need meaningfully different markup, use two partials or inline the simpler case. Branching inside a partial on a flag is a code smell.
+
+### Default parameters in partials
+
+Use `<% variable ||= default %>` at the top of a partial for optional locals. Never use `local_assigns[:key]` to read locals — it bypasses the explicit default and makes the interface unclear.
 - **No Emoji**: Keep the UI text-only and clean. Unicode punctuation (arrows, middots) is fine; emoji are not.
 - **Mobile First**: Toast z-index and `env(safe-area-inset-bottom)` ensure UI chrome doesn't obscure content on iOS. Order summary hoists above product list on mobile via CSS `order: -1`.
 
@@ -35,39 +70,36 @@ All values come from `:root` custom properties:
 
 ```css
 --font             /* "DM Sans", system-ui — loaded via Google Fonts */
---text             /* #111 — primary text */
+--text             /* #1a1612 — primary text */
 --text-muted       /* #706860 — secondary text (warm gray) */
---border           /* #e0dbd5 — default borders */
---border-strong    /* #aca49d — emphasized borders */
---bg               /* #faf8f5 — warm off-white */
---bg-subtle        /* #f0ede8 — cards, panels */
---success          /* #5a7a5e — muted sage green */
---success-bg       /* #eef1ec */
---success-border   /* #bfcbbc */
---danger           /* #8f4a42 — muted terracotta */
---danger-bg        /* #f3ebe9 */
---danger-border    /* #cfa49f */
---sp-sm / --sp-md / --sp-lg   /* spacing scale */
+--border           /* #ddd8d2 — default borders */
+--border-strong    /* #aaa49e — emphasized borders */
+--bg               /* #f5f2ee — warm off-white */
+--bg-subtle        /* #edeae5 — cards, panels */
+--success          /* var(--text) — monochrome, contrast carries signal */
+--danger           /* var(--text) — monochrome */
+--sp-sm            /* 0.5rem */
+--sp-md            /* 1rem */
+--sp-lg            /* 2rem */
 --radius           /* 3px */
 --radius-full      /* 9999px — pills */
 ```
 
-The palette is earthy/warm-toned rather than generic Bootstrap greens/reds.
+The palette is earthy/warm-toned. Three spacing sizes only — no xs, no xl.
 
 ### Layout Primitives
 
 | Class | Purpose |
 |---|---|
 | `.container` | Max-width 720px, centered, horizontal padding |
-| `.stack` | Vertical flex column, `gap: --sp-md` |
 | `.stack-sm` | Vertical flex column, `gap: --sp-sm` |
-| `.stack-lg` | Vertical flex column, `gap: --sp-xl` |
-| `.group` | Horizontal flex row, `gap: --sp-sm` |
+| `.stack` | Vertical flex column, `gap: --sp-md` |
+| `.stack-lg` | Vertical flex column, `gap: --sp-lg` |
+| `.group-sm` | Horizontal flex row, `gap: --sp-sm` |
+| `.group` | Horizontal flex row, `gap: --sp-md` |
 | `.group-lg` | Horizontal flex row, `gap: --sp-lg` |
-| `.grid` | CSS grid, `gap: --sp-lg` |
-| `.grid-cols-2` | 2-column grid (≥768px) |
-| `.grid-cols-3` | 3-column grid (≥768px) |
-| `.grid-sidebar` | `1fr 320px` layout for content + aside (≥768px) |
+| `.flex-cols-2` | Responsive 2-column flex row (tiling) |
+| `.page-header` | Row on desktop, stacked column on mobile (`≤600px`) |
 
 ### Components
 
@@ -96,7 +128,7 @@ The palette is earthy/warm-toned rather than generic Bootstrap greens/reds.
 
 ### Typography Helpers
 
-`.text-muted`, `.text-sm`, `.text-lg`, `.text-danger`, `.text-success`, `.font-bold`, `.text-center`, `.text-right`, `.section-title`
+`.text-muted`, `.text-sm`, `.text-lg`, `.text-danger`, `.text-success`, `.font-bold`, `.text-center`, `.text-right`
 
 ### Tables
 
@@ -220,7 +252,7 @@ The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`
 - **Inventory**: `EventProduct#remaining` and `sold` are calculated, not stored. `with_lock` used in `OrderItemsController` to prevent race conditions.
 - **Authorization**: No gem — manual `current_user == @store.user` ownership checks. `require_authentication!` before_action for protected routes.
 - **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are strictly forbidden. Use layout primitives (.stack/.group) to handle spacing.
-- **Flexbox First**: Use `.stack` and `.group` as the primary layout engines. Only use CSS Grid (`.grid`) when a multi-column grid layout is explicitly required.
+- **Flexbox First**: Use `.stack` / `.stack-sm` / `.stack-lg` (vertical) and `.group` / `.group-sm` / `.group-lg` (horizontal) as the primary layout engines. Three sizes only — sm, (base), lg. No xs or xl variants.
 - **Database Migrations**: ALWAYS create a migration file for schema changes — never commit `db/schema.rb` directly. The schema file is auto-generated by `rails db:schema:dump`. Committing schema changes without a migration creates sync issues where fresh deployments fail trying to re-add columns that already exist in the schema. When reviewing PRs, watch for schema.rb changes without corresponding migration files in `db/migrate/`.
 
 ## Development Workflow

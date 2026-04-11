@@ -6,8 +6,10 @@ class Event < ApplicationRecord
   validates :name, presence: true
   validates :orders_close_at, presence: true
   validates :pickup_at, presence: true
+  # TODO: Add fulfillment_type (pickup, delivery, both) and make fields dependent.
+  # If delivery_only, pickup_at and pickup_address may be nil/different.
 
-  before_validation { self.pickup_address = AddressParser.normalize(pickup_address) }
+  before_validation :normalize_pickup_address
 
   validate :orders_close_before_pickup
   validate :must_have_products, if: :published?
@@ -15,21 +17,18 @@ class Event < ApplicationRecord
   scope :draft, -> { where(published_at: nil) }
   scope :current, -> { published.where("pickup_at >= ?", 3.days.ago) }
   scope :active_published, -> { published.where("pickup_at >= ?", Time.current) }
+  scope :orders_open, -> { published.where("orders_close_at > ?", Time.current) }
   scope :past, ->(days = 30) { published.where("pickup_at < ?", Time.current).where("pickup_at >= ?", days.days.ago) }
 
   attribute :repeat_interval, :integer
   enum :repeat_interval, {no_repeat: 0, weekly: 1, biweekly: 2}, default: :no_repeat
 
   def address
-    effective_pickup_address
+    pickup_address.presence || store.address.presence
   end
 
   def location_display
     AddressParser.city_state(address)
-  end
-
-  def effective_pickup_address
-    pickup_address.presence || store.address.presence
   end
 
   def published?
@@ -82,6 +81,10 @@ class Event < ApplicationRecord
   end
 
   private
+
+  def normalize_pickup_address
+    self.pickup_address = AddressParser.normalize(pickup_address)
+  end
 
   def orders_close_before_pickup
     return unless orders_close_at && pickup_at

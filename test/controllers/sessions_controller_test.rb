@@ -6,7 +6,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(user)
 
     get new_session_path
-    assert_redirected_to orders_path
+    assert_redirected_to near_path
   end
 
   test "create sends login code and redirects to verify" do
@@ -30,7 +30,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     code = body_text[/\b\d{6}\b/]
 
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to root_path
+    assert_redirected_to near_path
     assert_equal "Signed in!", flash[:notice]
     assert_equal user.id, session[:user_id]
   end
@@ -50,7 +50,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Confirm code
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to root_path
+    assert_redirected_to store_path
     assert_equal "Signed in!", flash[:notice]
     assert_equal user.id, session[:user_id]
   end
@@ -83,7 +83,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     code = body_text[/\b\d{6}\b/]
 
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to root_path
+    assert_redirected_to near_path
   end
 
   test "confirm ignores external return_to to prevent open redirect" do
@@ -99,7 +99,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     code = body_text[/\b\d{6}\b/]
 
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to root_path
+    assert_redirected_to near_path
   end
 
   test "confirm fails with wrong code" do

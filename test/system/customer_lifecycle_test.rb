@@ -51,10 +51,10 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 1. Sign in
     # ----------------------------------------------------------------
     sign_in_via_browser(@customer)
-    assert_current_path orders_path
+    assert_current_path near_path
 
-    # No orders yet — customer-focused empty state
-    assert_text "You don't have any orders yet"
+    # Land on discovery page
+    assert_text "Bakeries Near You"
 
     # ----------------------------------------------------------------
     # 2. Browse to storefront
@@ -76,10 +76,9 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 4. Open the event
     # ----------------------------------------------------------------
     click_on "Sunday Bake"
-    assert_text "Products"
+    assert_text(/products/i)
     assert_text "Sourdough"
     assert_text "Focaccia"
-    assert_text "No items yet"
     assert_no_text "Your order is saved"
 
     # Event-specific pickup location is shown; store address is not
@@ -89,8 +88,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 5. Add sourdough to order
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     assert_text "Added Sourdough"
@@ -104,8 +103,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 6. Add focaccia to order
     # ----------------------------------------------------------------
-    within find(".card", text: "Focaccia") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Focaccia") do
+      find("button[aria-label='Add to Order']").click
     end
 
     within "aside" do
@@ -118,8 +117,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Add sourdough again to bump quantity to 2
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     assert_text "Added Sourdough"
@@ -149,8 +148,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 9. Add sourdough back so order has both items again
     # ----------------------------------------------------------------
-    within find(".card", text: "Sourdough") do
-      click_on "Add to Order"
+    within find(".card-item", text: "Sourdough") do
+      find("button[aria-label='Add to Order']").click
     end
 
     within "aside" do
@@ -174,7 +173,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
 
     # Clicking the order card goes to the storefront event
     find(".card", text: "The Bread Barn").click
-    assert_text "Products"
+    assert_text(/products/i)
     assert_text "Your order"
 
     # ----------------------------------------------------------------

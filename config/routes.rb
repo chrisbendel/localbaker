@@ -13,32 +13,38 @@ Rails.application.routes.draw do
     post :confirm, on: :collection
   end
 
-  # Singular store for member actions (a user owns at most one store)
+  # Baker Management Portal
   resource :store, shallow: true, only: [:new, :create, :show, :destroy] do
     get :qr, on: :member
     post :dismiss_onboarding, on: :member
-    resources :events, shallow: true, module: :stores do
-      member do
-        post :publish
-        post :duplicate
-        get :prep
+
+    # Nested actions in Stores:: namespace
+    scope module: :stores do
+      resource :settings, only: [:show, :update], controller: "settings"
+      resource :profile, only: [:show, :update], controller: "profiles"
+      resource :payments, only: [:show, :update], controller: "payments"
+
+      resources :events, shallow: true do
+        member do
+          post :publish
+          post :duplicate
+          get :prep
+        end
+        resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
       end
-      resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
     end
   end
 
-  # Settings Hub
+  # User Account Settings
   namespace :settings do
     root to: redirect("/settings/account")
-    resource :store, only: [:show, :update], controller: "stores"
-    resource :profile, only: [:show, :update], controller: "profiles"
-    resource :payments, only: [:show, :update], controller: "payments"
     resource :account, only: [:show, :update], controller: "accounts"
   end
 
   get "unsub/:token", to: "public_unsubscribes#unsubscribe", as: :unsubscribe
 
   get "/shop/:slug", to: "storefront#show", as: :storefront
+  get "/shop/:slug/about", to: "storefront#about", as: :storefront_about
 
   scope "/shop/:slug", module: :storefront, as: :storefront do
     resource :notification, only: [:create, :destroy]
@@ -61,6 +67,7 @@ Rails.application.routes.draw do
 
   resources :orders, only: [:index]
   root to: "pages#home"
+  get "home", to: "pages#home" # Keep landing page accessible at /home
   get "about", to: "pages#about", as: :about
   get "near", to: "locations#near", as: :near
 

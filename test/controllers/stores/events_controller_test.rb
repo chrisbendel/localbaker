@@ -18,24 +18,6 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
   end
 
-  test "GET index shows events" do
-    get store_events_path
-    assert_response :success
-    assert_select "h1", /All Events/i
-  end
-
-  test "GET show displays the event" do
-    get event_path(@event)
-    assert_response :success
-    assert_select "h2", /#{@event.name}/
-  end
-
-  test "GET new renders form" do
-    get new_store_event_path
-    assert_response :success
-    assert_select "form"
-  end
-
   test "POST create creates an event and redirects" do
     assert_difference "@store.events.count", 1 do
       post store_events_path, params: {

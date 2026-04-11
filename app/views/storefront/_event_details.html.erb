@@ -1,13 +1,14 @@
-<section class="card-accent stack-sm">
-  <h2><%= event.name %></h2>
+<div class="stack-sm">
+  <%# TODO: Hide address/map link if event is delivery_only. %>
+  <h2 class="font-heading text-xl"><%= event.name %></h2>
 
   <% if event.description.present? %>
-    <p><%= event.description %></p>
+    <p class="text-lg"><%= event.description %></p>
   <% end %>
 
-  <div class="stack-sm text-muted text-sm">
+  <div class="stack-sm">
     <% if event.location_display.present? %>
-      <%= render "application/address_line", model: event, show_full: true %>
+      <%= render "application/address_line", model: event %>
     <% end %>
   </div>
-</section>
+</div>

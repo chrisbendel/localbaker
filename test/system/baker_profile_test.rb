@@ -13,25 +13,30 @@ class BakerProfileTest < ApplicationSystemTestCase
   test "baker can update profile and payment info" do
     sign_in_via_browser(@baker)
     # 1. Update Bio
-    visit settings_profile_path
+    visit store_profile_path
     fill_in "Baker Bio", with: "Baking bread in my backyard oven since 2020."
     fill_in "Instagram Handle", with: "@crusty_loaf"
     click_on "Save Changes"
     assert_text "Baker profile updated."
 
     # 2. Update Payments
-    visit settings_payments_path
+    visit store_payments_path
     fill_in "Venmo Handle", with: "@crusty-baker"
     click_on "Save Changes"
     assert_text "Payment options updated."
 
-    # Verify on public profile
+    # Verify on public storefront — hero shows social links and a "Meet the Baker" link
     visit storefront_path(@store.slug)
+
+    assert_link "Meet the Baker →"
+    assert_selector "a[title='Instagram @crusty_loaf']"
+    assert_selector "a[title='Venmo @crusty-baker']"
+
+    # Bio lives on the about page
+    click_on "Meet the Baker →"
 
     assert_text "Meet the Baker"
     assert_text "Baking bread in my backyard oven since 2020."
-    assert_link "Instagram"
-    assert_text "Venmo (@crusty-baker)"
 
     # Create an event and order to verify payment links in summary
     @event = @store.events.create!(

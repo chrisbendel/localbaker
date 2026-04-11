@@ -13,10 +13,10 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 1. Sign in
     # ----------------------------------------------------------------
     sign_in_via_browser(@baker)
-    assert_current_path orders_path
+    assert_current_path near_path
 
-    # Empty state is customer-focused — no "Create your Store" prompt here
-    assert_text "You don't have any orders yet"
+    # Land on discovery page
+    assert_text "Bakeries Near You"
     assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------
@@ -33,9 +33,6 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Create Store"
 
     assert_text "Morning Loaf"
-    # Header nav now has store shortcuts
-    assert_link "Storefront"
-    assert_link "Bakery"
     # Nudge to create first event
     assert_text "Create your first event"
 
@@ -161,12 +158,13 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
 
-    click_on "Storefront"
+    visit store_path
+    click_on "View Storefront"
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
     within "header nav" do
-      click_on "Bakery"
+      find('a[aria-label="Bakery Management"]').click
     end
     assert_text "Morning Loaf"
 
@@ -210,7 +208,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     # Navigate back to dashboard to edit store settings
     within "header nav" do
-      click_on "Bakery"
+      find('a[aria-label="Bakery Management"]').click
     end
     click_on "Settings"
     fill_in "Description", with: "Updated store description."
@@ -220,7 +218,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     # Navigate back to dashboard to start next event
     within "header nav" do
-      click_on "Bakery"
+      find('a[aria-label="Bakery Management"]').click
     end
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
@@ -247,10 +245,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 16. Delete store
     # ----------------------------------------------------------------
     within "header nav" do
-      click_on "Bakery"
+      find('a[aria-label="Bakery Management"]').click
     end
-    click_on "Settings"
-    click_on "Account"
+    click_on "Store Info"
     accept_confirm do
       click_on "Delete Store"
     end

@@ -1,15 +1,10 @@
 <% content_for :title, "#{@event.name} — Add Product" %>
 
-<%= render_breadcrumbs([
-  { name: @store.name, path: store_path },
-  { name: @event.name, path: event_path(@event) }
-]) %>
-
-<h2>Add Product</h2>
+<h3>Add Product</h3>
 
 <% if @recent_products.any? %>
   <div class="panel stack-sm" style="margin-top: var(--sp-lg); margin-bottom: var(--sp-lg);">
-    <h3 class="text-sm font-bold text-muted">Quick add from past bakes</h3>
+    <h4>Quick add from past bakes</h4>
     <div class="group" style="flex-wrap: wrap;">
       <% @recent_products.each do |product| %>
         <%= link_to "+ #{product.name} (#{product.price_formatted})",

@@ -1,6 +1,7 @@
 class StoresController < ApplicationController
   before_action :require_authentication!
   before_action :set_store, only: [:show, :qr, :dismiss_onboarding, :destroy]
+  layout "bakery", only: [:show]
 
   def new
     redirect_to store_path if current_user.store

@@ -9,7 +9,7 @@
         <h3>Free</h3>
         <% if current_user.free? %><span class="badge secondary">Current plan</span><% end %>
       </div>
-      <p class="text-muted"><%= User::FREE_EVENT_LIMIT %> active event &middot; Order management &middot; Email notifications</p>
+      <p><%= User::FREE_EVENT_LIMIT %> active event &middot; Order management &middot; Email notifications</p>
     </div>
 
     <div class="card stack-sm">
@@ -17,7 +17,7 @@
         <h3>Pro</h3>
         <% if current_user.pro? %><span class="badge">Current plan</span><% end %>
       </div>
-      <p class="text-muted">Everything in Free, plus:</p>
+      <p>Everything in Free, plus:</p>
       <ul class="stack-sm">
         <li>Unlimited active events</li>
         <li>Delivery with zone restrictions</li>

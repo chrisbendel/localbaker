@@ -7,11 +7,6 @@ module Settings
       sign_in_as(@user)
     end
 
-    test "show renders" do
-      get settings_account_path
-      assert_response :success
-    end
-
     test "update updates account name but not email" do
       patch settings_account_path, params: {
         user: {

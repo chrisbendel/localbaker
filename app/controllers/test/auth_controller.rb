@@ -10,6 +10,6 @@ class Test::AuthController < ApplicationController
   def create
     user = User.find(params[:user_id])
     sign_in(user)
-    redirect_to root_path
+    redirect_to after_sign_in_path
   end
 end

@@ -7,100 +7,19 @@
   <% content_for(:og_image, root_url.chomp("/") + "/baguette-solid.png") %>
 <% end %>
 
-<header class="stack">
-  <% if @store.banner_image.attached? %>
-    <%= image_tag @store.banner_image.variant(resize_to_limit: [1200, 800], format: :webp), class: "img-banner" %>
-  <% end %>
-  <div class="group justify-between items-center">
-  <h1><%= @store.name %></h1>
-    <% if @notification.present? %>
-      <%= button_to storefront_notification_path(@store.slug), method: :delete, class: "button secondary", title: "Unsubscribe from email updates" do %>
-        Unsubscribe
-      <% end %>
-    <% else %>
-      <%= button_to storefront_notification_path(@store.slug), method: :post, class: "button secondary", title: "Subscribe to email updates" do %>
-        Subscribe
-      <% end %>
-    <% end %>
-  </div>
-  <%= render "application/address_line", model: @store %>
-  <% if @store.description.present? %>
-    <p class="text-muted"><%= @store.description %></p>
-  <% end %>
-</header>
+<%= render "storefront/store_hero", store: @store %>
 
 <section class="stack">
-  <h2 class="section-title">Upcoming Bakes</h2>
+  <h4>Upcoming Bakes</h4>
 
-  <div class="grid grid-cols-2">
-    <% @events.each do |event| %>
-      <%= render "storefront/event_card", event: event, store: @store %>
-    <% end %>
-  </div>
-
-  <% if @events.empty? %>
-    <p class="text-muted text-center">No upcoming events scheduled right now. Check back soon!</p>
-  <% end %>
-  
-</section>
-
-<hr class="divider">
-
-<section class="stack">
-  <% if @store.bio.present? %>
-    <section class="stack-sm">
-      <div class="group items-center">
-        <% if @store.photo.attached? %>
-          <%= image_tag @store.photo.variant(resize_to_limit: [200, 200], format: :webp), class: "profile-photo" %>
-        <% end %>
-        <h2 class="section-title">Meet the Baker</h2>
-      </div>
-      <%= simple_format @store.bio %>
-    </section>
-  <% end %>
-
-  <% if @store.instagram_handle.present? || @store.facebook_url.present? || @store.website_url.present? %>
-    <section class="stack-sm">
-      <h2 class="section-title">Social & Web</h2>
-      <div class="group">
-        <% if @store.instagram_handle.present? %>
-          <%= link_to @store.instagram_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
-            Instagram
-          <% end %>
-        <% end %>
-
-        <% if @store.facebook_url.present? %>
-          <%= link_to @store.facebook_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
-            Facebook
-          <% end %>
-        <% end %>
-
-        <% if @store.website_url.present? %>
-          <%= link_to @store.website_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
-            Website
-          <% end %>
-        <% end %>
-      </div>
-    </section>
-  <% end %>
-
-  <% if @store.venmo_handle.present? || @store.paypal_url.present? %>
-    <section class="stack-sm">
-      <h2 class="section-title">Payment Options</h2>
-      <p class="text-sm text-muted">You can pay for your orders using these methods at pickup or as arranged with the baker.</p>
-      <div class="group">
-        <% if @store.venmo_handle.present? %>
-          <%= link_to @store.venmo_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
-            Venmo (<%= @store.venmo_handle %>)
-          <% end %>
-        <% end %>
-
-        <% if @store.paypal_url.present? %>
-          <%= link_to @store.paypal_url, target: "_blank", rel: "noopener noreferrer", class: "button secondary small" do %>
-            PayPal
-          <% end %>
-        <% end %>
-      </div>
-    </section>
+  <% if @events.any? %>
+    <div class="flex-cols-2">
+      <% @events.each do |event| %>
+        <%= render "storefront/event_card", event: event, ordered: @ordered_event_ids&.include?(event.id) %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-center">No upcoming events scheduled right now. Check back soon!</p>
   <% end %>
 </section>
+

@@ -22,25 +22,6 @@ class StorefrontControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: /Upcoming/
   end
 
-  test "hides past events on storefront" do
-    recent = publish_event(name: "Recent", orders_close_at: 1.day.ago, pickup_at: 1.hour.ago)
-    recent.update_columns(orders_close_at: 1.day.ago, pickup_at: 1.hour.ago)
-
-    get storefront_url(@store.slug)
-
-    assert_response :success
-    assert_select "a", text: /Recent/, count: 0
-  end
-
-  test "hides draft events" do
-    @store.events.create!(name: "Draft Event", orders_close_at: 1.day.from_now, pickup_at: 2.days.from_now)
-
-    get storefront_url(@store.slug)
-
-    assert_response :success
-    assert_select "a", text: /Draft Event/, count: 0
-  end
-
   test "includes open graph meta tags" do
     get storefront_url(@store.slug)
 

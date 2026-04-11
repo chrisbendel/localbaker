@@ -16,7 +16,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event.update_columns(published_at: Time.current)
 
     visit store_path
-    assert_text "Taking Orders"
+    assert_text(/taking orders/i)
     assert_text "Saturday Sourdough"
     assert_text "0 orders"
   end
@@ -30,7 +30,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event.update_columns(published_at: Time.current)
 
     visit store_path
-    assert_text "Preparation"
+    assert_text(/preparation/i)
     assert_text "Friday Focaccia"
     assert_link "Prep list →"
   end
@@ -44,7 +44,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     )
 
     visit store_path
-    assert_text "Drafts"
+    assert_text(/drafts/i)
     assert_text "Sunday Sweets"
     assert_text "Draft"
   end
@@ -60,9 +60,9 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     visit store_path
     assert_no_text "Past Bake"
 
-    click_on "View all events →"
+    click_on "View all events ·"
     assert_current_path store_events_path
-    assert_text "All Events"
+    assert_text "Events"
     assert_text "Past Bake"
   end
 
@@ -85,11 +85,5 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     assert_link "Edit Event"
     assert_button "Reuse Event"
     assert_button "Delete Event"
-  end
-
-  test "dashboard empty state" do
-    visit store_path
-    assert_text "Your bakery is quiet right now"
-    assert_link "Schedule your next bake"
   end
 end

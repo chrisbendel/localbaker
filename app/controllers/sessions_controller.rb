@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   def new
     if authenticated?
-      redirect_to current_user.store ? store_path : orders_path
+      redirect_to after_sign_in_path
     end
     session[:return_to] = params[:return_to] if params[:return_to].present?
   end

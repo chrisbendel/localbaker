@@ -1,10 +1,5 @@
-<%= render_breadcrumbs([
-  { name: @store.name, path: store_path },
-  { name: @event.name, path: event_path(@event) },
-  { name: "Edit" }
-]) %>
 
-<h1>Edit Event</h1>
+<h3>Edit Event</h3>
 
 <%= form_with model: [@event], local: true do |form| %>
   <div>
@@ -20,18 +15,18 @@
   <div>
     <%= form.label :pickup_address, "Pickup Location" %>
     <%= form.text_field :pickup_address, placeholder: "e.g. The Climbing Gym, 456 Oak Ave, Portland, OR" %>
-    <p class="text-muted text-sm">Where customers should pick up their order. Leave blank to use your store's default address.</p>
+    <p class="field-hint">Where customers should pick up their order. Leave blank to use your store's default address.</p>
   </div>
 
   <% if current_user.pro? %>
     <div>
       <%= form.label :delivery_enabled, "Allow Delivery" %>
       <%= form.check_box :delivery_enabled %>
-      <p class="text-muted text-sm">Let customers enter a delivery address instead of picking up. Both pickup and delivery can be offered.</p>
+      <p class="field-hint">Let customers enter a delivery address instead of picking up. Both pickup and delivery can be offered.</p>
     </div>
   <% else %>
     <div class="nudge">
-      <p class="text-sm">Delivery is a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to offer delivery on your events.</p>
+      <p>Delivery is a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to offer delivery on your events.</p>
     </div>
   <% end %>
 
@@ -48,7 +43,7 @@
   <div>
     <%= form.label :repeat_interval, "Repeat cadence" %>
     <%= form.select :repeat_interval, Event.repeat_intervals.keys.map { |k| [k.gsub("_", " ").humanize, k] } %>
-    <p class="text-muted text-sm">When published, a new draft will be created automatically for the next bake.</p>
+    <p class="field-hint">When published, a new draft will be created automatically for the next bake.</p>
   </div>
 
   <div>
@@ -59,13 +54,13 @@
 <hr class="divider">
 
 <div class="stack-sm">
-  <p class="text-sm font-bold text-danger">Danger Zone</p>
+  <h4>Danger Zone</h4>
   <% if @event.orders.any? %>
-    <p class="text-muted text-sm">This event has <%= pluralize(@event.orders.count, "order") %>. Deleting it will also delete all associated orders.</p>
+    <p>This event has <%= pluralize(@event.orders.count, "order") %>. Deleting it will also delete all associated orders.</p>
   <% end %>
   <div class="group">
-    <%= button_to "Delete Event", event_path(@event), 
-        method: :delete, 
+    <%= button_to "Delete Event", event_path(@event),
+        method: :delete,
         class: "button danger",
         data: { turbo_confirm: "Are you sure? This will permanently delete the event and all associated orders." } %>
   </div>

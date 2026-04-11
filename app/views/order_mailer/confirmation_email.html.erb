@@ -8,7 +8,7 @@
   <h3>Pickup Details</h3>
   <p>
     <strong>When:</strong> <%= @event.pickup_at.strftime("%A, %b %-d at %-I:%M%P") %><br>
-    <strong>Where:</strong> <%= @event.effective_pickup_address %>
+    <strong>Where:</strong> <%= @event.address %>
   </p>
 </div>
 
@@ -22,7 +22,7 @@
 <p>Total: <%= number_to_currency(@order.total_price) %></p>
 
 <% if @store.venmo_handle.present? || @store.paypal_url.present? %>
-  <div style="background: #eef1ec; padding: 15px; border: 1px solid #bfcbbc; margin: 20px 0;">
+  <div style="background: #f0ede8; padding: 15px; border: 1px solid #e0dbd5; margin: 20px 0;">
     <h3>Payment Options</h3>
     <p>LocalBaker handles orders, but payments happen directly between you and the baker.</p>
     <% if @store.venmo_handle.present? %>

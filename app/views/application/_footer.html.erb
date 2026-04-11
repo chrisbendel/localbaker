@@ -1,18 +1,20 @@
 <footer>
-  <div class="group justify-between items-center">
+  <div class="footer-container">
     <span>&copy; <%= Time.current.year %> LocalBaker</span>
-    <nav class="group">
+    
+    <nav class="footer-nav">
       <%= link_to "Home", root_path %>
-      <span class="text-muted" aria-hidden="true">&middot;</span>
+      <span class="sep"></span>
       <%= link_to "Near Me", near_path %>
-      <span class="text-muted" aria-hidden="true">&middot;</span>
+      <span class="sep"></span>
       <%= link_to "Our Ethos", about_path %>
-      <span class="text-muted" aria-hidden="true">&middot;</span>
+      <span class="sep"></span>
       <%= link_to "Contact", new_contact_path %>
+      
       <% if authenticated? %>
-        <span class="text-muted" aria-hidden="true">&middot;</span>
+        <span class="sep"></span>
         <% if current_user.pro? %>
-          <%= link_to "Pro", settings_account_path %>
+          <%= link_to "Pro", store_payments_path %>
         <% else %>
           <%= link_to "Upgrade to Pro", billing_upgrade_path %>
         <% end %>

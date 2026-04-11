@@ -18,7 +18,7 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
   end
 
   test "checklist step 1 completes after adding address and description" do
-    visit settings_store_path
+    visit store_settings_path
     fill_in "Description", with: "Fresh sourdough every week."
     fill_in "Store Address", with: "123 Baker St, Portland, OR"
     click_on "Save Changes"
