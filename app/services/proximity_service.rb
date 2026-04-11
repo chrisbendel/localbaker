@@ -25,7 +25,7 @@ class ProximityService
 
     return [] if store_ids.empty?
 
-    Event.ordering_open
+    Event.orders_open
       .where(store_id: store_ids)
       .includes(:store, :event_products)
       .order(:pickup_at)

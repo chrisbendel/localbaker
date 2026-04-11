@@ -6,7 +6,7 @@ Your order for <%= @store.name %> has been confirmed!
 
 Pickup Details:
 When: <%= @event.pickup_at.strftime("%A, %b %-d at %-I:%M%P") %>
-Where: <%= @event.effective_pickup_address %>
+Where: <%= @event.address %>
 
 Your Order Summary:
 <% @order.order_items.includes(:event_product).each do |item| %>

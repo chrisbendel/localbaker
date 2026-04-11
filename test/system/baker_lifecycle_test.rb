@@ -16,7 +16,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_current_path near_path
 
     # Land on discovery page
-    assert_text "Bakeries & Events Near You"
+    assert_text "Bakeries Near You"
     assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------

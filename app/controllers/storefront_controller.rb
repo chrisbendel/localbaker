@@ -6,7 +6,6 @@ class StorefrontController < ApplicationController
   def show
     @store = Store.find_by!(slug: params[:slug])
     @events = @store.events.orders_open.order(pickup_at: :asc)
-    @notification = current_user&.store_notifications&.find_by(store: @store)
 
     if current_user
       @ordered_event_ids = current_user.orders

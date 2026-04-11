@@ -1,13 +1,12 @@
-<% show_full = local_assigns.fetch(:show_full, false) %>
-<% if model.location_display.present? %>
-  <%= link_to google_maps_url(model.address), 
-              target: "_blank", 
+<% if model.address.present? %>
+  <%= link_to google_maps_url(model.address),
+              target: "_blank",
               rel: "noopener noreferrer",
               class: "group items-center",
               title: "View on Google Maps",
               aria: { label: "View on Google Maps" } do %>
     <small class="group items-center">
-      <span><%= show_full ? model.address : model.location_display %></span>
+      <span><%= model.address %></span>
       <span class="text-muted group">
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>

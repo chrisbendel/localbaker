@@ -408,7 +408,7 @@ strong {
 }
 
 .badge.ordered {
-  color: var(--color-accent);
+  color: var(--text);
 }
 
 /* Sold-out product card — faded and desaturated */
@@ -728,7 +728,7 @@ a.nav-logo {
 
 /* Store name as implicit back link */
 .store-letterhead {
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: 1.25rem;
   line-height: 1.2;
 }

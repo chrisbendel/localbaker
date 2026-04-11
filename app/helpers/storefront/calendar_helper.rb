@@ -4,7 +4,7 @@ module Storefront
       summary = "Order Pickup: #{event.name} — #{event.store.name}"
       start_time = event.pickup_at.strftime("%Y%m%dT%H%M%S")
       end_time = (event.pickup_at + 1.hour).strftime("%Y%m%dT%H%M%S")
-      location = event.effective_pickup_address
+      location = event.address
       description = "Pick up your LocalBaker order from #{event.store.name}."
 
       params = {
@@ -22,7 +22,7 @@ module Storefront
       summary = "Order Pickup: #{event.name} — #{event.store.name}"
       start_time = event.pickup_at.strftime("%Y%m%dT%H%M%S")
       end_time = (event.pickup_at + 1.hour).strftime("%Y%m%dT%H%M%S")
-      location = event.effective_pickup_address
+      location = event.address
       description = "Pick up your LocalBaker order from #{event.store.name}."
       timestamp = Time.current.strftime("%Y%m%dT%H%M%S")
       uid = "event-#{event.id}-#{event.updated_at.to_i}@localbaker.com"

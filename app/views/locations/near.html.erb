@@ -3,8 +3,8 @@
 <div class="container" data-controller="geolocation">
   <div class="stack-lg">
     <section class="stack-sm">
-      <h1>Bakeries & Events Near You</h1>
-      <p>Find fresh baked goods and upcoming bake events in your area.</p>
+      <h1>Bakeries Near You</h1>
+      <p>Find fresh baked goods and upcoming bakes in your area.</p>
     </section>
 
     <div class="panel stack">
@@ -36,52 +36,20 @@
       <% end %>
     </div>
 
-    <% if @stores.any? || @events.any? %>
+    <% if @stores.any? %>
       <div class="stack">
-        <div class="group">
-          <%= link_to "Bakeries (#{@stores.length})",
-              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "bakeries"),
-              class: "button #{(@tab == 'bakeries') ? 'primary' : 'secondary'}" %>
-
-          <%= link_to "Events (#{@events.length})",
-              near_path(latitude: @latitude, longitude: @longitude, address: @address, tab: "events"),
-              class: "button #{(@tab == 'events') ? 'primary' : 'secondary'}" %>
-        </div>
-
-        <% if @tab == "bakeries" %>
-          <div class="stack">
-            <% if @stores.any? %>
-              <% @stores.each do |store| %>
-                <%= render "locations/bakery_card", store: store, distance: store.distance, upcoming_event: @next_events_by_store[store.id] %>
-              <% end %>
-            <% else %>
-              <div class="empty-state">
-                <p>No bakeries with upcoming events found nearby.</p>
-              </div>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="stack">
-            <% if @events.any? %>
-              <% @events.each do |result| %>
-                <%= render "locations/event_card", event: result.event, distance: result.distance %>
-              <% end %>
-            <% else %>
-              <div class="empty-state">
-                <p>No events found nearby.</p>
-              </div>
-            <% end %>
-          </div>
+        <% @stores.each do |store| %>
+          <%= render "locations/bakery_card", store: store, distance: store.distance, upcoming_event: @next_events_by_store[store.id] %>
         <% end %>
       </div>
     <% elsif @latitude.present? %>
       <div class="empty-state stack-sm">
-        <p>No bakeries or events found within <%= @radius %> miles.</p>
-        <p>Try expanding your search radius or trying a different location.</p>
+        <p>No bakeries found within <%= @radius %> miles.</p>
+        <p>Try expanding your search radius or a different location.</p>
       </div>
     <% else %>
-       <div class="empty-state">
-        <p>Enter your location to discover bakeries and events near you.</p>
+      <div class="empty-state">
+        <p>Enter your location to discover bakeries near you.</p>
       </div>
     <% end %>
   </div>

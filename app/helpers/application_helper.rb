@@ -18,7 +18,7 @@ module ApplicationHelper
     when ..-1, 22.. then nice_date(value)
     when 0 then "today"
     when 1 then "tomorrow"
-    else relative_time_in_words(value)
+    else "in #{distance_of_time_in_words(Time.current, value)}"
     end
   end
 
@@ -36,7 +36,6 @@ module ApplicationHelper
     deadline_part = if event.orders_closed?
       "Orders closed"
     else
-      event.orders_close_at.strftime("%l:%M %p").strip
       "Orders close #{fuzzy_date(event.orders_close_at)}"
     end
 

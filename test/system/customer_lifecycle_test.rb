@@ -54,7 +54,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     assert_current_path near_path
 
     # Land on discovery page
-    assert_text "Bakeries & Events Near You"
+    assert_text "Bakeries Near You"
 
     # ----------------------------------------------------------------
     # 2. Browse to storefront

@@ -10,7 +10,6 @@
         <% end %>
       </div>
 
-      <% upcoming_event = local_assigns[:upcoming_event] || store.events.orders_open.order(:pickup_at).first %>
       <% if upcoming_event %>
         <div class="stack-sm">
           <p>Order by: <strong><%= upcoming_event.orders_close_at.strftime("%A, %b %-d") %></strong></p>
