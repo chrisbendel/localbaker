@@ -3,7 +3,7 @@
   <div class="stack-sm">
     <div class="group justify-between items-start">
       <div class="stack-sm">
-        <strong><%= event.pickup_at.strftime("%A, %b %-d") %></strong>
+        <strong><%= event.pickup_starts_at.strftime("%A, %b %-d") %></strong>
         <h3><%= event.name %></h3>
       </div>
       <% if event.past? %>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="group justify-between items-baseline">
-      <p>Pickup: <strong><%= event.pickup_at.strftime("%l:%M %p") %></strong></p>
+      <p>Pickup: <strong><%= pickup_time(event.pickup_starts_at) %>–<%= pickup_time(event.pickup_ends_at) %></strong></p>
       <% unless event.past? %>
         <small>Closes <%= fuzzy_date(event.orders_close_at) %></small>
       <% end %>

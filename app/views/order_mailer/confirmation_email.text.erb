@@ -5,7 +5,7 @@ Hi <%= @order.user.email %>,
 Your order for <%= @store.name %> has been confirmed!
 
 Pickup Details:
-When: <%= @event.pickup_at.strftime("%A, %b %-d at %-I:%M%P") %>
+When: <%= @event.pickup_starts_at.strftime("%A, %b %-d") %>, <%= pickup_time(@event.pickup_starts_at) %>–<%= pickup_time(@event.pickup_ends_at) %>
 Where: <%= @event.address %>
 
 Your Order Summary:

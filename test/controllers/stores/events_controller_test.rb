@@ -11,7 +11,8 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
       description: "Fresh sourdough",
 
       orders_close_at: 1.day.from_now,
-      pickup_at: 2.days.from_now
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours
     )
 
     # Sign in so authenticated routes work in integration tests
@@ -26,7 +27,8 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
           description: "Outdoor bread pickup",
 
           orders_close_at: 2.days.from_now,
-          pickup_at: 3.days.from_now
+          pickup_starts_at: 3.days.from_now,
+          pickup_ends_at: 3.days.from_now + 4.hours
         }
       }
     end
@@ -109,7 +111,8 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
       event: {
         name: "Market Day",
         orders_close_at: 2.days.from_now,
-        pickup_at: 3.days.from_now,
+        pickup_starts_at: 3.days.from_now,
+        pickup_ends_at: 3.days.from_now + 4.hours,
         pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR"
       }
     }
@@ -171,7 +174,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
 
     # Fill up the free limit with already-active events
     User::FREE_EVENT_LIMIT.times do |i|
-      e = @store.events.create!(name: "Active #{i}", orders_close_at: 1.day.from_now, pickup_at: 2.days.from_now)
+      e = @store.events.create!(name: "Active #{i}", orders_close_at: 1.day.from_now, pickup_starts_at: 2.days.from_now, pickup_ends_at: 2.days.from_now + 4.hours)
       e.update_column(:published_at, Time.current)
     end
 
@@ -197,7 +200,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
     @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
 
     User::FREE_EVENT_LIMIT.times do |i|
-      e = @store.events.create!(name: "Active #{i}", orders_close_at: 1.day.from_now, pickup_at: 2.days.from_now)
+      e = @store.events.create!(name: "Active #{i}", orders_close_at: 1.day.from_now, pickup_starts_at: 2.days.from_now, pickup_ends_at: 2.days.from_now + 4.hours)
       e.update_column(:published_at, Time.current)
     end
 
@@ -211,7 +214,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   # --- ensure_event_not_past! guard ---
 
   test "GET edit is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     get edit_event_path(@event)
     assert_redirected_to event_path(@event)
     follow_redirect!
@@ -219,7 +222,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "PATCH update is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     patch event_path(@event), params: {event: {name: "Hacked"}}
     assert_redirected_to event_path(@event)
     @event.reload
@@ -227,7 +230,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "DELETE destroy is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     assert_no_difference "@store.events.count" do
       delete event_path(@event)
     end
@@ -235,7 +238,7 @@ class Stores::EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST publish is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
     post publish_event_path(@event)
     assert_redirected_to event_path(@event)

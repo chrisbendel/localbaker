@@ -28,11 +28,11 @@ class ProximityService
     Event.orders_open
       .where(store_id: store_ids)
       .includes(:store, :event_products)
-      .order(:pickup_at)
+      .order(:pickup_starts_at)
       .limit(limit)
       .map do |event|
         EventResult.new(event: event, distance: stores_by_id[event.store_id]&.distance)
       end
-      .sort_by { |r| [r.event.pickup_at, r.distance || 999] }
+      .sort_by { |r| [r.event.pickup_starts_at, r.distance || 999] }
   end
 end

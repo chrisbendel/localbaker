@@ -32,7 +32,7 @@
   </div>
 
   <div class="order-summary-pickup">
-    <p><small>Pickup <%= fuzzy_date(event.pickup_at) %> &middot; <%= pickup_datetime(event.pickup_at) %></small></p>
+    <p><small>Pickup <%= fuzzy_date(event.pickup_starts_at) %> &middot; <%= pickup_time(event.pickup_starts_at) %>–<%= pickup_time(event.pickup_ends_at) %></small></p>
   </div>
 
   <% if event.orders_open? %>

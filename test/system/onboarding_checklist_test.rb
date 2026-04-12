@@ -38,7 +38,8 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
     event = @store.events.create!(
       name: "Saturday Bake",
       orders_close_at: 1.day.from_now,
-      pickup_at: 2.days.from_now
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours
     )
     event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1400)
     event.update!(published_at: Time.current)

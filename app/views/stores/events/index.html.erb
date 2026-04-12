@@ -32,7 +32,7 @@
                   <span class="text-muted">—</span>
                 <% end %>
               </td>
-              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_starts_at) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -60,7 +60,7 @@
                 <strong><%= link_to event.name, event_path(event) %></strong>
               </td>
               <td data-label="Orders Close"><span class="text-muted">—</span></td>
-              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_starts_at) %></td>
             </tr>
           <% end %>
         </tbody>
@@ -88,7 +88,7 @@
                 <strong><%= link_to event.name, event_path(event) %></strong>
               </td>
               <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
-              <td data-label="Pickup"><%= nice_date(event.pickup_at) %></td>
+              <td data-label="Pickup"><%= nice_date(event.pickup_starts_at) %></td>
             </tr>
           <% end %>
         </tbody>

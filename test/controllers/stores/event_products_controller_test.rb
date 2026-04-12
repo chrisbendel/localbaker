@@ -7,7 +7,8 @@ class Stores::EventProductsControllerTest < ActionDispatch::IntegrationTest
     @event = @store.events.create!(
       name: "Bread Pickup",
       orders_close_at: 1.day.from_now,
-      pickup_at: 2.days.from_now
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours
     )
     @product = @event.event_products.create!(name: "Sourdough", price_cents: 1000, quantity: 10)
     sign_in_as(@user)
@@ -16,7 +17,7 @@ class Stores::EventProductsControllerTest < ActionDispatch::IntegrationTest
   # --- ensure_event_not_past! guard ---
 
   test "GET new is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     get new_event_event_product_path(@event)
     assert_redirected_to event_path(@event)
     follow_redirect!
@@ -24,7 +25,7 @@ class Stores::EventProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "POST create is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     assert_no_difference "EventProduct.count" do
       post event_event_products_path(@event), params: {
         event_product: {name: "New Product", price: 10, quantity: 5}
@@ -34,13 +35,13 @@ class Stores::EventProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "GET edit is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     get edit_event_product_path(@product)
     assert_redirected_to event_path(@event)
   end
 
   test "PATCH update is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     patch event_product_path(@product), params: {event_product: {name: "Hacked"}}
     assert_redirected_to event_path(@event)
     @product.reload
@@ -48,7 +49,7 @@ class Stores::EventProductsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "DELETE destroy is blocked for past events" do
-    @event.update_columns(pickup_at: 1.day.ago, orders_close_at: 2.days.ago)
+    @event.update_columns(pickup_starts_at: 2.days.ago, pickup_ends_at: 1.day.ago + 16.hours, orders_close_at: 2.days.ago)
     assert_no_difference "EventProduct.count" do
       delete event_product_path(@product)
     end

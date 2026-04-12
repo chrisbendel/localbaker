@@ -43,7 +43,7 @@ class LocationsController < ApplicationController
       store_ids = @stores.pluck(:id)
       @next_events_by_store = Event.orders_open
         .where(store_id: store_ids)
-        .order(:pickup_at)
+        .order(:pickup_starts_at)
         .group_by(&:store_id)
         .transform_values(&:first)
     else

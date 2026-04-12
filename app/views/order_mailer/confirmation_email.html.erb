@@ -7,7 +7,7 @@
 <div style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin: 20px 0;">
   <h3>Pickup Details</h3>
   <p>
-    <strong>When:</strong> <%= @event.pickup_at.strftime("%A, %b %-d at %-I:%M%P") %><br>
+    <strong>When:</strong> <%= @event.pickup_starts_at.strftime("%A, %b %-d") %>, <%= pickup_time(@event.pickup_starts_at) %>–<%= pickup_time(@event.pickup_ends_at) %><br>
     <strong>Where:</strong> <%= @event.address %>
   </p>
 </div>

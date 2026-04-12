@@ -11,7 +11,8 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event = @store.events.create!(
       name: "Saturday Sourdough",
       orders_close_at: 1.day.from_now,
-      pickup_at: 2.days.from_now
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours
     )
     event.update_columns(published_at: Time.current)
 
@@ -25,7 +26,8 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event = @store.events.create!(
       name: "Friday Focaccia",
       orders_close_at: 1.day.ago,
-      pickup_at: 1.day.from_now
+      pickup_starts_at: 1.day.from_now,
+      pickup_ends_at: 1.day.from_now + 4.hours
     )
     event.update_columns(published_at: Time.current)
 
@@ -40,7 +42,8 @@ class BakeryDashboardTest < ApplicationSystemTestCase
       name: "Sunday Sweets",
       published_at: nil,
       orders_close_at: 3.days.from_now,
-      pickup_at: 4.days.from_now
+      pickup_starts_at: 4.days.from_now,
+      pickup_ends_at: 4.days.from_now + 4.hours
     )
 
     visit store_path
@@ -53,7 +56,8 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event = @store.events.create!(
       name: "Past Bake",
       orders_close_at: 11.days.ago,
-      pickup_at: 9.days.ago
+      pickup_starts_at: 9.days.ago,
+      pickup_ends_at: 8.days.ago + 16.hours
     )
     event.update_columns(published_at: 10.days.ago)
 
@@ -70,7 +74,8 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event = @store.events.create!(
       name: "Centralized Bake",
       orders_close_at: 1.day.from_now,
-      pickup_at: 2.days.from_now
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours
     )
 
     visit store_events_path

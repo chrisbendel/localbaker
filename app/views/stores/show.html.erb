@@ -87,7 +87,7 @@
                 <% end %>
               </div>
             </div>
-            <small>Pickup <%= fuzzy_date(event.pickup_at) %></small>
+            <small>Pickup <%= fuzzy_date(event.pickup_starts_at) %></small>
           </div>
         <% end %>
       </div>
@@ -107,9 +107,9 @@
             </div>
             <small>
               <% if event.event_products.empty? %>
-                No products yet &middot; pickup <%= fuzzy_date(event.pickup_at) %>
+                No products yet &middot; pickup <%= fuzzy_date(event.pickup_starts_at) %>
               <% else %>
-                <%= pluralize(event.event_products.size, "product") %> &middot; pickup <%= fuzzy_date(event.pickup_at) %>
+                <%= pluralize(event.event_products.size, "product") %> &middot; pickup <%= fuzzy_date(event.pickup_starts_at) %>
               <% end %>
             </small>
           <% end %>

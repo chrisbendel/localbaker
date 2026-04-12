@@ -41,7 +41,8 @@ class BakerProfileTest < ApplicationSystemTestCase
     # Create an event and order to verify payment links in summary
     @event = @store.events.create!(
       name: "Test Bake",
-      pickup_at: 2.days.from_now,
+      pickup_starts_at: 2.days.from_now,
+      pickup_ends_at: 2.days.from_now + 4.hours,
       orders_close_at: 1.day.from_now
     )
     @product = @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)

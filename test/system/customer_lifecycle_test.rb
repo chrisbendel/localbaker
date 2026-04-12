@@ -14,7 +14,8 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
       name: "Sunday Bake",
       description: "Sourdough and focaccia.",
       orders_close_at: 5.days.from_now,
-      pickup_at: 7.days.from_now,
+      pickup_starts_at: 7.days.from_now + 11.hours,
+      pickup_ends_at: 7.days.from_now + 15.hours,
       pickup_address: "The Climbing Gym, 456 Oak Ave, Portland, OR"
     )
     @sourdough = @event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1400)

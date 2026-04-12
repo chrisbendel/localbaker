@@ -13,7 +13,7 @@
       <% if upcoming_event %>
         <div class="stack-sm">
           <p>Order by: <strong><%= upcoming_event.orders_close_at.strftime("%A, %b %-d") %></strong></p>
-          <small class="text-muted">(Pickup: <%= upcoming_event.pickup_at.strftime("%b %-d") %>)</small>
+          <small class="text-muted">(Pickup: <%= upcoming_event.pickup_starts_at.strftime("%b %-d") %>)</small>
         </div>
       <% end %>
     </div>

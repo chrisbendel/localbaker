@@ -41,7 +41,7 @@
 <div class="stack-sm">
   <small>
     Orders close <%= nice_date(@event.orders_close_at) %> &middot;
-    Pickup <%= pickup_datetime(@event.pickup_at) %>
+    Pickup <%= pickup_window(@event) %>
   </small>
   <%= render "application/address_line", model: @event %>
   <% if @event.repeat_interval.present? && !@event.no_repeat? %>

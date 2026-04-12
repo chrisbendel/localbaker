@@ -8,7 +8,8 @@ class EventTest < ActiveSupport::TestCase
     @event = @store.events.new(
       name: "Bread Drop",
       orders_close_at: 2.days.from_now,
-      pickup_at: 3.days.from_now
+      pickup_starts_at: 3.days.from_now,
+      pickup_ends_at: 3.days.from_now + 4.hours
     )
   end
 
@@ -28,18 +29,30 @@ class EventTest < ActiveSupport::TestCase
     assert_includes @event.errors[:orders_close_at], "can't be blank"
   end
 
-  test "requires pickup_at" do
-    @event.pickup_at = nil
+  test "requires pickup_starts_at" do
+    @event.pickup_starts_at = nil
     refute @event.valid?
-    assert_includes @event.errors[:pickup_at], "can't be blank"
+    assert_includes @event.errors[:pickup_starts_at], "can't be blank"
+  end
+
+  test "requires pickup_ends_at" do
+    @event.pickup_ends_at = nil
+    refute @event.valid?
+    assert_includes @event.errors[:pickup_ends_at], "can't be blank"
+  end
+
+  test "pickup_ends_at must be after pickup_starts_at" do
+    @event.pickup_ends_at = @event.pickup_starts_at - 1.hour
+    refute @event.valid?
+    assert_includes @event.errors[:pickup_ends_at], "must be after the pickup start time"
   end
 
   test "belongs to store" do
     assert_equal @store, @event.store
   end
 
-  test "orders_close_at must be before pickup_at" do
-    @event.orders_close_at = @event.pickup_at + 1.hour
+  test "orders_close_at must be before pickup_starts_at" do
+    @event.orders_close_at = @event.pickup_starts_at + 1.hour
     refute @event.valid?
     assert_includes @event.errors[:orders_close_at], "must be before the pickup time"
   end
@@ -68,7 +81,8 @@ class EventTest < ActiveSupport::TestCase
 
   test "orders_open? is false when orders_close_at has passed" do
     @event.orders_close_at = 1.hour.ago
-    @event.pickup_at = 1.hour.from_now
+    @event.pickup_starts_at = 1.hour.from_now
+    @event.pickup_ends_at = 5.hours.from_now
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
     @event.publish!
@@ -82,36 +96,40 @@ class EventTest < ActiveSupport::TestCase
 
   test "orders_closed? is true when published and orders_close_at has passed" do
     @event.orders_close_at = 1.hour.ago
-    @event.pickup_at = 1.hour.from_now
+    @event.pickup_starts_at = 1.hour.from_now
+    @event.pickup_ends_at = 5.hours.from_now
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
     @event.publish!
     assert @event.orders_closed?
   end
 
-  test "past? is true when pickup_at has passed" do
+  test "past? is true when pickup_ends_at has passed" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 1.day.ago
+    @event.pickup_starts_at = 1.day.ago
+    @event.pickup_ends_at = 1.day.ago + 4.hours
     @event.save!(validate: false)
     assert @event.past?
   end
 
-  test "past? is false when pickup_at is in the future" do
+  test "past? is false when pickup_ends_at is in the future" do
     refute @event.past?
   end
 
-  test ":current scope excludes events with pickup_at older than 3 days" do
+  test ":current scope excludes events with pickup_starts_at older than 3 days" do
     @event.orders_close_at = 4.days.ago
-    @event.pickup_at = 4.days.ago + 1.hour
+    @event.pickup_starts_at = 4.days.ago + 1.hour
+    @event.pickup_ends_at = 4.days.ago + 5.hours
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
     @event.publish!
     refute_includes Event.current, @event
   end
 
-  test ":current scope includes events with pickup_at within 3 days ago" do
+  test ":current scope includes events with pickup_starts_at within 3 days ago" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 2.days.ago + 1.hour
+    @event.pickup_starts_at = 2.days.ago + 1.hour
+    @event.pickup_ends_at = 2.days.ago + 5.hours
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
     @event.publish!
@@ -134,7 +152,8 @@ class EventTest < ActiveSupport::TestCase
 
   test "active_published excludes published events with past pickup" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 1.day.ago
+    @event.pickup_starts_at = 1.day.ago
+    @event.pickup_ends_at = 1.day.ago + 4.hours
     @event.save!(validate: false)
     @event.update_column(:published_at, Time.current)
     refute_includes Event.active_published, @event
@@ -157,7 +176,8 @@ class EventTest < ActiveSupport::TestCase
 
   test "orders_open excludes published events with past orders_close_at" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 1.day.ago
+    @event.pickup_starts_at = 1.day.ago
+    @event.pickup_ends_at = 1.day.ago + 4.hours
     @event.save!(validate: false)
     @event.update_column(:published_at, Time.current)
     refute @event.orders_open?
@@ -168,7 +188,8 @@ class EventTest < ActiveSupport::TestCase
 
   test "past includes published events with pickup in the last 30 days" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 2.days.ago + 1.hour
+    @event.pickup_starts_at = 2.days.ago + 1.hour
+    @event.pickup_ends_at = 2.days.ago + 5.hours
     @event.save!(validate: false)
     @event.update_column(:published_at, 2.days.ago)
     assert_includes Event.past, @event
@@ -182,14 +203,16 @@ class EventTest < ActiveSupport::TestCase
 
   test "past excludes draft events" do
     @event.orders_close_at = 2.days.ago
-    @event.pickup_at = 2.days.ago + 1.hour
+    @event.pickup_starts_at = 2.days.ago + 1.hour
+    @event.pickup_ends_at = 2.days.ago + 5.hours
     @event.save!(validate: false)
     refute_includes Event.past, @event
   end
 
   test "past excludes published events older than 30 days by default" do
     @event.orders_close_at = 31.days.ago
-    @event.pickup_at = 31.days.ago + 1.hour
+    @event.pickup_starts_at = 31.days.ago + 1.hour
+    @event.pickup_ends_at = 31.days.ago + 5.hours
     @event.save!(validate: false)
     @event.update_column(:published_at, 31.days.ago)
     refute_includes Event.past, @event
@@ -197,7 +220,8 @@ class EventTest < ActiveSupport::TestCase
 
   test "past includes older events when custom days provided" do
     @event.orders_close_at = 45.days.ago
-    @event.pickup_at = 45.days.ago + 1.hour
+    @event.pickup_starts_at = 45.days.ago + 1.hour
+    @event.pickup_ends_at = 45.days.ago + 5.hours
     @event.save!(validate: false)
     @event.update_column(:published_at, 45.days.ago)
     assert_includes Event.past(60), @event

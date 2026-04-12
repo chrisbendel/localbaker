@@ -1,6 +1,6 @@
 <% content_for :title, "#{@event.name} — #{@store.name} | Order bread near me" %>
 
-<% og_description = @event.description.present? ? @event.description : "Order bread and baked goods for pick up from #{@store.name}, your local bakery, on #{pickup_datetime(@event.pickup_at)}." %>
+<% og_description = @event.description.present? ? @event.description : "Order bread and baked goods for pick up from #{@store.name}, your local bakery, on #{pickup_datetime(@event.pickup_starts_at)}." %>
 <% content_for(:meta_description, og_description) %>
 
 <% if @store.banner_image.attached? %>
