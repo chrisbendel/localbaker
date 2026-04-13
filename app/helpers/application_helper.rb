@@ -7,6 +7,21 @@ module ApplicationHelper
     l(value, format: :pickup_datetime) if value
   end
 
+  def pickup_time(value)
+    return unless value
+    # Strip ":00" minutes for whole-hour times (e.g. "11am" instead of "11:00am")
+    formatted = l(value, format: :pickup_time)
+    formatted.sub(":00", "")
+  end
+
+  def pickup_window(event)
+    return unless event.pickup_starts_at && event.pickup_ends_at
+    date = pickup_datetime(event.pickup_starts_at)
+    start_t = pickup_time(event.pickup_starts_at)
+    end_t = pickup_time(event.pickup_ends_at)
+    "#{date} · #{start_t}–#{end_t}"
+  end
+
   # Relative date for customer-facing contexts where urgency matters.
   # "today" / "tomorrow" are surfaced explicitly; everything else uses
   # Rails' distance_of_time_in_words. Falls back to nice_date for past
@@ -31,7 +46,7 @@ module ApplicationHelper
   end
 
   def event_timing_summary(event)
-    pickup = pickup_datetime(event.pickup_at)
+    window = pickup_window(event)
 
     deadline_part = if event.orders_closed?
       "Orders closed"
@@ -40,7 +55,7 @@ module ApplicationHelper
     end
 
     # TODO: Refactor phrasing if event is delivery_only (e.g., "Delivery Sunday" instead of "Pick up Sunday").
-    "Pick up #{pickup} · #{deadline_part}"
+    "Pick up #{window} · #{deadline_part}"
   end
 
   def nav_link_to(label, path)

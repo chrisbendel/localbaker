@@ -38,7 +38,7 @@ class Store < ApplicationRecord
   end
 
   def active_orders?
-    orders.joins(:event).where("events.pickup_at >= ?", Time.current).exists?
+    orders.joins(:event).where("events.pickup_starts_at >= ?", Time.current).exists?
   end
 
   def location_display

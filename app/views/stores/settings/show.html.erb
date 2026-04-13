@@ -68,7 +68,9 @@
     <div data-controller="image-upload">
       <%= f.label :banner_image, "Store Banner" %>
       <% if @store.banner_image.attached? %>
-        <%= image_tag @store.banner_image.variant(resize_to_limit: [1200, 800], format: :webp), class: "img-banner" %>
+        <div class="img-banner-wrap">
+          <%= image_tag @store.banner_image.variant(resize_to_fill: [1200, 675], format: :webp), class: "img-banner" %>
+        </div>
         <label>
           <%= f.check_box :remove_banner_image %> Remove current banner
         </label>

@@ -10,7 +10,7 @@
             <strong><%= order.event.store.name %></strong>
             <small><%= number_to_currency(order.total_price) %></small>
           </div>
-          <p><small><%= order.event.name %> &middot; Pickup <%= nice_date(order.event.pickup_at) %></small></p>
+          <p><small><%= order.event.name %> &middot; Pickup <%= nice_date(order.event.pickup_starts_at) %></small></p>
         <% end %>
       <% end %>
     </div>

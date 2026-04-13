@@ -61,11 +61,12 @@ class UserTest < ActiveSupport::TestCase
 
   # --- at_event_limit? ---
 
-  def create_published_event(store, pickup_at: 2.days.from_now)
+  def create_published_event(store, pickup_starts_at: 2.days.from_now)
     event = store.events.create!(
       name: "Event",
-      orders_close_at: pickup_at - 1.hour,
-      pickup_at: pickup_at
+      orders_close_at: pickup_starts_at - 1.hour,
+      pickup_starts_at: pickup_starts_at,
+      pickup_ends_at: pickup_starts_at + 4.hours
     )
     event.update_column(:published_at, Time.current)
     event
@@ -106,7 +107,7 @@ class UserTest < ActiveSupport::TestCase
     user = User.create!(email: "free@example.com")
     store = user.create_store!(name: "Free Store", slug: "free-store")
     User::FREE_EVENT_LIMIT.times do |i|
-      create_published_event(store, pickup_at: (i + 1).weeks.ago)
+      create_published_event(store, pickup_starts_at: (i + 1).weeks.ago)
     end
     assert_not user.at_event_limit?
   end

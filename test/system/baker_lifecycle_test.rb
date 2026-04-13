@@ -45,8 +45,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     fill_in "Name", with: "Saturday Bake"
     fill_in "Description", with: "Sourdough and focaccia this week."
     fill_in "Pickup Location", with: "The Climbing Gym, 456 Oak Ave, Portland, OR"
-    fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
-    fill_in "Pickup date", with: 7.days.from_now.strftime("%Y-%m-%d")
+    execute_script("document.getElementById('event_orders_close_at').value = '#{5.days.from_now.strftime("%Y-%m-%d")}'")
+    execute_script("document.getElementById('event_pickup_starts_at').value = '#{7.days.from_now.strftime("%Y-%m-%dT11:00")}'")
+    execute_script("document.getElementById('event_pickup_ends_at').value = '#{7.days.from_now.strftime("%Y-%m-%dT15:00")}'")
     click_on "Create Event"
 
     assert_text "Event created"
@@ -181,8 +182,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_field "Name", with: "Copy of Saturday Bake (Updated)"
 
     # Needs new dates
-    fill_in "Orders close at", with: 10.days.from_now.strftime("%Y-%m-%d")
-    fill_in "Pickup date", with: 14.days.from_now.strftime("%Y-%m-%d")
+    execute_script("document.getElementById('event_orders_close_at').value = '#{10.days.from_now.strftime("%Y-%m-%d")}'")
+    execute_script("document.getElementById('event_pickup_starts_at').value = '#{14.days.from_now.strftime("%Y-%m-%dT11:00")}'")
+    execute_script("document.getElementById('event_pickup_ends_at').value = '#{14.days.from_now.strftime("%Y-%m-%dT15:00")}'")
     click_on "Save Changes"
 
     assert_text "Event updated."
@@ -222,8 +224,9 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     end
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
-    fill_in "Orders close at", with: 5.days.from_now.strftime("%Y-%m-%d")
-    fill_in "Pickup date", with: 7.days.from_now.strftime("%Y-%m-%d")
+    execute_script("document.getElementById('event_orders_close_at').value = '#{5.days.from_now.strftime("%Y-%m-%d")}'")
+    execute_script("document.getElementById('event_pickup_starts_at').value = '#{7.days.from_now.strftime("%Y-%m-%dT11:00")}'")
+    execute_script("document.getElementById('event_pickup_ends_at').value = '#{7.days.from_now.strftime("%Y-%m-%dT15:00")}'")
     find("main [type='submit']").click
 
     click_on "Add a product"

@@ -14,12 +14,14 @@ class RecurringEventsTest < ApplicationSystemTestCase
     fill_in "Name", with: "Weekly Sourdough"
 
     orders_close_date = 1.day.from_now.to_date
-    pickup_date = 2.days.from_now.to_date
-    next_pickup_date = pickup_date + 1.week
+    pickup_starts = 2.days.from_now.change(hour: 11, min: 0)
+    pickup_ends = 2.days.from_now.change(hour: 15, min: 0)
+    next_pickup_date = pickup_starts.to_date + 1.week
 
-    # Use execute_script to set the value directly
+    # Use execute_script to set the value directly (datetime-local format: YYYY-MM-DDTHH:MM)
     execute_script("document.getElementById('event_orders_close_at').value = '#{orders_close_date}'")
-    execute_script("document.getElementById('event_pickup_at').value = '#{pickup_date}'")
+    execute_script("document.getElementById('event_pickup_starts_at').value = '#{pickup_starts.strftime("%Y-%m-%dT%H:%M")}'")
+    execute_script("document.getElementById('event_pickup_ends_at').value = '#{pickup_ends.strftime("%Y-%m-%dT%H:%M")}'")
 
     select "Weekly", from: "Repeat cadence"
     click_on "Create Event"

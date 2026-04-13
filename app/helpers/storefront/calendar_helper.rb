@@ -2,8 +2,8 @@ module Storefront
   module CalendarHelper
     def google_calendar_url(event)
       summary = "Order Pickup: #{event.name} — #{event.store.name}"
-      start_time = event.pickup_at.strftime("%Y%m%dT%H%M%S")
-      end_time = (event.pickup_at + 1.hour).strftime("%Y%m%dT%H%M%S")
+      start_time = event.pickup_starts_at.strftime("%Y%m%dT%H%M%S")
+      end_time = event.pickup_ends_at.strftime("%Y%m%dT%H%M%S")
       location = event.address
       description = "Pick up your LocalBaker order from #{event.store.name}."
 
@@ -20,8 +20,8 @@ module Storefront
 
     def ics_export(event)
       summary = "Order Pickup: #{event.name} — #{event.store.name}"
-      start_time = event.pickup_at.strftime("%Y%m%dT%H%M%S")
-      end_time = (event.pickup_at + 1.hour).strftime("%Y%m%dT%H%M%S")
+      start_time = event.pickup_starts_at.strftime("%Y%m%dT%H%M%S")
+      end_time = event.pickup_ends_at.strftime("%Y%m%dT%H%M%S")
       location = event.address
       description = "Pick up your LocalBaker order from #{event.store.name}."
       timestamp = Time.current.strftime("%Y%m%dT%H%M%S")

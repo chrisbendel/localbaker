@@ -40,7 +40,8 @@ module Stores
       future_event = @store.events.create!(
         name: "Future Event",
         orders_close_at: 1.day.from_now,
-        pickup_at: 2.days.from_now
+        pickup_starts_at: 2.days.from_now,
+        pickup_ends_at: 2.days.from_now + 4.hours
       )
       future_event.orders.create!(user: User.create!(email: "customer@example.com"))
 

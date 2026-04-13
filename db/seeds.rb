@@ -70,7 +70,8 @@ if Rails.env.development?
     name: "Winter Warmth Bake",
     description: "Hearty ryes and festive loaves.",
     orders_close_at: 2.weeks.ago,
-    pickup_at: 12.days.ago,
+    pickup_starts_at: 12.days.ago + 11.hours,
+    pickup_ends_at: 12.days.ago + 15.hours,
     pickup_address: "123 Main St, Springfield",
     published_at: nil
   )
@@ -78,7 +79,8 @@ if Rails.env.development?
     name: "Spring Sourdough Special",
     description: "Fresh heritage wheat sourdough and seasonal herbs.",
     orders_close_at: 2.days.from_now,
-    pickup_at: 4.days.from_now,
+    pickup_starts_at: 4.days.from_now + 11.hours,
+    pickup_ends_at: 4.days.from_now + 15.hours,
     pickup_address: "123 Main St, Springfield",
     published_at: nil
   )
@@ -86,7 +88,8 @@ if Rails.env.development?
     name: "Mid-Week Pizza Night",
     description: "Sourdough pizza dough and fresh toppings.",
     orders_close_at: 1.day.ago,
-    pickup_at: 2.days.from_now,
+    pickup_starts_at: 2.days.from_now + 11.hours,
+    pickup_ends_at: 2.days.from_now + 15.hours,
     pickup_address: "123 Main St, Springfield",
     published_at: nil
   )
@@ -94,7 +97,8 @@ if Rails.env.development?
     name: "Next Week's Bake",
     description: "Testing some new recipes.",
     orders_close_at: 9.days.from_now,
-    pickup_at: 11.days.from_now,
+    pickup_starts_at: 11.days.from_now + 11.hours,
+    pickup_ends_at: 11.days.from_now + 15.hours,
     pickup_address: "123 Main St, Springfield",
     published_at: nil # Draft
   )
@@ -104,7 +108,8 @@ if Rails.env.development?
     name: "Weekend Pastry Box",
     description: "Assorted weekend treats including croissants and macarons.",
     orders_close_at: 3.days.from_now,
-    pickup_at: 5.days.from_now,
+    pickup_starts_at: 5.days.from_now + 10.hours,
+    pickup_ends_at: 5.days.from_now + 14.hours,
     pickup_address: "456 Sugar Ln, Springfield",
     published_at: nil
   )
@@ -114,7 +119,8 @@ if Rails.env.development?
     name: "Sunday Morning Bagel Drop",
     description: "Fresh hot bagels, cream cheese, and lox.",
     orders_close_at: 1.day.from_now,
-    pickup_at: 2.days.from_now,
+    pickup_starts_at: 2.days.from_now + 9.hours,
+    pickup_ends_at: 2.days.from_now + 12.hours,
     pickup_address: "789 Morning Ave, Springfield",
     published_at: nil
   )
@@ -122,7 +128,8 @@ if Rails.env.development?
     name: "Saturday Bagel Pack",
     description: "Pre-order your weekend bagels. Pickup Saturday morning.",
     orders_close_at: 2.days.ago,
-    pickup_at: 1.day.from_now,
+    pickup_starts_at: 1.day.from_now + 9.hours,
+    pickup_ends_at: 1.day.from_now + 12.hours,
     pickup_address: "789 Morning Ave, Springfield",
     published_at: nil
   )
@@ -131,7 +138,8 @@ if Rails.env.development?
     name: "Bagels & Babka",
     description: "Testing out a new chocolate babka recipe along with our classic bagels.",
     orders_close_at: 8.days.from_now,
-    pickup_at: 10.days.from_now,
+    pickup_starts_at: 10.days.from_now + 9.hours,
+    pickup_ends_at: 10.days.from_now + 12.hours,
     pickup_address: "789 Morning Ave, Springfield",
     published_at: nil # Draft
   )

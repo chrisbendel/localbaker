@@ -36,8 +36,14 @@
   </div>
 
   <div>
-    <%= form.label :pickup_at, "Pickup date" %>
-    <%= form.date_field :pickup_at, required: true, min: Date.current %>
+    <%= form.label :pickup_starts_at, "Pickup window start" %>
+    <%= form.datetime_local_field :pickup_starts_at, required: true, min: Date.current %>
+  </div>
+
+  <div>
+    <%= form.label :pickup_ends_at, "Pickup window end" %>
+    <%= form.datetime_local_field :pickup_ends_at, required: true, min: Date.current %>
+    <p class="field-hint">Set a window customers can arrive during, e.g. 11am – 4pm.</p>
   </div>
 
   <div>

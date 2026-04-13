@@ -4,7 +4,7 @@ module Stores
     before_action :ensure_event_not_past!, only: [:edit, :update, :destroy, :publish]
 
     def index
-      @events = @store.events.order(pickup_at: :desc)
+      @events = @store.events.order(pickup_starts_at: :desc)
     end
 
     def show
@@ -84,7 +84,7 @@ module Stores
     end
 
     def event_params
-      permitted = [:name, :description, :orders_close_at, :pickup_at, :repeat_interval, :pickup_address]
+      permitted = [:name, :description, :orders_close_at, :pickup_starts_at, :pickup_ends_at, :repeat_interval, :pickup_address]
       permitted << :delivery_enabled if current_user.pro?
       p = params.require(:event).permit(*permitted)
 

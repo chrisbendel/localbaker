@@ -4,7 +4,7 @@ class OrderItemTest < ActiveSupport::TestCase
   def setup
     @owner = User.create!(email: "owner-#{SecureRandom.hex(4)}@example.com")
     @store = Store.create!(name: "Test Store", slug: "test-store-#{SecureRandom.hex(4)}", user: @owner)
-    @event = @store.events.create!(name: "Test Event", orders_close_at: 1.day.from_now, pickup_at: 2.days.from_now)
+    @event = @store.events.create!(name: "Test Event", orders_close_at: 1.day.from_now, pickup_starts_at: 2.days.from_now, pickup_ends_at: 2.days.from_now + 4.hours)
     @event_product = @event.event_products.create!(name: "Sourdough", price: 10, quantity: 100)
 
     @customer = User.create!(email: "customer-#{SecureRandom.hex(4)}@example.com")

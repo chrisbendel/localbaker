@@ -20,8 +20,8 @@ class StoresController < ApplicationController
   end
 
   def show
-    @drafts = @store.events.draft.includes(:event_products).order(pickup_at: :asc)
-    @upcoming = @store.events.published.where("pickup_at >= ?", Time.current).includes(:orders).order(pickup_at: :asc)
+    @drafts = @store.events.draft.includes(:event_products).order(pickup_starts_at: :asc)
+    @upcoming = @store.events.published.where("pickup_starts_at >= ?", Time.current).includes(:orders).order(pickup_starts_at: :asc)
     @live = @upcoming.select(&:orders_open?)
     @prep = @upcoming.select(&:orders_closed?)
   end

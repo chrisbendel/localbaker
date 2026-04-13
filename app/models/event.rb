@@ -5,20 +5,22 @@ class Event < ApplicationRecord
 
   validates :name, presence: true
   validates :orders_close_at, presence: true
-  validates :pickup_at, presence: true
+  validates :pickup_starts_at, presence: true
+  validates :pickup_ends_at, presence: true
   # TODO: Add fulfillment_type (pickup, delivery, both) and make fields dependent.
-  # If delivery_only, pickup_at and pickup_address may be nil/different.
+  # If delivery_only, pickup_starts_at and pickup_address may be nil/different.
 
   before_validation :normalize_pickup_address
 
   validate :orders_close_before_pickup
+  validate :pickup_ends_after_starts
   validate :must_have_products, if: :published?
   scope :published, -> { where.not(published_at: nil) }
   scope :draft, -> { where(published_at: nil) }
-  scope :current, -> { published.where("pickup_at >= ?", 3.days.ago) }
-  scope :active_published, -> { published.where("pickup_at >= ?", Time.current) }
+  scope :current, -> { published.where("pickup_starts_at >= ?", 3.days.ago) }
+  scope :active_published, -> { published.where("pickup_starts_at >= ?", Time.current) }
   scope :orders_open, -> { published.where("orders_close_at > ?", Time.current) }
-  scope :past, ->(days = 30) { published.where("pickup_at < ?", Time.current).where("pickup_at >= ?", days.days.ago) }
+  scope :past, ->(days = 30) { published.where("pickup_ends_at < ?", Time.current).where("pickup_starts_at >= ?", days.days.ago) }
 
   attribute :repeat_interval, :integer
   enum :repeat_interval, {no_repeat: 0, weekly: 1, biweekly: 2}, default: :no_repeat
@@ -48,7 +50,7 @@ class Event < ApplicationRecord
   end
 
   def past?
-    Time.current > pickup_at
+    Time.current > pickup_ends_at
   end
 
   def publish!
@@ -64,7 +66,8 @@ class Event < ApplicationRecord
     new_event = dup
     new_event.name = "Copy of #{name}"
     new_event.published_at = nil
-    new_event.pickup_at = pickup_at + interval_weeks.weeks if pickup_at
+    new_event.pickup_starts_at = pickup_starts_at + interval_weeks.weeks if pickup_starts_at
+    new_event.pickup_ends_at = pickup_ends_at + interval_weeks.weeks if pickup_ends_at
     new_event.orders_close_at = orders_close_at + interval_weeks.weeks if orders_close_at
     new_event.save!(validate: false)
 
@@ -87,10 +90,18 @@ class Event < ApplicationRecord
   end
 
   def orders_close_before_pickup
-    return unless orders_close_at && pickup_at
+    return unless orders_close_at && pickup_starts_at
 
-    if orders_close_at >= pickup_at
+    if orders_close_at >= pickup_starts_at
       errors.add(:orders_close_at, "must be before the pickup time")
+    end
+  end
+
+  def pickup_ends_after_starts
+    return unless pickup_starts_at && pickup_ends_at
+
+    if pickup_ends_at <= pickup_starts_at
+      errors.add(:pickup_ends_at, "must be after the pickup start time")
     end
   end
 

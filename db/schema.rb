@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_07_115932) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_11_191016) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -56,7 +56,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_07_115932) do
     t.string "name"
     t.datetime "orders_close_at"
     t.string "pickup_address"
-    t.datetime "pickup_at"
+    t.datetime "pickup_ends_at", null: false
+    t.datetime "pickup_starts_at"
     t.datetime "published_at"
     t.integer "repeat_interval"
     t.integer "store_id", null: false
