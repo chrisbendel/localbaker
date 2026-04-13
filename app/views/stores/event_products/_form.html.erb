@@ -33,7 +33,7 @@
     <%= f.label :image %>
     <% if event_product.image.attached? %>
       <div style="margin-bottom: var(--sp-sm);">
-        <%= image_tag event_product.image.variant(resize_to_limit: [200, 200], format: :webp), style: "max-width: 200px; display: block; margin-bottom: 4px;" %>
+        <%= image_tag event_product.image.variant(resize_to_fill: [400, 400], format: :webp), style: "width: 200px; height: 200px; object-fit: cover; display: block; margin-bottom: 4px; border-radius: var(--radius); border: 1px solid var(--border);" %>
         <label>
           <%= f.check_box :remove_image %> Remove current image
         </label>
