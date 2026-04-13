@@ -3,6 +3,10 @@ description: how to run tests in the application
 ---
 # Testing Workflow
 
+## Agent Instructions
+
+**Do not run tests yourself.** Ask the user to run them and share the results. Tests (especially system tests) are slow and require a browser environment. The user will run `bin/validate` and paste the output.
+
 ## Test Commands
 
 1. **Unit + integration only** (fast, no browser):

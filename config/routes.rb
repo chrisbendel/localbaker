@@ -39,6 +39,7 @@ Rails.application.routes.draw do
   namespace :settings do
     root to: redirect("/settings/account")
     resource :account, only: [:show, :update], controller: "accounts"
+    resources :notifications, only: [:index, :destroy], controller: "notifications"
   end
 
   get "unsub/:token", to: "public_unsubscribes#unsubscribe", as: :unsubscribe

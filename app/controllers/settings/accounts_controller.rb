@@ -16,7 +16,7 @@ module Settings
     private
 
     def account_params
-      params.expect(user: [:name])
+      params.expect(user: [:name, :address])
     end
   end
 end
