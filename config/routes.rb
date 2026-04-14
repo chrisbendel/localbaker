@@ -70,7 +70,8 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
   get "about", to: "pages#about", as: :about
-  get "near", to: "locations#near", as: :near
+  get "explore", to: "locations#explore", as: :explore
+  get "bakers", to: "locations#bakers", as: :bakers
 
   # Test-only: direct sign-in without OTP (used by system tests to bypass email auth)
   if Rails.env.test?

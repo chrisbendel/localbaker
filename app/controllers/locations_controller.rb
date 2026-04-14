@@ -1,5 +1,5 @@
 class LocationsController < ApplicationController
-  def near
+  def explore
     @latitude = params[:latitude]
     @longitude = params[:longitude]
     @address = params[:address]
@@ -32,7 +32,7 @@ class LocationsController < ApplicationController
 
     if @latitude.present? && @longitude.present?
       # Proximity search — sorted by distance, filtered to open orders
-      nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
+      @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
         .listed
         .joins(:events)
         .merge(Event.orders_open)
@@ -40,22 +40,23 @@ class LocationsController < ApplicationController
         .distinct
         .limit(10)
 
-      @stores = nearby_stores
+      store_ids = @stores.pluck(:id)
+      @next_events_by_store = Event.orders_open
+        .where(store_id: store_ids)
+        .order(:pickup_starts_at)
+        .group_by(&:store_id)
+        .transform_values(&:first)
     else
-      # Default directory — all listed stores with open orders, newest first
-      @stores = Store.listed
-        .joins(:events)
-        .merge(Event.orders_open)
-        .distinct
-        .order(created_at: :desc)
-        .limit(20)
+      @stores = []
+      @next_events_by_store = {}
     end
+  end
 
-    store_ids = @stores.pluck(:id)
-    @next_events_by_store = Event.orders_open
-      .where(store_id: store_ids)
-      .order(:pickup_starts_at)
-      .group_by(&:store_id)
-      .transform_values(&:first)
+  def bakers
+    @stores = Store.listed
+      .joins(:events)
+      .merge(Event.orders_open)
+      .distinct
+      .order(:name)
   end
 end

@@ -13,10 +13,10 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 1. Sign in
     # ----------------------------------------------------------------
     sign_in_via_browser(@baker)
-    assert_current_path near_path
+    assert_current_path explore_path
 
     # Land on discovery page
-    assert_text "Bakeries Near You"
+    assert_text "Explore"
     assert_no_text "Create your Store"
 
     # ----------------------------------------------------------------

@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     if current_user.store&.persisted?
       store_path
     else
-      near_path
+      explore_path
     end
   end
 end
