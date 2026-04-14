@@ -1,0 +1,22 @@
+<% content_for :title, "Partner Bakers" %>
+
+<div class="container">
+  <div class="stack-lg">
+    <section class="stack-sm">
+      <h1>Partner Bakers</h1>
+      <p>All the bakers currently taking orders on LocalBaker.</p>
+    </section>
+
+    <% if @stores.any? %>
+      <div class="baker-grid">
+        <% @stores.each do |store| %>
+          <%= render "locations/baker_directory_card", store: store %>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <p>No bakeries are taking orders right now. Check back soon!</p>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -8,7 +8,14 @@ class User < ApplicationRecord
   has_many :orders, dependent: :destroy
   has_many :order_items, through: :orders
 
+  geocoded_by :address
+
+  normalizes :address, with: -> { AddressParser.normalize(it).presence }
+
   before_validation :normalize_email
+  after_commit :geocode_location, if: :saved_change_to_address?
+
+  scope :geocoded, -> { where.not(latitude: nil, longitude: nil) }
 
   validates :email,
     presence: true,
@@ -26,5 +33,9 @@ class User < ApplicationRecord
 
   def normalize_email
     self.email = email.to_s.strip.downcase
+  end
+
+  def geocode_location
+    GeocodeUserJob.perform_now(id)
   end
 end

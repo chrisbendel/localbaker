@@ -52,10 +52,10 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 1. Sign in
     # ----------------------------------------------------------------
     sign_in_via_browser(@customer)
-    assert_current_path near_path
+    assert_current_path explore_path
 
     # Land on discovery page
-    assert_text "Bakeries Near You"
+    assert_text "Explore"
 
     # ----------------------------------------------------------------
     # 2. Browse to storefront

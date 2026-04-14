@@ -12,8 +12,8 @@
 
       <% if upcoming_event %>
         <div class="stack-sm">
-          <p>Order by: <strong><%= upcoming_event.orders_close_at.strftime("%A, %b %-d") %></strong></p>
-          <small class="text-muted">(Pickup: <%= upcoming_event.pickup_starts_at.strftime("%b %-d") %>)</small>
+          <p>Next Pickup: <strong><%= upcoming_event.pickup_starts_at.strftime("%A, %b %-d") %></strong></p>
+          <small class="text-muted">Orders close <%= fuzzy_date(upcoming_event.orders_close_at) %></small>
         </div>
       <% end %>
     </div>

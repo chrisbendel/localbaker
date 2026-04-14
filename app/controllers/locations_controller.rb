@@ -1,5 +1,5 @@
 class LocationsController < ApplicationController
-  def near
+  def explore
     @latitude = params[:latitude]
     @longitude = params[:longitude]
     @address = params[:address]
@@ -31,15 +31,15 @@ class LocationsController < ApplicationController
     end
 
     if @latitude.present? && @longitude.present?
-      # Get nearby stores with published events (limit before materializing to save memory)
-      nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
+      # Proximity search — sorted by distance, filtered to open orders
+      @stores = ProximityService.stores_near(@latitude, @longitude, @radius)
+        .listed
         .joins(:events)
         .merge(Event.orders_open)
         .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
         .distinct
         .limit(10)
 
-      @stores = nearby_stores
       store_ids = @stores.pluck(:id)
       @next_events_by_store = Event.orders_open
         .where(store_id: store_ids)
@@ -50,5 +50,13 @@ class LocationsController < ApplicationController
       @stores = []
       @next_events_by_store = {}
     end
+  end
+
+  def bakers
+    @stores = Store.listed
+      .joins(:events)
+      .merge(Event.orders_open)
+      .distinct
+      .order(:name)
   end
 end

@@ -34,8 +34,6 @@
   <div class="page-header">
     <h1><%= @store.name %></h1>
     <div class="group">
-      <%= link_to "View Storefront", storefront_path(@store.slug), class: "button secondary" %>
-      <%= link_to "Settings", store_settings_path, class: "button secondary" %>
       <%= link_to "+ New Event", new_store_event_path, class: "button primary" %>
     </div>
   </div>
@@ -117,12 +115,4 @@
       </div>
     </div>
   <% end %>
-
-  <hr class="divider">
-
-  <div class="group justify-center">
-    <%= link_to store_events_path, class: "text-muted" do %>
-      <small>View all events &middot;</small>
-    <% end %>
-  </div>
 </div>

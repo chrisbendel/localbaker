@@ -238,7 +238,6 @@ strong {
 
 
 .order-summary-pickup {
-  border-top: 1px solid var(--border);
   padding-top: var(--sp-sm);
 }
 
@@ -261,9 +260,6 @@ strong {
 .text-right {
   text-align: right;
 }
-
-/* Grid retired in favor of Flex Foundation */
-
 
 .card-item {
   display: flex;
@@ -553,25 +549,9 @@ button.primary:active,
 }
 
 button.secondary,
-.button.secondary,
-button.danger,
-.button.danger {
+.button.secondary {
   color: var(--text-muted);
   border-color: var(--border);
-}
-
-button.danger,
-.button.danger {
-  /* High contrast monochrome "danger" signature */
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 2px;
-}
-
-button.full,
-.button.full {
-  width: 100%;
-  justify-content: center;
 }
 
 /* Link-style button (for form-based destructive actions, sign out, etc.) */
@@ -619,11 +599,6 @@ button.full,
   display: block;
 }
 
-/* Product card image — retired fixed-height tile style in favor of Linear Menu */
-.img-product {
-  display: none;
-}
-
 /* Small thumbnail — used in list/table rows */
 .img-thumb {
   width: 40px;
@@ -642,6 +617,38 @@ button.full,
   border-radius: var(--radius);
   border: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+/* Baker directory — 2-column tile grid */
+.baker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--sp-md);
+}
+
+@media (max-width: 480px) {
+  .baker-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Baker directory card — flush banner at top, info body below */
+.baker-card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.baker-card-banner img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  display: block;
+}
+
+.baker-card-body {
+  padding: var(--sp-md);
 }
 
 /* Profile photo — circle avatar, extruded like a medallion */
@@ -697,14 +704,6 @@ a.nav-logo {
   border-top: 1px solid var(--border);
 }
 
-/* Quantity select in order summary */
-.qty-select {
-  width: auto;
-  font-size: 0.875rem;
-  padding: 0.2rem 0.4rem;
-  cursor: pointer;
-}
-
 /* Orders nav icon count */
 .nav-order-count {
   font-size: var(--text-sm);
@@ -724,13 +723,6 @@ a.nav-logo {
 
 .storefront-icon-link:hover {
   color: var(--text);
-}
-
-/* Store name as implicit back link */
-.store-letterhead {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  line-height: 1.2;
 }
 
 a.store-name-link {
@@ -850,39 +842,6 @@ th:last-child {
   font-weight: bold;
   color: var(--border-strong);
 }
-
-/* === COPY BUTTON === */
-.copy-btn {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  background: none;
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  color: var(--text-muted);
-  line-height: 0;
-}
-
-.copy-btn:hover {
-  color: var(--text);
-}
-
-.copy-btn .icon-check {
-  display: none;
-}
-
-.copy-btn.copied .icon-copy {
-  display: none;
-}
-
-.copy-btn.copied .icon-check {
-  display: block;
-  color: var(--success);
-}
-
 
 /* === FLASH TOAST === */
 #flash-dialog {

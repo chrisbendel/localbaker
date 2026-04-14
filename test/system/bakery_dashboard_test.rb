@@ -51,25 +51,6 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     assert_text "Sunday Sweets"
     assert_text "Draft"
   end
-
-  test "navigating to all events" do
-    event = @store.events.create!(
-      name: "Past Bake",
-      orders_close_at: 11.days.ago,
-      pickup_starts_at: 9.days.ago,
-      pickup_ends_at: 8.days.ago + 16.hours
-    )
-    event.update_columns(published_at: 10.days.ago)
-
-    visit store_path
-    assert_no_text "Past Bake"
-
-    click_on "View all events ·"
-    assert_current_path store_events_path
-    assert_text "Events"
-    assert_text "Past Bake"
-  end
-
   test "management actions are centralized on show page" do
     event = @store.events.create!(
       name: "Centralized Bake",

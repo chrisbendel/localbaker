@@ -1,0 +1,26 @@
+<% content_for :title, "Notifications" %>
+
+<div class="stack">
+  <div class="group justify-between items-center">
+    <h3>Notifications</h3>
+  </div>
+
+  <% if @notifications.any? %>
+    <div class="stack-sm">
+      <% @notifications.each do |notification| %>
+        <div class="card group justify-between items-center">
+          <div>
+            <strong><%= notification.store.name %></strong>
+            <p><small class="text-muted">New event notifications</small></p>
+          </div>
+          <%= button_to "Unsubscribe", settings_notification_path(notification), method: :delete, class: "button secondary" %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <p>You're not subscribed to any bakeries.</p>
+      <p>Follow a bakery to get notified when they post a new event.</p>
+    </div>
+  <% end %>
+</div>

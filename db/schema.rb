@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_11_191016) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_13_222405) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -219,8 +219,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_191016) do
     t.string "delivery_zone_type"
     t.text "description"
     t.string "facebook_url"
+    t.boolean "geocode_failed", default: false, null: false
     t.string "instagram_handle"
     t.decimal "latitude", precision: 10, scale: 6
+    t.boolean "listed", default: true, null: false
     t.decimal "longitude", precision: 10, scale: 6
     t.string "name"
     t.string "paypal_url"
@@ -235,12 +237,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_191016) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "address"
     t.datetime "created_at", null: false
     t.string "email", null: false
+    t.boolean "geocode_failed", default: false, null: false
+    t.decimal "latitude", precision: 10, scale: 6
+    t.decimal "longitude", precision: 10, scale: 6
     t.string "name"
     t.string "plan", default: "free", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["latitude", "longitude"], name: "index_users_on_latitude_and_longitude"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

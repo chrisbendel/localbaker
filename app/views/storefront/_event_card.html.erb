@@ -15,8 +15,8 @@
 
     <div class="group justify-between items-baseline">
       <p>Pickup: <strong><%= pickup_time(event.pickup_starts_at) %>–<%= pickup_time(event.pickup_ends_at) %></strong></p>
-      <% unless event.past? %>
-        <small>Closes <%= fuzzy_date(event.orders_close_at) %></small>
+      <% if !event.past? && event.orders_close_at < 48.hours.from_now %>
+        <small class="text-danger">Closes <%= fuzzy_date(event.orders_close_at) %></small>
       <% end %>
     </div>
 

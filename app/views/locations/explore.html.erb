@@ -1,14 +1,14 @@
-<% content_for :title, "Bakeries Near You" %>
+<% content_for :title, "Explore Bakeries" %>
 
 <div class="container" data-controller="geolocation">
   <div class="stack-lg">
     <section class="stack-sm">
-      <h1>Bakeries Near You</h1>
+      <h1>Explore</h1>
       <p>Find fresh baked goods and upcoming bakes in your area.</p>
     </section>
 
     <div class="panel stack">
-      <%= form_with url: near_path, method: :get, class: "stack", data: { geolocation_target: "form" } do |f| %>
+      <%= form_with url: explore_path, method: :get, class: "stack", data: { geolocation_target: "form" } do |f| %>
         <div class="stack-sm">
           <%= f.label :address, "Find bakeries near..." %>
           <%= f.text_field :address,
@@ -39,17 +39,18 @@
     <% if @stores.any? %>
       <div class="stack">
         <% @stores.each do |store| %>
-          <%= render "locations/bakery_card", store: store, distance: store.distance, upcoming_event: @next_events_by_store[store.id] %>
+          <%= render "locations/bakery_card", store: store, distance: store.try(:distance), upcoming_event: @next_events_by_store[store.id] %>
         <% end %>
       </div>
     <% elsif @latitude.present? %>
       <div class="empty-state stack-sm">
         <p>No bakeries found within <%= @radius %> miles.</p>
-        <p>Try expanding your search radius or a different location.</p>
+        <p>Try expanding your search radius or a different location, or <%= link_to "browse all partner bakers", bakers_path %>.</p>
       </div>
     <% else %>
-      <div class="empty-state">
-        <p>Enter your location to discover bakeries near you.</p>
+      <div class="empty-state stack-sm">
+        <p>Enter your location above to find bakeries near you.</p>
+        <p><%= link_to "Browse all partner bakers →", bakers_path %></p>
       </div>
     <% end %>
   </div>

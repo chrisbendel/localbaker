@@ -25,9 +25,21 @@
     </div>
 
     <div>
+      <div class="group-sm">
+        <%= f.label :listed, "List in bakery directory" %>
+        <%= f.check_box :listed %>
+      </div>
+      <p class="field-hint">Show your store on the <%= link_to "partner bakers directory", bakers_path %> so customers can find you.</p>
+    </div>
+
+    <div>
       <%= f.label :address, "Store Address" %>
       <%= f.text_field :address, placeholder: "e.g. 123 Main St, Portland, OR 97201" %>
-      <p class="field-hint">Your default pickup location. Optional.</p>
+      <% if @store.geocode_failed? %>
+        <p class="field-error">We couldn't pinpoint this address — try adding city, state, and ZIP for accurate delivery matching.</p>
+      <% else %>
+        <p class="field-hint">Your default pickup location. Optional.</p>
+      <% end %>
     </div>
 
     <hr class="divider">
@@ -92,7 +104,7 @@
     <strong>Delete Store</strong>
     <p>Permanently remove your storefront and all its data. This cannot be undone.</p>
     <div class="group">
-      <%= button_to "Delete Store", store_path(@store), method: :delete, class: "button danger",
+      <%= button_to "Delete Store", store_path(@store), method: :delete, class: "button secondary",
           data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
     </div>
   </div>
