@@ -261,9 +261,6 @@ strong {
   text-align: right;
 }
 
-/* Grid retired in favor of Flex Foundation */
-
-
 .card-item {
   display: flex;
   flex-direction: row;
@@ -414,10 +411,6 @@ strong {
 .card.sold-out {
   opacity: 0.55;
   filter: grayscale(100%);
-}
-
-.opacity-muted {
-  opacity: 0.6;
 }
 
 /* Next-step nudge */
@@ -612,11 +605,6 @@ button.full,
   display: block;
 }
 
-/* Product card image — retired fixed-height tile style in favor of Linear Menu */
-.img-product {
-  display: none;
-}
-
 /* Small thumbnail — used in list/table rows */
 .img-thumb {
   width: 40px;
@@ -690,14 +678,6 @@ a.nav-logo {
   border-top: 1px solid var(--border);
 }
 
-/* Quantity select in order summary */
-.qty-select {
-  width: auto;
-  font-size: 0.875rem;
-  padding: 0.2rem 0.4rem;
-  cursor: pointer;
-}
-
 /* Orders nav icon count */
 .nav-order-count {
   font-size: var(--text-sm);
@@ -717,13 +697,6 @@ a.nav-logo {
 
 .storefront-icon-link:hover {
   color: var(--text);
-}
-
-/* Store name as implicit back link */
-.store-letterhead {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  line-height: 1.2;
 }
 
 a.store-name-link {
@@ -843,39 +816,6 @@ th:last-child {
   font-weight: bold;
   color: var(--border-strong);
 }
-
-/* === COPY BUTTON === */
-.copy-btn {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
-  background: none;
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  color: var(--text-muted);
-  line-height: 0;
-}
-
-.copy-btn:hover {
-  color: var(--text);
-}
-
-.copy-btn .icon-check {
-  display: none;
-}
-
-.copy-btn.copied .icon-copy {
-  display: none;
-}
-
-.copy-btn.copied .icon-check {
-  display: block;
-  color: var(--success);
-}
-
 
 /* === FLASH TOAST === */
 #flash-dialog {

@@ -112,7 +112,6 @@ The palette is earthy/warm-toned. Three spacing sizes only — no xs, no xl.
 | `.empty-state` | Dashed border centered placeholder with optional CTA |
 | `.nudge` | Subtle next-step prompt (subtle bg + border) |
 | `.badge` | Inline status label — variants: `.open`, `.closed`, `.draft` (no pill shape; uppercase, letter-spaced) |
-| `.qty-select` | Native `<select>` for order item quantity (auto-submits via `requestSubmit()` on change) |
 | `.nav-order-count` | Small count bubble on the nav bag icon |
 
 ### Buttons
