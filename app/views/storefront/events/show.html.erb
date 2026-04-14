@@ -10,17 +10,39 @@
 <% end %>
 
 <div class="stack-lg">
-  <div class="store-letterhead">
-    <%= link_to @store.name, storefront_path(@store.slug), class: "store-name-link" %>
-  </div>
+  <header class="stack-sm">
+    <div class="group justify-between items-baseline">
+      <%= link_to "← #{@store.name}", storefront_path(@store.slug), class: "store-name-link text-muted" %>
+    </div>
 
-  <%= render "storefront/event_details", event: @event %>
+    <div class="stack-sm">
+      <h1 class="font-heading text-xl"><%= @event.name %></h1>
 
-  <section class="stack-sm">
-    <%# TODO: Change header to "Delivery Info" if delivery_only. %>
-    <h4>Bake Schedule</h4>
-    <p class="text-lg"><%= event_timing_summary(@event) %></p>
-  </section>
+      <% if @event.description.present? %>
+        <p class="text-lg"><%= @event.description %></p>
+      <% end %>
+
+      <div class="stack-sm">
+        <div class="group-sm items-center text-muted">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <small><%= event_timing_summary(@event) %></small>
+        </div>
+
+        <% if @event.address.present? %>
+          <div class="group-sm items-center text-muted">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <small><%= link_to @event.address, google_maps_url(@event.address), target: "_blank", rel: "noopener noreferrer" %></small>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </header>
 
   <%# 1. Ordering Context (Always above products) %>
   <div class="stack" id="storefront-order-context">
@@ -46,12 +68,14 @@
   </div>
 
   <%# 2. Products (Flex Columns) %>
-  <section class="stack">
-    <h4>Products</h4>
-    <div class="flex-cols-2">
-      <% @products.each do |product| %>
-        <%= render "storefront/product_card", product: product, store: @store, event: @event %>
-      <% end %>
-    </div>
-  </section>
+  <% if @event.orders_open? %>
+    <section class="stack">
+      <h4>Products</h4>
+      <div class="flex-cols-2">
+        <% @products.each do |product| %>
+          <%= render "storefront/product_card", product: product, store: @store, event: @event %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
 </div>

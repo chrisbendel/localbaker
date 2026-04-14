@@ -238,7 +238,6 @@ strong {
 
 
 .order-summary-pickup {
-  border-top: 1px solid var(--border);
   padding-top: var(--sp-sm);
 }
 
@@ -415,6 +414,10 @@ strong {
 .card.sold-out {
   opacity: 0.55;
   filter: grayscale(100%);
+}
+
+.opacity-muted {
+  opacity: 0.6;
 }
 
 /* Next-step nudge */
