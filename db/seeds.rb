@@ -39,7 +39,7 @@ if Rails.env.development?
     s.name = "The Crusty Loaf"
     s.slug = "the-crusty-loaf"
     s.description = "Artisanal naturally leavened breads baked in a wood-fired oven."
-    s.address = "123 Main St, Springfield"
+    s.address = "377 Pine Street, Burlington, VT 05401"
     s.bio = "Alice has been baking sourdough for over 10 years, starting in her small apartment and now serving the whole neighborhood."
     s.instagram_handle = "thecrustyloaf"
     s.venmo_handle = "alicebakes"
@@ -51,7 +51,7 @@ if Rails.env.development?
     s.name = "The Sweet Spot"
     s.slug = "the-sweet-spot"
     s.description = "Decadent cakes, cookies, and sweet treats perfect for any occasion."
-    s.address = "456 Sugar Ln, Springfield"
+    s.address = "716 Pine Street, Burlington, VT 05401"
   end
   attach_placeholder(store2, :banner_image)
   attach_placeholder(store2, :photo, "baker.jpeg")
@@ -60,7 +60,7 @@ if Rails.env.development?
     s.name = "Sunrise Bagels"
     s.slug = "sunrise-bagels"
     s.description = "Authentic boiled and baked New York style bagels."
-    s.address = "789 Morning Ave, Springfield"
+    s.address = "266 Pine Street, Burlington, VT 05401"
   end
 
   puts "Creating events..."
@@ -72,7 +72,7 @@ if Rails.env.development?
     orders_close_at: 2.weeks.ago,
     pickup_starts_at: 12.days.ago + 11.hours,
     pickup_ends_at: 12.days.ago + 15.hours,
-    pickup_address: "123 Main St, Springfield",
+    pickup_address: "377 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
   s1_active = store1.events.create!(
@@ -81,7 +81,7 @@ if Rails.env.development?
     orders_close_at: 2.days.from_now,
     pickup_starts_at: 4.days.from_now + 11.hours,
     pickup_ends_at: 4.days.from_now + 15.hours,
-    pickup_address: "123 Main St, Springfield",
+    pickup_address: "377 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
   s1_prep = store1.events.create!(
@@ -90,7 +90,7 @@ if Rails.env.development?
     orders_close_at: 1.day.ago,
     pickup_starts_at: 2.days.from_now + 11.hours,
     pickup_ends_at: 2.days.from_now + 15.hours,
-    pickup_address: "123 Main St, Springfield",
+    pickup_address: "377 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
   s1_future = store1.events.create!(
@@ -99,7 +99,7 @@ if Rails.env.development?
     orders_close_at: 9.days.from_now,
     pickup_starts_at: 11.days.from_now + 11.hours,
     pickup_ends_at: 11.days.from_now + 15.hours,
-    pickup_address: "123 Main St, Springfield",
+    pickup_address: "377 Pine Street, Burlington, VT 05401",
     published_at: nil # Draft
   )
 
@@ -110,7 +110,7 @@ if Rails.env.development?
     orders_close_at: 3.days.from_now,
     pickup_starts_at: 5.days.from_now + 10.hours,
     pickup_ends_at: 5.days.from_now + 14.hours,
-    pickup_address: "456 Sugar Ln, Springfield",
+    pickup_address: "716 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
 
@@ -121,7 +121,7 @@ if Rails.env.development?
     orders_close_at: 1.day.from_now,
     pickup_starts_at: 2.days.from_now + 9.hours,
     pickup_ends_at: 2.days.from_now + 12.hours,
-    pickup_address: "789 Morning Ave, Springfield",
+    pickup_address: "266 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
   s3_prep = store3.events.create!(
@@ -130,7 +130,7 @@ if Rails.env.development?
     orders_close_at: 2.days.ago,
     pickup_starts_at: 1.day.from_now + 9.hours,
     pickup_ends_at: 1.day.from_now + 12.hours,
-    pickup_address: "789 Morning Ave, Springfield",
+    pickup_address: "266 Pine Street, Burlington, VT 05401",
     published_at: nil
   )
 
@@ -140,7 +140,7 @@ if Rails.env.development?
     orders_close_at: 8.days.from_now,
     pickup_starts_at: 10.days.from_now + 9.hours,
     pickup_ends_at: 10.days.from_now + 12.hours,
-    pickup_address: "789 Morning Ave, Springfield",
+    pickup_address: "266 Pine Street, Burlington, VT 05401",
     published_at: nil # Draft
   )
 
