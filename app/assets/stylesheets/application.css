@@ -554,12 +554,6 @@ button.secondary,
   border-color: var(--border);
 }
 
-button.full,
-.button.full {
-  width: 100%;
-  justify-content: center;
-}
-
 /* Link-style button (for form-based destructive actions, sign out, etc.) */
 .button-link {
   -webkit-appearance: none;
