@@ -80,6 +80,6 @@ class Store < ApplicationRecord
   end
 
   def geocode_location
-    GeocodeStoreJob.perform_later(id)
+    GeocodeStoreJob.perform_now(id)
   end
 end

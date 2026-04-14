@@ -27,7 +27,11 @@
     <div>
       <%= f.label :address, "Store Address" %>
       <%= f.text_field :address, placeholder: "e.g. 123 Main St, Portland, OR 97201" %>
-      <p class="field-hint">Your default pickup location. Optional.</p>
+      <% if @store.geocode_failed? %>
+        <p class="field-error">We couldn't pinpoint this address — try adding city, state, and ZIP for accurate delivery matching.</p>
+      <% else %>
+        <p class="field-hint">Your default pickup location. Optional.</p>
+      <% end %>
     </div>
 
     <hr class="divider">

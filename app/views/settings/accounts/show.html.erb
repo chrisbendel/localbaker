@@ -20,7 +20,11 @@
     <div>
       <%= f.label :address %>
       <%= f.text_field :address, placeholder: "123 Main St, Burlington, VT 05401" %>
-      <p class="field-hint">Used to check delivery availability from local bakers.</p>
+      <% if current_user.geocode_failed? %>
+        <p class="field-error">We couldn't pinpoint this address — try adding city, state, and ZIP for accurate delivery matching.</p>
+      <% else %>
+        <p class="field-hint">Used to check delivery availability from local bakers.</p>
+      <% end %>
     </div>
 
     <div class="group">

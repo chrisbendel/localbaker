@@ -36,6 +36,6 @@ class User < ApplicationRecord
   end
 
   def geocode_location
-    GeocodeUserJob.perform_later(id)
+    GeocodeUserJob.perform_now(id)
   end
 end
