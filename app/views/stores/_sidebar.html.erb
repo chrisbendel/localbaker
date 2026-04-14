@@ -8,4 +8,6 @@
   <%= nav_link_to "Baker Profile", store_profile_path %>
   <span class="sep"></span>
   <%= nav_link_to "Payments", store_payments_path %>
+  <span class="sep"></span>
+  <%= link_to "View Storefront ↗", storefront_path(@store.slug), target: "_blank", rel: "noopener noreferrer" %>
 </nav>

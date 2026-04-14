@@ -31,8 +31,9 @@ class LocationsController < ApplicationController
     end
 
     if @latitude.present? && @longitude.present?
-      # Get nearby stores with published events (limit before materializing to save memory)
+      # Proximity search — sorted by distance, filtered to open orders
       nearby_stores = ProximityService.stores_near(@latitude, @longitude, @radius)
+        .listed
         .joins(:events)
         .merge(Event.orders_open)
         .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
@@ -40,15 +41,21 @@ class LocationsController < ApplicationController
         .limit(10)
 
       @stores = nearby_stores
-      store_ids = @stores.pluck(:id)
-      @next_events_by_store = Event.orders_open
-        .where(store_id: store_ids)
-        .order(:pickup_starts_at)
-        .group_by(&:store_id)
-        .transform_values(&:first)
     else
-      @stores = []
-      @next_events_by_store = {}
+      # Default directory — all listed stores with open orders, newest first
+      @stores = Store.listed
+        .joins(:events)
+        .merge(Event.orders_open)
+        .distinct
+        .order(created_at: :desc)
+        .limit(20)
     end
+
+    store_ids = @stores.pluck(:id)
+    @next_events_by_store = Event.orders_open
+      .where(store_id: store_ids)
+      .order(:pickup_starts_at)
+      .group_by(&:store_id)
+      .transform_values(&:first)
   end
 end

@@ -222,6 +222,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_13_222405) do
     t.boolean "geocode_failed", default: false, null: false
     t.string "instagram_handle"
     t.decimal "latitude", precision: 10, scale: 6
+    t.boolean "listed", default: true, null: false
     t.decimal "longitude", precision: 10, scale: 6
     t.string "name"
     t.string "paypal_url"

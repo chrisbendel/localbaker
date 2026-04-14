@@ -553,19 +553,9 @@ button.primary:active,
 }
 
 button.secondary,
-.button.secondary,
-button.danger,
-.button.danger {
+.button.secondary {
   color: var(--text-muted);
   border-color: var(--border);
-}
-
-button.danger,
-.button.danger {
-  /* High contrast monochrome "danger" signature */
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 2px;
 }
 
 button.full,

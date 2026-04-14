@@ -159,8 +159,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
 
-    visit store_path
-    click_on "View Storefront"
+    visit storefront_path("morning-loaf")
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 
@@ -212,7 +211,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     within "header nav" do
       find('a[aria-label="Bakery Management"]').click
     end
-    click_on "Settings"
+    click_on "Store Info"
     fill_in "Description", with: "Updated store description."
     fill_in "Store Address", with: "123 Home Bakery Ln, Portland, OR"
     click_on "Save Changes"

@@ -32,6 +32,7 @@ class Store < ApplicationRecord
   after_commit :geocode_location, if: :saved_change_to_address?
 
   scope :geocoded, -> { where.not(latitude: nil, longitude: nil) }
+  scope :listed, -> { where(listed: true) }
 
   def monetization_allowed?
     user.pro?
