@@ -14,13 +14,13 @@ Rails.application.routes.draw do
   end
 
   # Baker Management Portal
-  resource :dashboard, controller: "dashboard", shallow: true, only: [:new, :create, :show, :destroy] do
-    get :qr, on: :member
-    post :dismiss_onboarding, on: :member
+  resource :dashboard, controller: "dashboard", only: [:show] do
+    get :qr
+    post :dismiss_onboarding
 
     # Nested actions in Dashboard:: namespace
     scope module: :dashboard do
-      resource :settings, only: [:show, :update], controller: "settings"
+      resource :store, only: [:new, :create, :show, :update, :destroy], controller: "stores"
       resource :profile, only: [:show, :update], controller: "profiles"
       resource :payments, only: [:show, :update], controller: "payments"
 

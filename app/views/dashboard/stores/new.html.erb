@@ -1,7 +1,7 @@
 <% content_for :title, "Create Store" %>
 <h1>Create Store</h1>
 
-<%= form_with model: @store, url: dashboard_path do |f| %>
+<%= form_with model: @store, url: dashboard_store_path do |f| %>
   <div>
     <%= f.label :name %>
     <%= f.text_field :name %>

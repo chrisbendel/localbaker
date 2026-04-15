@@ -25,7 +25,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     visit settings_account_path
     assert_link "Create your store"
     click_on "Create your store"
-    assert_current_path new_dashboard_path
+    assert_current_path new_dashboard_store_path
 
     fill_in "Name", with: "Morning Loaf"
     fill_in "Store URL", with: "morning-loaf"

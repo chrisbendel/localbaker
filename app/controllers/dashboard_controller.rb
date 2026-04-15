@@ -1,23 +1,8 @@
 class DashboardController < ApplicationController
   before_action :require_authentication!
-  before_action :set_store, only: [:show, :qr, :dismiss_onboarding, :destroy]
+  before_action :set_store, only: [:show, :qr, :dismiss_onboarding]
+  before_action :require_store!, only: [:show, :qr]
   layout "bakery", only: [:show]
-
-  def new
-    redirect_to dashboard_path if current_user.store
-    @store = Store.new
-  end
-
-  def create
-    @store = Store.new(store_params)
-    @store.user = current_user
-
-    if @store.save
-      redirect_to dashboard_path, notice: "Bakery created! Welcome to LocalBaker."
-    else
-      render :new, status: :unprocessable_entity
-    end
-  end
 
   def show
     @drafts = @store.events.draft.includes(:event_products).order(pickup_starts_at: :asc)
@@ -43,21 +28,5 @@ class DashboardController < ApplicationController
   def dismiss_onboarding
     session[:onboarding_dismissed] = true
     redirect_to dashboard_path
-  end
-
-  def destroy
-    @store.destroy!
-    redirect_to root_path, notice: "Store deleted."
-  end
-
-  private
-
-  def set_store
-    @store = current_user.store
-    redirect_to new_dashboard_path unless @store
-  end
-
-  def store_params
-    params.expect(store: [:name, :slug, :address, :description, :banner_image])
   end
 end

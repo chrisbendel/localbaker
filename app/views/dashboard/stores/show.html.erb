@@ -5,7 +5,7 @@
     <h3>Store Info</h3>
   </div>
 
-  <%= form_with model: @store, url: dashboard_settings_path do |f| %>
+  <%= form_with model: @store, url: dashboard_store_path do |f| %>
     <div>
       <%= f.label :name %>
       <%= f.text_field :name %>
@@ -104,7 +104,7 @@
     <strong>Delete Store</strong>
     <p>Permanently remove your shop and all its data. This cannot be undone.</p>
     <div class="group">
-      <%= button_to "Delete Store", dashboard_path(@store), method: :delete, class: "button secondary",
+      <%= button_to "Delete Store", dashboard_store_path, method: :delete, class: "button secondary",
           data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
     </div>
   </div>

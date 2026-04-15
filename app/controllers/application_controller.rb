@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
-  # allow_browser versions: :modern
+  allow_browser versions: :modern
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
@@ -47,5 +47,14 @@ class ApplicationController < ActionController::Base
     else
       explore_path
     end
+  end
+
+  def set_store
+    @store = current_user.store
+  end
+
+  def require_store!
+    @store = set_store
+    redirect_to new_dashboard_store_path, alert: "You must create a store first." unless @store&.persisted?
   end
 end

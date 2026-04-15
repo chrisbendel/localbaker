@@ -8,40 +8,13 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
 
   test "redirects to new store when user has no store" do
     get dashboard_path
-    assert_redirected_to new_dashboard_path
+    assert_redirected_to new_dashboard_store_path
   end
 
-  test "new renders when user has no store" do
-    get new_dashboard_path
+  test "GET show renders for user with store" do
+    Store.create!(name: "Mine", slug: "mine", user: @user)
+    get dashboard_path
     assert_response :success
-  end
-
-  test "new redirects if user already has a store" do
-    Store.create!(name: "Mine", slug: "mine", user: @user)
-    get new_dashboard_path
-    assert_redirected_to dashboard_path
-  end
-
-  test "create creates a store" do
-    assert_difference -> { Store.count }, +1 do
-      post dashboard_path, params: {
-        store: {
-          name: "My Store",
-          slug: "my-store"
-        }
-      }
-    end
-    assert_redirected_to dashboard_path
-  end
-
-  test "destroy removes store" do
-    Store.create!(name: "Mine", slug: "mine", user: @user)
-
-    assert_difference -> { Store.count }, -1 do
-      delete dashboard_path
-    end
-
-    assert_redirected_to root_path
   end
 
   # --- QR plan gate ---
