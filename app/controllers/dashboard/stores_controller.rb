@@ -22,6 +22,18 @@ module Dashboard
       # Renders edit/settings form by default
     end
 
+    def qr
+      @shop_url = shop_url(@store.slug)
+      @qr_svg = RQRCode::QRCode.new(@shop_url).as_svg(
+        color: "000",
+        shape_rendering: "crispEdges",
+        module_size: 6,
+        standalone: true,
+        use_path: true
+      )
+      render layout: "qr"
+    end
+
     def update
       if @store.update(store_params)
         redirect_to dashboard_store_path, notice: "Store settings updated."

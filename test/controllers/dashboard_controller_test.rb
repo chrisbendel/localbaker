@@ -16,19 +16,4 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     get dashboard_path
     assert_response :success
   end
-
-  # --- QR plan gate ---
-
-  test "GET qr redirects free user to upgrade page" do
-    Store.create!(name: "Mine", slug: "mine", user: @user)
-    get qr_dashboard_path
-    assert_redirected_to billing_upgrade_path
-  end
-
-  test "GET qr renders for pro user" do
-    @user.update!(plan: :pro)
-    Store.create!(name: "Mine", slug: "mine", user: @user)
-    get qr_dashboard_path
-    assert_response :success
-  end
 end

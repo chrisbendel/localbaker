@@ -70,5 +70,13 @@ module Dashboard
 
       assert_redirected_to root_path
     end
+
+    # --- QR Poster ---
+
+    test "GET qr renders for any user" do
+      Store.create!(name: "Mine", slug: "mine", user: @user)
+      get qr_dashboard_store_path
+      assert_response :success
+    end
   end
 end

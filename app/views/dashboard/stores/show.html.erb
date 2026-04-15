@@ -3,6 +3,9 @@
 <div class="stack">
   <div class="group justify-between items-center">
     <h3>Store Info</h3>
+    <div class="group">
+      <%= link_to "Print QR Poster", qr_dashboard_store_path, class: "button secondary small", target: "_blank", rel: "noopener noreferrer" %>
+    </div>
   </div>
 
   <%= form_with model: @store, url: dashboard_store_path do |f| %>
