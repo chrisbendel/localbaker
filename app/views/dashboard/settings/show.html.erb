@@ -1,0 +1,111 @@
+<% content_for :title, "Store Info — Baker Portal" %>
+
+<div class="stack">
+  <div class="group justify-between items-center">
+    <h3>Store Info</h3>
+  </div>
+
+  <%= form_with model: @store, url: dashboard_settings_path do |f| %>
+    <div>
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+    </div>
+
+    <div>
+      <%= f.label :slug, "Store URL" %>
+      <%= f.text_field :slug, disabled: @store.active_orders? %>
+      <% if @store.active_orders? %>
+        <p class="field-hint">Slug cannot be changed while you have active orders.</p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description %>
+    </div>
+
+    <div>
+      <div class="group-sm">
+        <%= f.label :listed, "List in bakery directory" %>
+        <%= f.check_box :listed %>
+      </div>
+      <p class="field-hint">Show your store on the <%= link_to "partner bakers directory", bakers_path %> so customers can find you.</p>
+    </div>
+
+    <div>
+      <%= f.label :address, "Store Address" %>
+      <%= f.text_field :address, placeholder: "e.g. 123 Main St, Portland, OR 97201" %>
+      <% if @store.geocode_failed? %>
+        <p class="field-error">We couldn't pinpoint this address — try adding city, state, and ZIP for accurate delivery matching.</p>
+      <% else %>
+        <p class="field-hint">Your default pickup location. Optional.</p>
+      <% end %>
+    </div>
+
+    <hr class="divider">
+
+    <% if current_user.pro? %>
+      <div data-controller="delivery-zone">
+        <h4>Delivery Zone (Optional)</h4>
+        <p class="field-hint">Restrict delivery orders to a geographic area. Leave blank to allow delivery anywhere.</p>
+
+        <div>
+          <%= f.label :delivery_zone_type, "Delivery Zone Type" %>
+          <%= f.select :delivery_zone_type,
+              [["None (no restrictions)", ""], ["Radius (miles)", "radius"], ["Postal Codes", "postal_codes"]],
+              { include_blank: false },
+              { data: { delivery_zone_target: "zoneType", action: "change->delivery-zone#toggle" } } %>
+        </div>
+
+        <div data-delivery-zone-target="radiusFields" <%= 'hidden' if @store.delivery_zone_type != 'radius' %>>
+          <%= f.label :delivery_zone_radius_miles, "Delivery Radius (miles)" %>
+          <%= f.number_field :delivery_zone_radius_miles, min: 1, step: 1 %>
+          <p class="field-hint">Customers must be within this distance from your store address.</p>
+        </div>
+
+        <div data-delivery-zone-target="postalFields" <%= 'hidden' if @store.delivery_zone_type != 'postal_codes' %>>
+          <%= f.label :delivery_zone_postal_codes, "Allowed ZIP Codes" %>
+          <%= f.text_area :delivery_zone_postal_codes, placeholder: "97201\n97202\n97203", rows: 6 %>
+          <p class="field-hint">List ZIP codes where you'll deliver, one per line.</p>
+        </div>
+      </div>
+    <% else %>
+      <div class="nudge">
+        <p>Delivery zones are a Pro feature. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to restrict delivery to specific areas.</p>
+      </div>
+    <% end %>
+
+    <hr class="divider">
+
+    <div data-controller="image-upload">
+      <%= f.label :banner_image, "Store Banner" %>
+      <% if @store.banner_image.attached? %>
+        <div class="img-banner-wrap">
+          <%= image_tag @store.banner_image.variant(resize_to_fill: [1200, 675], format: :webp), class: "img-banner" %>
+        </div>
+        <label>
+          <%= f.check_box :remove_banner_image %> Remove current banner
+        </label>
+      <% end %>
+      <div class="group items-center">
+        <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+        <button type="button" class="button secondary hidden" data-image-upload-target="cancelButton" data-action="image-upload#cancel">Cancel</button>
+      </div>
+    </div>
+
+    <div>
+      <%= f.submit "Save Changes", class: "button primary" %>
+    </div>
+  <% end %>
+
+  <hr class="divider">
+
+  <div class="card stack-sm">
+    <strong>Delete Store</strong>
+    <p>Permanently remove your shop and all its data. This cannot be undone.</p>
+    <div class="group">
+      <%= button_to "Delete Store", dashboard_path(@store), method: :delete, class: "button secondary",
+          data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
+    </div>
+  </div>
+</div>

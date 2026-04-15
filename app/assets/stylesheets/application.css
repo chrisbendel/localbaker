@@ -674,7 +674,7 @@ hr.divider {
 header {
   padding-block: var(--sp-md);
   border-bottom: 1px solid var(--border);
-  margin-bottom: var(--sp-lg);
+  margin-bottom: var(--sp-sm);
 }
 
 /* Icon link (profile, etc.) */
@@ -710,8 +710,8 @@ a.nav-logo {
   font-weight: var(--font-medium);
 }
 
-/* Storefront header icon links — payment & social */
-.storefront-icon-link {
+/* Shop header icon links — payment & social */
+.shop-icon-link {
   display: flex;
   align-items: center;
   color: var(--text-muted);
@@ -721,7 +721,7 @@ a.nav-logo {
   transition: color 0.15s;
 }
 
-.storefront-icon-link:hover {
+.shop-icon-link:hover {
   color: var(--text);
 }
 

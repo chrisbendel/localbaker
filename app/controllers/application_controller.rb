@@ -43,7 +43,7 @@ class ApplicationController < ActionController::Base
     return path if path&.start_with?("/") && path != new_session_path
 
     if current_user.store&.persisted?
-      store_path
+      dashboard_path
     else
       explore_path
     end

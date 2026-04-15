@@ -1,0 +1,52 @@
+<% content_for :title, "Baker Profile — Baker Portal" %>
+
+<div class="stack">
+  <div class="group justify-between items-center">
+    <h3>Baker Profile</h3>
+    <%= link_to shop_path(@store.slug), class: "text-muted", target: "_blank", rel: "noopener noreferrer" do %>
+      <small>View Shop</small>
+    <% end %>
+  </div>
+
+  <%= form_with model: @store, url: dashboard_profile_path do |f| %>
+    <div>
+      <%= f.label :bio, "Baker Bio" %>
+      <%= f.text_area :bio, placeholder: "Your story, your baking philosophy...", rows: 6 %>
+      <p class="field-hint">Tell your customers a bit about yourself.</p>
+    </div>
+
+    <div data-controller="image-upload">
+      <%= f.label :photo, "Profile Photo" %>
+      <% if @store.photo.attached? %>
+        <%= image_tag @store.photo.variant(resize_to_limit: [400, 400], format: :webp), class: "profile-photo" %>
+        <label>
+          <%= f.check_box :remove_photo %> Remove current photo
+        </label>
+      <% end %>
+      <div class="group items-center">
+        <%= f.file_field :photo, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
+        <button type="button" class="button secondary hidden" data-image-upload-target="cancelButton" data-action="image-upload#cancel">Cancel</button>
+      </div>
+      <p class="field-hint">Square images work best.</p>
+    </div>
+
+    <div>
+      <%= f.label :instagram_handle, "Instagram Handle" %>
+      <%= f.text_field :instagram_handle, placeholder: "@yourbakery" %>
+    </div>
+
+    <div>
+      <%= f.label :facebook_url, "Facebook URL" %>
+      <%= f.text_field :facebook_url, placeholder: "https://facebook.com/yourbakery" %>
+    </div>
+
+    <div>
+      <%= f.label :website_url, "Personal Website" %>
+      <%= f.text_field :website_url, placeholder: "https://yourbakery.com" %>
+    </div>
+
+    <div>
+      <%= f.submit "Save Changes", class: "button primary" %>
+    </div>
+  <% end %>
+</div>

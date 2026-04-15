@@ -140,7 +140,7 @@ Global `table` styles apply to all tables. Use `.responsive-table` + `data-label
 | Model | Description |
 |---|---|
 | `User` | Email-based account. Can be a baker (has store) and/or customer (has orders). |
-| `Store` | Baker's storefront. One per user. Has a `slug` for public URL. `onboarding_steps` / `onboarding_complete?` methods track setup progress. |
+| `Store` | Baker's shop. One per user. Has a `slug` for public URL. `onboarding_steps` / `onboarding_complete?` methods track setup progress. |
 | `Event` | A bake/pickup event. Draft until `published_at` is set. Supports `repeat_cadence` for recurring events. |
 | `EventProduct` | A product in an event (name, quantity, price_cents). |
 | `Order` | One order per user per event. |
@@ -151,52 +151,39 @@ Global `table` styles apply to all tables. Use `.responsive-table` + `data-label
 ### Controllers
 
 Two namespaces:
-- `Stores::` — baker-facing event/product management (authenticated, ownership-checked)
-- `Storefront::` — customer-facing ordering flow (public store, authenticated ordering)
+- `Dashboard::` — baker-facing event/product management (authenticated, ownership-checked)
+- `Shop::` — customer-facing ordering flow (public store, authenticated ordering)
 
 Key controllers:
 - `SessionsController` — passwordless OTP auth (create → verify → confirm)
 - `DashboardController` — hub for baker tools + customer orders
-- `StorefrontController` — public store page
-- `Storefront::OrderItemsController` — add/update/remove cart items (uses `with_lock` for inventory race conditions)
+- `ShopController` — public store page
+- `Shop::OrderItemsController` — add/update/remove cart items (uses `with_lock` for inventory race conditions)
 - `PublicUnsubscribesController` — email unsubscribe via token
 
 ### Routing Shape
 
-```
-/                          → SessionsController#new (sign in)
-/dashboard                 → DashboardController#index
-/store                     → StoresController (singular resource)
-  /dismiss_onboarding      → StoresController#dismiss_onboarding (POST — sets session flag)
-  /events                  → Stores::EventsController
-    /event_products        → Stores::EventProductsController (shallow)
-/shop/:slug                   → StorefrontController#show (public)
-  /shop/:slug/events/:id      → Storefront::EventsController#show
-    /order_items              → Storefront::OrderItemsController
-  /shop/:slug/notification    → Storefront::NotificationsController
-/unsub/:token              → PublicUnsubscribesController#unsubscribe
-/test/sign_in/:user_id     → Test::AuthController#create (test env only)
-```
+`bin/rails routes`
 
 ### Views & Partials
 
 ```
 layouts/application.html.erb         — container, header, flash toast (z-index + safe-area-inset for mobile)
 application/_header.html.erb         — logo + nav (Manage gated on store.persisted?; bag icon with upcoming order count)
-storefront/_store_hero.html.erb      — store name + back link
-storefront/_event_card.html.erb      — public event card
-storefront/_event_details.html.erb   — event info card on order page (pickup location with maps link)
-storefront/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
-storefront/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom
-stores/show.html.erb                 — baker store page; events grouped into Drafts / Taking orders / Upcoming sections;
-                                       onboarding checklist card (session-dismissible) at top for new stores
-stores/event_products/_form.html.erb — shared product form
+shop/_store_hero.html.erb      — store name + back link
+shop/_event_card.html.erb      — public event card
+shop/_event_details.html.erb   — event info card on order page (pickup location with maps link)
+shop/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
+shop/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom
+dashboard/show.html.erb                 — baker dashboard page; events grouped into Drafts / Taking orders / Upcoming sections;
+                                       onboarding checklist card (session-dismissible) at top for new dash
+dashboard/event_products/_form.html.erb — shared product form
 ```
 
 ### Page Titles
 
 Every view sets a contextual `content_for :title`. Convention:
-- Public storefront: `Store Name`
+- Public shop: `Store Name`
 - Public event: `Event Name — Store Name`
 - Baker management: `Store Name — Context` (e.g. `Morning Loaf — Events`)
 - Auth pages: `Sign in`

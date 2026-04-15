@@ -5,7 +5,7 @@
     <h3>Your Orders</h3>
     <div class="stack-sm">
       <% @orders.each do |order| %>
-        <%= link_to storefront_event_path(order.event.store.slug, order.event), class: "card" do %>
+        <%= link_to shop_event_path(order.event.store.slug, order.event), class: "card" do %>
           <div class="group justify-between items-baseline">
             <strong><%= order.event.store.name %></strong>
             <small><%= number_to_currency(order.total_price) %></small>
@@ -18,6 +18,6 @@
 <% else %>
   <div class="empty-state stack-sm">
     <p>You don't have any orders yet.</p>
-    <p>Visit a baker's storefront to place an order.</p>
+    <p>Visit a baker's shop to place an order.</p>
   </div>
 <% end %>

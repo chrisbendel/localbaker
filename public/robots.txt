@@ -72,19 +72,17 @@ User-agent: *
 Disallow: /session
 Disallow: /session/*
 Disallow: /confirm_session
-Disallow: /store
-Disallow: /store/*
-Disallow: /stores
-Disallow: /stores/*
+Disallow: /dashboard
+Disallow: /dashboard/*
 Disallow: /users
 Disallow: /users/*
 Disallow: /rails
 Disallow: /rails/*
 Crawl-delay: 10
 
-# Allow storefront pages to be indexed
-Allow: /s/
-Allow: /s/*
+# Allow shop pages to be indexed
+Allow: /shop/
+Allow: /shop/*
 
 # Sitemap (optional, add only if you generate one)
 # Sitemap: https://yourdomain.com/sitemap.xml

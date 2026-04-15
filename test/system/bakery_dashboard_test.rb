@@ -16,7 +16,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     )
     event.update_columns(published_at: Time.current)
 
-    visit store_path
+    visit dashboard_path
     assert_text(/taking orders/i)
     assert_text "Saturday Sourdough"
     assert_text "0 orders"
@@ -31,7 +31,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     )
     event.update_columns(published_at: Time.current)
 
-    visit store_path
+    visit dashboard_path
     assert_text(/preparation/i)
     assert_text "Friday Focaccia"
     assert_link "Prep list →"
@@ -46,7 +46,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
       pickup_ends_at: 4.days.from_now + 4.hours
     )
 
-    visit store_path
+    visit dashboard_path
     assert_text(/drafts/i)
     assert_text "Sunday Sweets"
     assert_text "Draft"
@@ -59,7 +59,7 @@ class BakeryDashboardTest < ApplicationSystemTestCase
       pickup_ends_at: 2.days.from_now + 4.hours
     )
 
-    visit store_events_path
+    visit dashboard_events_path
     within "tr", text: "Centralized Bake" do
       assert_no_link "Edit"
       assert_no_button "Reuse Event"

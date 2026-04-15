@@ -45,17 +45,17 @@ module ApplicationHelper
     "https://www.google.com/maps/dir/?api=1&destination=#{ERB::Util.url_encode(address)}"
   end
 
-  def event_timing_summary(event)
-    window = pickup_window(event)
-
-    deadline_part = if event.orders_closed?
+  def event_orders_deadline(event)
+    if event.orders_closed?
       "Orders closed"
     else
       "Orders close #{fuzzy_date(event.orders_close_at)}"
     end
+  end
 
+  def event_timing_summary(event)
     # TODO: Refactor phrasing if event is delivery_only (e.g., "Delivery Sunday" instead of "Pick up Sunday").
-    "Pick up #{window} · #{deadline_part}"
+    "Pick up #{pickup_window(event)} · #{event_orders_deadline(event)}"
   end
 
   def nav_link_to(label, path)

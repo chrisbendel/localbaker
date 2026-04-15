@@ -13,20 +13,20 @@ class BakerProfileTest < ApplicationSystemTestCase
   test "baker can update profile and payment info" do
     sign_in_via_browser(@baker)
     # 1. Update Bio
-    visit store_profile_path
+    visit dashboard_profile_path
     fill_in "Baker Bio", with: "Baking bread in my backyard oven since 2020."
     fill_in "Instagram Handle", with: "@crusty_loaf"
     click_on "Save Changes"
     assert_text "Baker profile updated."
 
     # 2. Update Payments
-    visit store_payments_path
+    visit dashboard_payments_path
     fill_in "Venmo Handle", with: "@crusty-baker"
     click_on "Save Changes"
     assert_text "Payment options updated."
 
-    # Verify on public storefront — hero shows social links and a "Meet the Baker" link
-    visit storefront_path(@store.slug)
+    # Verify on public shop — hero shows social links and a "Meet the Baker" link
+    visit shop_path(@store.slug)
 
     assert_link "Meet the Baker →"
     assert_selector "a[title='Instagram @crusty_loaf']"
@@ -51,14 +51,14 @@ class BakerProfileTest < ApplicationSystemTestCase
     @order = @event.orders.create!(user: @baker)
     @order.order_items.create!(event_product: @product, quantity: 1, unit_price_cents: 1000)
 
-    visit storefront_event_path(@store.slug, @event)
+    visit shop_event_path(@store.slug, @event)
     click_on "Complete Order"
 
     assert_text "Order confirmed"
     assert_text "Venmo (@crusty-baker)"
 
-    # Check content presence on storefront
-    visit storefront_path(@store.slug)
+    # Check content presence on shop
+    visit shop_path(@store.slug)
     assert_text "Meet the Baker"
   end
 end

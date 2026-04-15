@@ -1,0 +1,21 @@
+Pickup reminder: <%= @event.name %>
+
+Hi <%= @order.user.email %>,
+
+Just a reminder that your pickup from <%= @store.name %> is tomorrow!
+
+Pickup Details:
+When: <%= @event.pickup_starts_at.strftime("%A, %b %-d") %>, <%= pickup_time(@event.pickup_starts_at) %>–<%= pickup_time(@event.pickup_ends_at) %>
+Where: <%= @event.address %>
+
+Your Order:
+<% @order.order_items.each do |item| %>
+- <%= item.quantity %> × <%= item.event_product.name %>
+<% end %>
+
+Total: <%= number_to_currency(@order.total_price) %>
+
+View your order here: <%= orders_url %>
+
+See you tomorrow!
+— The LocalBaker Team

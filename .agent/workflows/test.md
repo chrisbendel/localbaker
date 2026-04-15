@@ -62,7 +62,7 @@ bin/rails test test/system/baker_lifecycle_test.rb:11
 System tests live in `test/system/` and cover full user lifecycles:
 
 - `baker_lifecycle_test.rb` — sign in → create store → create event → add products → publish → edit/delete → sign out
-- `customer_lifecycle_test.rb` — sign in → browse storefront → subscribe → add/adjust/remove order items → dashboard → unsubscribe → sign out
+- `customer_lifecycle_test.rb` — sign in → browse shop → subscribe → add/adjust/remove order items → dashboard → unsubscribe → sign out
 
 ### Test-Only Auth Bypass
 

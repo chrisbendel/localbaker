@@ -14,12 +14,12 @@ Rails.application.routes.draw do
   end
 
   # Baker Management Portal
-  resource :store, shallow: true, only: [:new, :create, :show, :destroy] do
+  resource :dashboard, controller: "dashboard", shallow: true, only: [:new, :create, :show, :destroy] do
     get :qr, on: :member
     post :dismiss_onboarding, on: :member
 
-    # Nested actions in Stores:: namespace
-    scope module: :stores do
+    # Nested actions in Dashboard:: namespace
+    scope module: :dashboard do
       resource :settings, only: [:show, :update], controller: "settings"
       resource :profile, only: [:show, :update], controller: "profiles"
       resource :payments, only: [:show, :update], controller: "payments"
@@ -44,20 +44,20 @@ Rails.application.routes.draw do
 
   get "unsub/:token", to: "public_unsubscribes#unsubscribe", as: :unsubscribe
 
-  get "/shop/:slug", to: "storefront#show", as: :storefront
-  get "/shop/:slug/about", to: "storefront#about", as: :storefront_about
+  get "/shop/:slug", to: "shop#show", as: :shop
+  get "/shop/:slug/about", to: "shop#about", as: :shop_about
 
-  scope "/shop/:slug", module: :storefront, as: :storefront do
+  scope "/shop/:slug", module: :shop, as: :shop do
     resource :notification, only: [:create, :destroy]
 
     resources :events, only: [:show], shallow: true do
       member do
         post :confirm, controller: "orders"
         post :unconfirm, controller: "orders"
-        get :calendar
       end
       resources :order_items, only: [:create, :destroy]
     end
+    # ICS download removed — use Google Calendar button instead
   end
 
   get "billing/upgrade", to: "billing#upgrade"
