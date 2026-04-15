@@ -11,6 +11,7 @@ class Event < ApplicationRecord
   # If delivery_only, pickup_starts_at and pickup_address may be nil/different.
 
   before_validation :normalize_pickup_address
+  after_update :schedule_pickup_reminder, if: -> { published? && pickup_starts_at_previously_changed? }
 
   validate :orders_close_before_pickup
   validate :pickup_ends_after_starts
@@ -58,6 +59,23 @@ class Event < ApplicationRecord
       update!(published_at: Time.current)
       spawn_next_event if !no_repeat?
     end
+    schedule_pickup_reminder
+  end
+
+  def schedule_pickup_reminder
+    return if pickup_starts_at.nil?
+    send_at = pickup_starts_at - 24.hours
+    return if send_at <= Time.current
+
+    cancel_pickup_reminder
+    job = PickupReminderJob.set(wait_until: send_at).perform_later(id)
+    update_column(:pickup_reminder_job_id, job.job_id)
+  end
+
+  def cancel_pickup_reminder
+    return if pickup_reminder_job_id.blank?
+    SolidQueue::Job.find_by(active_job_id: pickup_reminder_job_id)&.destroy
+    update_column(:pickup_reminder_job_id, nil)
   end
 
   def spawn_next_event

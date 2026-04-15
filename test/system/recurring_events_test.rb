@@ -8,7 +8,7 @@ class RecurringEventsTest < ApplicationSystemTestCase
   end
 
   test "publishing an event with weekly repeat spawns next draft" do
-    visit store_path
+    visit dashboard_path
 
     click_on "New Event"
     fill_in "Name", with: "Weekly Sourdough"
@@ -40,7 +40,7 @@ class RecurringEventsTest < ApplicationSystemTestCase
     assert_text "Event published!"
 
     # Verify new draft exists
-    visit store_path
+    visit dashboard_path
     assert_text "Weekly Sourdough"
     assert_text "Copy of Weekly Sourdough"
     assert_text(/drafts/i)

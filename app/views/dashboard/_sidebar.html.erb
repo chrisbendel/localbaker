@@ -1,0 +1,15 @@
+<nav class="settings-nav">
+  <%= nav_link_to "Dashboard", dashboard_path %>
+  <span class="sep"></span>
+  <%= nav_link_to "Events", dashboard_events_path %>
+  <span class="sep"></span>
+  <%= nav_link_to "Store Info", dashboard_store_path %>
+  <span class="sep"></span>
+  <%= nav_link_to "Baker Profile", dashboard_profile_path %>
+  <span class="sep"></span>
+  <%= nav_link_to "Payments", dashboard_payments_path %>
+  <span class="sep"></span>
+  <% if @store&.persisted? %>
+    <%= link_to "View Shop ↗", shop_path(@store.slug), target: "_blank", rel: "noopener noreferrer" %>
+  <% end %>
+</nav>

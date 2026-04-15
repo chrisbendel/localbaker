@@ -16,7 +16,7 @@
       <% if authenticated? %>
         <span class="sep"></span>
         <% if current_user.pro? %>
-          <%= link_to "Pro", store_payments_path %>
+          <%= link_to "Pro", dashboard_payments_path %>
         <% else %>
           <%= link_to "Upgrade to Pro", billing_upgrade_path %>
         <% end %>

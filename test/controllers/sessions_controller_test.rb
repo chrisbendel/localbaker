@@ -50,7 +50,7 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     # Confirm code
     post confirm_session_path, params: {email: user.email, code: code}
-    assert_redirected_to store_path
+    assert_redirected_to dashboard_path
     assert_equal "Signed in!", flash[:notice]
     assert_equal user.id, session[:user_id]
   end

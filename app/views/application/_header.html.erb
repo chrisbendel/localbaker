@@ -7,7 +7,7 @@
     <nav class="group-lg items-center">
       <%= link_to "Explore", explore_path %>
       <% if authenticated? %>
-        <%# Remove Storefront/Manage text links as we use icons now %>
+        <%# Remove Shop/Dashboard text links as we use icons now %>
 
         <% upcoming_orders = current_user.orders
                                          .joins(:event)
@@ -26,7 +26,7 @@
         <% end %>
 
         <% if current_user.store&.persisted? %>
-          <%= link_to store_path, class: "nav-icon", aria: { label: "Bakery Management" } do %>
+          <%= link_to dashboard_path, class: "nav-icon", aria: { label: "Bakery Management" } do %>
             <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/>
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>

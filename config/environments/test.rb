@@ -36,10 +36,9 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  # Ensure jobs are performed immediately in tests so deliver_later emails are sent.
-  # This makes integration tests that expect emails (ActionMailer::Base.deliveries)
-  # observe the messages without having to manually perform enqueued jobs.
-  config.active_job.queue_adapter = :inline
+  # Use the test adapter so jobs are enqueued but not run automatically.
+  # Wrap with perform_enqueued_jobs { } where a test needs jobs to execute.
+  config.active_job.queue_adapter = :test
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = {host: "example.com"}

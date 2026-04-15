@@ -1,7 +1,7 @@
 require "application_system_test_case"
 
 # Covers the full customer journey:
-#   sign in → browse storefront → subscribe → open event →
+#   sign in → browse shop → subscribe → open event →
 #   add items → adjust quantities → remove item → view dashboard order → sign out
 #
 # Baker data is seeded directly (baker flow is covered in baker_lifecycle_test.rb).
@@ -25,23 +25,23 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     @customer = User.create!(email: "customer@example.com")
   end
 
-  test "storefront event shows store address as fallback when event has no pickup location" do
+  test "shop event shows store address as fallback when event has no pickup location" do
     # Temporarily clear the event's pickup address so the store address shows
     @event.update_columns(pickup_address: nil)
 
     sign_in_via_browser(@customer)
-    visit storefront_event_url(@store.slug, @event)
+    visit shop_event_url(@store.slug, @event)
 
     assert_link "123 Home Bakery Ln, Portland, OR"
     assert_no_text "The Climbing Gym"
   end
 
-  test "storefront event shows no location when neither event nor store has an address" do
+  test "shop event shows no location when neither event nor store has an address" do
     @event.update_columns(pickup_address: nil)
     @store.update_columns(address: nil)
 
     sign_in_via_browser(@customer)
-    visit storefront_event_url(@store.slug, @event)
+    visit shop_event_url(@store.slug, @event)
 
     # No maps link rendered at all
     assert_no_css "a[href*='google.com/maps']"
@@ -58,9 +58,9 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     assert_text "Explore"
 
     # ----------------------------------------------------------------
-    # 2. Browse to storefront
+    # 2. Browse to shop
     # ----------------------------------------------------------------
-    visit storefront_path(@store.slug)
+    visit shop_path(@store.slug)
     assert_text "The Bread Barn"
     assert_text "Sunday Bake"
 
@@ -172,15 +172,15 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
       assert_text "$26.00"
     end
 
-    # Clicking the order card goes to the storefront event
+    # Clicking the order card goes to the shop event
     find(".card", text: "The Bread Barn").click
     assert_text(/products/i)
     assert_text "Your order"
 
     # ----------------------------------------------------------------
-    # 12. Unsubscribe via the storefront subscribe toggle
+    # 12. Unsubscribe via the shop subscribe toggle
     # ----------------------------------------------------------------
-    visit storefront_path(@store.slug)
+    visit shop_path(@store.slug)
     click_on "Unsubscribe"
     assert_text "no longer following this store"
     assert_button "Subscribe"

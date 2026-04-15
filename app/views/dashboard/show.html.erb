@@ -1,0 +1,118 @@
+<% content_for :title, "#{@store.name} — Bakery Dashboard" %>
+
+<div class="stack">
+  <%# Onboarding / Setup Checklist %>
+  <% unless session[:onboarding_dismissed] || @store.onboarding_complete? %>
+    <% steps = @store.onboarding_steps %>
+    <div class="card stack-sm">
+      <div class="group justify-between items-baseline">
+        <h4>Setup Checklist</h4>
+        <%= button_to "Dismiss", dismiss_onboarding_dashboard_path, method: :post, class: "button-link text-muted" %>
+      </div>
+      <div class="stack-sm">
+        <% [
+          [steps[:store_setup],     "Add your store address and description", dashboard_store_path],
+          [steps[:event_created],   "Create your first event",                new_dashboard_event_path],
+          [steps[:products_added],  "Add products to an event",               dashboard_events_path],
+          [steps[:event_published], "Publish and share your shop",            dashboard_events_path]
+        ].each do |done, label, path| %>
+          <div class="group items-center">
+            <% if done %>
+              <span>✓</span>
+              <span class="text-muted"><%= label %></span>
+            <% else %>
+              <span class="text-muted">○</span>
+              <%= link_to label, path %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# Dashboard Header %>
+  <div class="page-header">
+    <h1><%= @store.name %></h1>
+    <div class="group">
+      <%= link_to "+ New Event", new_dashboard_event_path, class: "button primary" %>
+    </div>
+  </div>
+
+  <% if current_user.at_event_limit? %>
+    <div class="nudge">
+      <span>You've reached your free plan limit. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to publish more events.</span>
+    </div>
+  <% end %>
+
+  <%# 1. Taking Orders (Highest Priority) %>
+  <% if @live.any? %>
+    <div class="stack-sm">
+      <h4>Taking Orders</h4>
+      <div class="group">
+        <% @live.each do |event| %>
+          <%= link_to event_path(event), class: "card card-accent stack-sm" do %>
+            <strong><%= event.name %></strong>
+            <div class="group justify-between items-baseline">
+              <span><%= pluralize(event.orders.size, "order") %></span>
+              <small>Closes <%= fuzzy_date(event.orders_close_at) %></small>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% elsif @drafts.empty? && @upcoming.empty? %>
+    <div class="empty-state stack-sm">
+      <p>Your bakery is quiet right now.</p>
+      <%= link_to "Schedule your next bake", new_dashboard_event_path, class: "button primary" %>
+    </div>
+  <% end %>
+
+  <%# 2. Preparation (Orders Closed, Upcoming Pickup) %>
+  <% if @prep.any? %>
+    <div class="stack-sm">
+      <h4>Preparation</h4>
+      <div class="stack-sm">
+        <% @prep.each do |event| %>
+          <div class="card stack-sm">
+            <div class="group justify-between items-center">
+              <%= link_to event_path(event) do %>
+                <strong><%= event.name %></strong>
+              <% end %>
+              <div class="group items-center">
+                <small><%= pluralize(event.orders.size, "order") %></small>
+                <%= link_to prep_event_path(event), target: "_blank", rel: "noopener noreferrer" do %>
+                  <small>Prep list →</small>
+                <% end %>
+              </div>
+            </div>
+            <small>Pickup <%= fuzzy_date(event.pickup_starts_at) %></small>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <%# 3. Drafts %>
+  <% if @drafts.any? %>
+    <div class="stack-sm">
+      <h4>Drafts</h4>
+      <div class="stack-sm">
+        <% @drafts.each do |event| %>
+          <%= link_to event_path(event), class: "card" do %>
+            <div class="group justify-between items-center">
+              <strong><%= event.name %></strong>
+              <small>Draft</small>
+            </div>
+            <small>
+              <% if event.event_products.empty? %>
+                No products yet &middot; pickup <%= fuzzy_date(event.pickup_starts_at) %>
+              <% else %>
+                <%= pluralize(event.event_products.size, "product") %> &middot; pickup <%= fuzzy_date(event.pickup_starts_at) %>
+              <% end %>
+            </small>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

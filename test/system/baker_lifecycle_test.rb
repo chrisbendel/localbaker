@@ -25,7 +25,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     visit settings_account_path
     assert_link "Create your store"
     click_on "Create your store"
-    assert_current_path new_store_path
+    assert_current_path new_dashboard_store_path
 
     fill_in "Name", with: "Morning Loaf"
     fill_in "Store URL", with: "morning-loaf"
@@ -40,7 +40,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 3. Create an event
     # ----------------------------------------------------------------
     click_on "Create your first event"
-    assert_current_path new_store_event_path
+    assert_current_path new_dashboard_event_path
 
     fill_in "Name", with: "Saturday Bake"
     fill_in "Description", with: "Sourdough and focaccia this week."
@@ -140,7 +140,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 9. Store shows event card (not table)
     # ----------------------------------------------------------------
-    visit store_path
+    visit dashboard_path
 
     assert_text "Morning Loaf"
     # Event cards are now in tiles or list — let's just assert the name exists
@@ -159,7 +159,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event updated"
     assert_text "Saturday Bake (Updated)"
 
-    visit storefront_path("morning-loaf")
+    visit shop_path("morning-loaf")
     assert_text "Morning Loaf"
     assert_text "Upcoming Bakes"
 

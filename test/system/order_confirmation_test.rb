@@ -18,7 +18,7 @@ class OrderConfirmationTest < ApplicationSystemTestCase
 
   test "full order confirmation flow" do
     sign_in_via_browser(@customer)
-    visit storefront_event_path(@store.slug, @event)
+    visit shop_event_path(@store.slug, @event)
 
     # 1. Add item
     within ".card-item", text: "Sourdough" do
@@ -35,7 +35,10 @@ class OrderConfirmationTest < ApplicationSystemTestCase
     assert_selector "aside", text: "Order confirmed"
     assert_selector "aside", text: "Add to Google Calendar"
 
-    # 3. Add another item (should unconfirm)
+    # 3. Add another item (should unconfirm via Edit Order first)
+    click_on "Edit Order"
+    assert_text "Your order"
+
     within ".card-item", text: "Sourdough" do
       find("button[aria-label='Add to Order']").click
     end

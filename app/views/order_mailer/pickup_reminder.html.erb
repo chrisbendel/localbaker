@@ -1,0 +1,43 @@
+<h1>Pickup reminder: <%= @event.name %></h1>
+
+<p>Hi <%= @order.user.email %>,</p>
+
+<p>Just a reminder that your pickup from <strong><%= @store.name %></strong> is tomorrow!</p>
+
+<div style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin: 20px 0;">
+  <h3>Pickup Details</h3>
+  <p>
+    <strong>When:</strong> <%= @event.pickup_starts_at.strftime("%A, %b %-d") %>, <%= pickup_time(@event.pickup_starts_at) %>–<%= pickup_time(@event.pickup_ends_at) %><br>
+    <strong>Where:</strong> <%= @event.address %>
+  </p>
+</div>
+
+<h3>Your Order</h3>
+<ul>
+  <% @order.order_items.each do |item| %>
+    <li><%= item.quantity %> × <%= item.event_product.name %></li>
+  <% end %>
+</ul>
+
+<p>Total: <%= number_to_currency(@order.total_price) %></p>
+
+<% if @store.venmo_handle.present? || @store.paypal_url.present? %>
+  <div style="background: #f0ede8; padding: 15px; border: 1px solid #e0dbd5; margin: 20px 0;">
+    <h3>Payment</h3>
+    <% if @store.venmo_handle.present? %>
+      <p><strong>Venmo:</strong> <%= link_to @store.venmo_handle, @store.venmo_url %></p>
+    <% end %>
+    <% if @store.paypal_url.present? %>
+      <p><strong>PayPal:</strong> <%= link_to "PayPal.me Link", @store.paypal_url %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<p>
+  <%= link_to "View your orders", orders_url %>
+</p>
+
+<p>
+  See you tomorrow!<br>
+  — The LocalBaker Team
+</p>

@@ -1,4 +1,4 @@
-<%= link_to storefront_path(store.slug), class: "card baker-card block decor-none" do %>
+<%= link_to shop_path(store.slug), class: "card baker-card block decor-none" do %>
   <% if store.banner_image.attached? %>
     <div class="baker-card-banner">
       <%= image_tag store.banner_image.variant(resize_to_fill: [600, 450], format: :webp), alt: store.name %>

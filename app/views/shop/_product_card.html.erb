@@ -1,0 +1,26 @@
+<div class="card-item<%= ' sold-out' unless product.available? %>">
+  <% if product.image.attached? %>
+    <%= image_tag product.image.variant(resize_to_limit: [160, 160], format: :webp), class: "img-product-linear" %>
+  <% end %>
+
+  <div class="stack-sm">
+    <h3><%= product.name %></h3>
+    <div class="group items-baseline">
+      <strong><%= product.price_formatted %></strong>
+      <% if product.available? %>
+        <small class="text-muted">· <%= product.remaining %> left</small>
+      <% else %>
+        <small class="text-muted">· Sold out</small>
+      <% end %>
+    </div>
+  </div>
+
+  <% if event.orders_open? && product.available? && authenticated? %>
+    <% user_order = event.orders.find_by(user: current_user) %>
+    <% if !user_order || !user_order.confirmed? %>
+      <%= form_with url: shop_event_order_items_path(store.slug, event, event_product_id: product.id), method: :post do %>
+        <button class="button-add" aria-label="Add to Order">+</button>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -9,10 +9,10 @@ This document tracks high-level product decisions and defines the core user flow
 - Crate Store -> Choose slug, name, description.
 - Create Event -> Set pickup date/time, orders close date/time.
 - Add Products -> Name, Price, Quantity (Inventory control).
-- Publish -> Make event visible on storefront.
+- Publish -> Make event visible on shop.
 
 ### 2. Ordering
-- Browse Storefront -> View list of published events.
+- Browse Shop -> View list of published events.
 - Select Event -> View products and availability.
 - Add Items -> Immediate sync to database. Status is implicit (exists = ordered).
 

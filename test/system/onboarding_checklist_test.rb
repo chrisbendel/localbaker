@@ -8,23 +8,23 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
   end
 
   test "checklist shows for a new store with all steps incomplete" do
-    visit store_path
+    visit dashboard_path
 
     assert_text "Setup Checklist"
     assert_text "Add your store address and description"
     assert_text "Create your first event"
     assert_text "Add products to an event"
-    assert_text "Publish and share your store"
+    assert_text "Publish and share your shop"
   end
 
   test "checklist step 1 completes after adding address and description" do
-    visit store_settings_path
+    visit dashboard_store_path
     fill_in "Description", with: "Fresh sourdough every week."
     fill_in "Store Address", with: "123 Baker St, Portland, OR"
     click_on "Save Changes"
 
     # Settings redirect back to settings, but checklist is on dashboard
-    visit store_path
+    visit dashboard_path
 
     assert_text "Setup Checklist"
     assert_no_link "Add your store address and description"
@@ -44,13 +44,13 @@ class OnboardingChecklistTest < ApplicationSystemTestCase
     event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1400)
     event.update!(published_at: Time.current)
 
-    visit store_path
+    visit dashboard_path
 
     assert_no_text "Setup Checklist"
   end
 
   test "dismiss button hides the checklist" do
-    visit store_path
+    visit dashboard_path
 
     assert_text "Setup Checklist"
     click_on "Dismiss"
