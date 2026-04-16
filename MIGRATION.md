@@ -14,7 +14,8 @@ Transitioned from a 273-line monolithic `AGENTS.md` to a distributed architectur
 - `.agent/README.md` — Overview of the skills + context architecture
 - `app/controllers/dashboard/AGENTS.md` — Baker-facing domain knowledge
 - `app/controllers/shop/AGENTS.md` — Customer-facing domain knowledge
-- `app/assets/stylesheets/AGENTS.md` — Design system tokens, primitives, constraints
+- `app/views/AGENTS.md` — Partial philosophy, rendering conventions, layout structure
+- `app/assets/stylesheets/AGENTS.md` — Design system constraints and philosophy (not implementation details)
 - `test/AGENTS.md` — Testing strategy, auth bypass, system test index
 
 ### Modified
@@ -25,9 +26,11 @@ Transitioned from a 273-line monolithic `AGENTS.md` to a distributed architectur
 
 **Context Budget**: Root `AGENTS.md` dropped from ~3,000 tokens to ~1,200. Localized files (100–250 tokens each) only load when needed.
 
-**Maintenance**: Documenting *patterns and constraints* instead of *implementation details* means docs stay fresh. Deleting a CSS class doesn't require updating AGENTS.md.
+**Maintenance**: Documenting *patterns and constraints* instead of *implementation details* means docs stay fresh. Deleting a CSS class doesn't require updating AGENTS.md. The CSS file is the source of truth for class names and values; AGENTS.md documents the rules that protect the system.
 
-**Clarity**: An AI working in `app/controllers/dashboard/` sees relevant domain knowledge immediately. No noise from unrelated areas.
+**Clarity**: An AI working in `app/controllers/dashboard/` sees relevant domain knowledge immediately. No noise from unrelated areas. Similarly, an AI working on views sees partial philosophy and rendering conventions, not a restatement of CSS classes.
+
+**Philosophy Alignment**: Views follow your WET-over-DRY philosophy with pure, simple partials rather than complex conditionally-rendered ones. Stylesheets enforce constraint-based design (3 spacing sizes, no new utilities without justification) rather than permissive growth.
 
 ## Going Forward
 

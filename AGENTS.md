@@ -95,6 +95,22 @@ bin/rails console                         # REPL
 - Keep tooling consistent: use `bin/rails` and `bundle exec`.
 - Use conventional commit messages.
 
+### Git & Review Workflow
+**You always handle git operations.** Claude never:
+- Creates branches
+- Makes commits
+- Creates or manages pull requests
+- Pushes to remote
+- Merges branches
+
+Claude's role is to:
+- Write and modify code files
+- Run tests and verification locally
+- Suggest changes and improvements
+- Explain what was done and why
+
+You review, commit, branch, and push everything yourself.
+
 ## Maintaining This Documentation
 
 This project uses a **Skills + Localized Context** architecture to keep documentation fresh and focused.
