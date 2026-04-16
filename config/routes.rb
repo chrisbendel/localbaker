@@ -68,6 +68,9 @@ Rails.application.routes.draw do
   resource :contact, only: [:new, :create]
 
   resources :orders, only: [:index]
+
+  get "sitemap", to: "sitemaps#index", defaults: {format: :xml}
+
   root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
   get "about", to: "pages#about", as: :about

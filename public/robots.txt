@@ -84,5 +84,4 @@ Crawl-delay: 10
 Allow: /shop/
 Allow: /shop/*
 
-# Sitemap (optional, add only if you generate one)
-# Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://localbaker.app/sitemap.xml
