@@ -9,7 +9,12 @@
         <h3>Free</h3>
         <% if current_user.free? %><span class="badge secondary">Current plan</span><% end %>
       </div>
-      <p><%= User::FREE_EVENT_LIMIT %> active event &middot; Order management &middot; Email notifications</p>
+      <ul class="stack-sm">
+        <li><%= User::FREE_EVENT_LIMIT %> active events</li>
+        <li>Order management & fulfillment</li>
+        <li>QR code posters</li>
+        <li>Pickup-only orders</li>
+      </ul>
     </div>
 
     <div class="card stack-sm">
@@ -20,10 +25,10 @@
       <p>Everything in Free, plus:</p>
       <ul class="stack-sm">
         <li>Unlimited active events</li>
-        <li>Delivery with zone restrictions</li>
-        <li>QR code poster</li>
-        <li>Analytics</li>
-        <li>Discount codes</li>
+        <li>Delivery orders with zone restrictions</li>
+        <li>Order confirmation emails to customers</li>
+        <li>Event notifications to followers</li>
+        <li>Pickup reminder emails (24h before)</li>
       </ul>
       <% if current_user.free? %>
         <div class="group">
