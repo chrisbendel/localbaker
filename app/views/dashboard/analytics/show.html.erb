@@ -7,17 +7,16 @@
 
   <!-- Date Range Picker -->
   <div class="card stack-sm">
-    <%= form_with url: dashboard_analytics_path, method: :get, local: true do |f| %>
-      <div class="group items-end gap-md">
+    <%= form_with url: dashboard_analytics_path, method: :get, local: true, id: "analytics_form" do |f| %>
+      <div class="group items-end">
         <div class="stack-xs">
           <label for="start_date">Start Date</label>
-          <%= f.date_field :start_date, value: @start_date, class: "input" %>
+          <%= f.date_field :start_date, value: @start_date, class: "input", onchange: "document.getElementById('analytics_form').submit()" %>
         </div>
         <div class="stack-xs">
           <label for="end_date">End Date</label>
-          <%= f.date_field :end_date, value: @end_date, class: "input" %>
+          <%= f.date_field :end_date, value: @end_date, class: "input", onchange: "document.getElementById('analytics_form').submit()" %>
         </div>
-        <%= f.submit "Update", class: "button primary" %>
       </div>
     <% end %>
   </div>
