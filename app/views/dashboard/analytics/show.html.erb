@@ -1,0 +1,113 @@
+<% content_for :title, "Analytics" %>
+
+<div class="stack">
+  <div class="page-header">
+    <h1>Analytics</h1>
+  </div>
+
+  <!-- Date Range Picker -->
+  <div class="card stack-sm">
+    <h4>Select Date Range</h4>
+    <%= form_with url: dashboard_analytics_path, method: :get, local: true, class: "group" do |f| %>
+      <div class="group items-end">
+        <div class="stack-xs">
+          <label for="start_date">Start Date</label>
+          <%= f.date_field :start_date, value: @start_date, class: "input" %>
+        </div>
+        <div class="stack-xs">
+          <label for="end_date">End Date</label>
+          <%= f.date_field :end_date, value: @end_date, class: "input" %>
+        </div>
+        <%= f.submit "Update", class: "button primary" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Revenue Trend Chart -->
+  <div class="card stack-sm">
+    <h4>Revenue Over Time</h4>
+    <% if @revenue_by_date.any? %>
+      <%= line_chart @revenue_by_date, {
+        library: {
+          scales: {
+            y: {
+              ticks: {
+                callback: "function(value) { return '$' + value.toFixed(2); }"
+              }
+            }
+          }
+        }
+      } %>
+    <% else %>
+      <p class="text-muted">No revenue data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Order Count Trend Chart -->
+  <div class="card stack-sm">
+    <h4>Order Count Over Time</h4>
+    <% if @orders_by_date.any? %>
+      <%= line_chart @orders_by_date %>
+    <% else %>
+      <p class="text-muted">No order data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Top Products by Units Sold -->
+  <div class="card stack-sm">
+    <h4>Top Products by Units Sold</h4>
+    <% if @top_products_by_units.any? %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Units Sold</th>
+              <th>Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @top_products_by_units.each do |product| %>
+              <tr>
+                <td><%= product.name %></td>
+                <td><%= product.units_sold %></td>
+                <td><%= number_to_currency(product.revenue_total) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No product sales data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Top Products by Revenue -->
+  <div class="card stack-sm">
+    <h4>Top Products by Revenue</h4>
+    <% if @top_products_by_revenue.any? %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Product Name</th>
+              <th>Revenue</th>
+              <th>Units Sold</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @top_products_by_revenue.each do |product| %>
+              <tr>
+                <td><%= product.name %></td>
+                <td><%= number_to_currency(product.revenue_total) %></td>
+                <td><%= product.units_sold %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No product sales data for the selected date range.</p>
+    <% end %>
+  </div>
+</div>

@@ -8,6 +8,10 @@
   <%= nav_link_to "Baker Profile", dashboard_profile_path %>
   <span class="sep"></span>
   <%= nav_link_to "Payments", dashboard_payments_path %>
+  <% if current_user.pro? %>
+    <span class="sep"></span>
+    <%= nav_link_to "Analytics", dashboard_analytics_path %>
+  <% end %>
   <span class="sep"></span>
   <% if @store&.persisted? %>
     <%= link_to "View Shop ↗", shop_path(@store.slug), target: "_blank", rel: "noopener noreferrer" %>

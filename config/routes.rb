@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       end
       resource :profile, only: [:show, :update], controller: "profiles"
       resource :payments, only: [:show, :update], controller: "payments"
+      resource :analytics, only: [:show], controller: "analytics"
 
       resources :events, shallow: true do
         member do
