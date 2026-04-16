@@ -13,8 +13,10 @@ module Shop
       end
 
       if @order.save && @order.confirm!
-        OrderMailer.with(order: @order).confirmation_email.deliver_later
-        redirect_to shop_event_path(@store.slug, @event), notice: "Order confirmed! We've sent a receipt to your email."
+        if @store.user.pro?
+          OrderMailer.with(order: @order).confirmation_email.deliver_later
+        end
+        redirect_to shop_event_path(@store.slug, @event), notice: "Order confirmed!"
       else
         error_message = @order.errors.full_messages.to_sentence.presence || "Could not confirm order. Please try again."
         redirect_to shop_event_path(@store.slug, @event), alert: error_message

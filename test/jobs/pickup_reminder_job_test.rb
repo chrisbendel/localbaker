@@ -2,7 +2,7 @@ require "test_helper"
 
 class PickupReminderJobTest < ActiveJob::TestCase
   setup do
-    @baker = User.create!(email: "baker@example.com")
+    @baker = User.create!(email: "baker@example.com", plan: "pro")
     @store = Store.create!(name: "Test Bakery", slug: "test-bakery", user: @baker, address: "123 Main St")
     @event = @store.events.create!(
       name: "Big Bake",

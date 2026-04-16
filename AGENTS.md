@@ -90,7 +90,10 @@ bin/rails console                         # REPL
 
 ## AI Interaction Guidelines
 
+Follow the **Code Principles** (`.agent/skills/code-principles.md`): Think before coding, Simplicity first, Surgical changes, Goal-driven execution.
+
 - Minimal, well-scoped changes only.
+- Ask clarifying questions before writing code.
 - Add or update tests for any behavior changes.
 - Keep tooling consistent: use `bin/rails` and `bundle exec`.
 - Use conventional commit messages.
