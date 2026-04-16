@@ -7,9 +7,8 @@
 
   <!-- Date Range Picker -->
   <div class="card stack-sm">
-    <h4>Select Date Range</h4>
-    <%= form_with url: dashboard_analytics_path, method: :get, local: true, class: "group" do |f| %>
-      <div class="group items-end">
+    <%= form_with url: dashboard_analytics_path, method: :get, local: true do |f| %>
+      <div class="group items-end gap-md">
         <div class="stack-xs">
           <label for="start_date">Start Date</label>
           <%= f.date_field :start_date, value: @start_date, class: "input" %>
@@ -23,31 +22,71 @@
     <% end %>
   </div>
 
-  <!-- Revenue Trend Chart -->
+  <!-- Summary Stats -->
+  <div class="group">
+    <div class="card stack-xs">
+      <small class="text-muted">Total Revenue</small>
+      <h3><%= number_to_currency(@revenue_by_date.values.sum) %></h3>
+    </div>
+    <div class="card stack-xs">
+      <small class="text-muted">Total Orders</small>
+      <h3><%= @orders_by_date.values.sum %></h3>
+    </div>
+    <div class="card stack-xs">
+      <small class="text-muted">Avg Order Value</small>
+      <h3><%= @orders_by_date.values.sum > 0 ? number_to_currency(@revenue_by_date.values.sum / @orders_by_date.values.sum) : "$0.00" %></h3>
+    </div>
+  </div>
+
+  <!-- Revenue by Day -->
   <div class="card stack-sm">
-    <h4>Revenue Over Time</h4>
+    <h4>Revenue by Day</h4>
     <% if @revenue_by_date.any? %>
-      <%= line_chart @revenue_by_date, {
-        library: {
-          scales: {
-            y: {
-              ticks: {
-                callback: "function(value) { return '$' + value.toFixed(2); }"
-              }
-            }
-          }
-        }
-      } %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th style="text-align: right;">Revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @revenue_by_date.sort.reverse.each do |date, revenue| %>
+              <tr>
+                <td><%= date %></td>
+                <td style="text-align: right;"><strong><%= number_to_currency(revenue) %></strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     <% else %>
       <p class="text-muted">No revenue data for the selected date range.</p>
     <% end %>
   </div>
 
-  <!-- Order Count Trend Chart -->
+  <!-- Orders by Day -->
   <div class="card stack-sm">
-    <h4>Order Count Over Time</h4>
+    <h4>Orders by Day</h4>
     <% if @orders_by_date.any? %>
-      <%= line_chart @orders_by_date %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th style="text-align: right;">Orders</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders_by_date.sort.reverse.each do |date, count| %>
+              <tr>
+                <td><%= date %></td>
+                <td style="text-align: right;"><strong><%= count %></strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     <% else %>
       <p class="text-muted">No order data for the selected date range.</p>
     <% end %>
@@ -61,17 +100,17 @@
         <table>
           <thead>
             <tr>
-              <th>Product Name</th>
-              <th>Units Sold</th>
-              <th>Revenue</th>
+              <th>Product</th>
+              <th style="text-align: right;">Units</th>
+              <th style="text-align: right;">Revenue</th>
             </tr>
           </thead>
           <tbody>
             <% @top_products_by_units.each do |product| %>
               <tr>
                 <td><%= product.name %></td>
-                <td><%= product.units_sold %></td>
-                <td><%= number_to_currency(product.revenue_total) %></td>
+                <td style="text-align: right;"><%= product.units_sold %></td>
+                <td style="text-align: right;"><%= number_to_currency(product.revenue_total) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -90,17 +129,17 @@
         <table>
           <thead>
             <tr>
-              <th>Product Name</th>
-              <th>Revenue</th>
-              <th>Units Sold</th>
+              <th>Product</th>
+              <th style="text-align: right;">Revenue</th>
+              <th style="text-align: right;">Units</th>
             </tr>
           </thead>
           <tbody>
             <% @top_products_by_revenue.each do |product| %>
               <tr>
                 <td><%= product.name %></td>
-                <td><%= number_to_currency(product.revenue_total) %></td>
-                <td><%= product.units_sold %></td>
+                <td style="text-align: right;"><%= number_to_currency(product.revenue_total) %></td>
+                <td style="text-align: right;"><%= product.units_sold %></td>
               </tr>
             <% end %>
           </tbody>

@@ -18,4 +18,18 @@ When working in specific areas, see:
 
 ## Workflow
 
-**You always handle git.** Claude writes code, runs tests, and suggests changes. You review, commit, and push. Claude never creates branches, makes commits, or opens PRs.
+**You always handle git.** Claude writes code, commits to the branch, and suggests changes. You review, run tests, and push. Claude never creates branches, creates commits, or opens PRs.
+
+## Testing & Verification
+
+**Manual testing after implementation (token-efficient)**
+1. Claude implements feature and commits
+2. You run `bin/validate` to test
+3. Share test results with Claude
+4. Claude iterates based on actual failures, not hypothetical ones
+
+**This approach:**
+- Avoids expensive test scripts and elaborate verification upfront
+- Lets you validate in your own environment
+- Focuses Claude's token budget on correctness, not verification
+- Enables faster iteration cycles
