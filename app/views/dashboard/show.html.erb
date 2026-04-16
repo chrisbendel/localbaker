@@ -44,6 +44,12 @@
     </div>
   <% end %>
 
+  <% unless current_user.pro? %>
+    <div class="nudge">
+      <span>Email features (order confirmations, event notifications, pickup reminders) require Pro. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to keep customers updated automatically.</span>
+    </div>
+  <% end %>
+
   <%# 1. Taking Orders (Highest Priority) %>
   <% if @live.any? %>
     <div class="stack-sm">
