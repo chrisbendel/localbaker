@@ -19,128 +19,19 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 ## Project Ethos
 
 - **Simple UI**: Late-90s/early-2000s clean HTML aesthetic — no shadows, minimal border-radius, no heavy components.
-- **Mobile First**: All layouts prioritize small screens. Use flexbox as the primary layout engine.
-- **Web Standards**: Native browser features (Flexbox, CSS custom properties) over JavaScript-driven UI.
-- **Token-driven CSS**: All colors, spacing, and shape values come from CSS custom properties defined in `:root`. No hardcoded values in views or components.
-- **Modular Design**: Rails partials as components. Keep partials focused and reusable.
-- **No Dropdowns**: Avoid JS-dependent UI patterns. Native `<select>` is fine; custom JS dropdowns are not.
+- **Mobile First**: All layouts prioritize small screens. Flexbox is the primary layout engine.
+- **Web Standards**: Native browser features over JavaScript-driven UI.
+- **No Emoji**: UI is text-only. Unicode punctuation is fine; emoji are not.
+- **Token-driven CSS**: All colors, spacing, and shape values come from CSS custom properties in `:root`.
 
-## Design System Constraints
+> For design system constraints, CSS architecture, and component classes, see `app/assets/stylesheets/AGENTS.md`.
 
-**The design system is intentionally minimal and closed. Do not expand it without explicit instruction.**
-
-### Spacing & Layout — NEVER add new sizes or variants
-
-The spacing scale has exactly three sizes: `sm`, `(base)`, `lg`. The layout primitives (`.stack-*`, `.group-*`) mirror this exactly. This is a deliberate constraint, not an oversight.
-
-**Prohibited without explicit user approval:**
-- New spacing tokens (`--sp-xs`, `--sp-xl`, `--sp-2xl`, etc.)
-- New layout class variants (`.stack-xs`, `.group-tight`, `.stack-xl`, etc.)
-- New gap/spacing utility classes (`.gap-xs`, `.gap-md`, etc.)
-- Inline `style=` attributes for spacing or layout
-
-**When you think you need a new size, work through this first:**
-1. Would `sm` or `lg` be close enough? Slight visual difference is acceptable.
-2. Can the parent or child element be restructured to avoid the need?
-3. Is the element itself the wrong choice — e.g., would a different semantic element or class solve it?
-
-If you genuinely cannot proceed without a new primitive, **stop and explain why** — state which existing sizes you tried and why they don't work. Do not add it silently.
-
-### CSS Classes — no new utilities without justification
-
-Before adding any new CSS class, verify it doesn't already exist in `application.css`. If you need to add one:
-- It must solve a problem that cannot be solved with existing primitives + modifier classes (`.items-center`, `.justify-between`, etc.)
-- It must be used in at least two places — single-use styling belongs inline or as a component-specific rule, not a utility
-
-### Partials & `mode:` flags — keep partials single-purpose
-
-Partials should not accept a `mode:` or `variant:` flag to render different structures. If two contexts need meaningfully different markup, use two partials or inline the simpler case. Branching inside a partial on a flag is a code smell.
-
-### Default parameters in partials
-
-Use `<% variable ||= default %>` at the top of a partial for optional locals. Never use `local_assigns[:key]` to read locals — it bypasses the explicit default and makes the interface unclear.
-- **No Emoji**: Keep the UI text-only and clean. Unicode punctuation (arrows, middots) is fine; emoji are not.
-- **Mobile First**: Toast z-index and `env(safe-area-inset-bottom)` ensure UI chrome doesn't obscure content on iOS. Order summary hoists above product list on mobile via CSS `order: -1`.
-
-## UI & CSS Architecture
-
-### Design Tokens (`app/assets/stylesheets/application.css`)
-
-All values come from `:root` custom properties:
-
-```css
---font             /* "DM Sans", system-ui — loaded via Google Fonts */
---text             /* #1a1612 — primary text */
---text-muted       /* #706860 — secondary text (warm gray) */
---border           /* #ddd8d2 — default borders */
---border-strong    /* #aaa49e — emphasized borders */
---bg               /* #f5f2ee — warm off-white */
---bg-subtle        /* #edeae5 — cards, panels */
---success          /* var(--text) — monochrome, contrast carries signal */
---danger           /* var(--text) — monochrome */
---sp-sm            /* 0.5rem */
---sp-md            /* 1rem */
---sp-lg            /* 2rem */
---radius           /* 3px */
---radius-full      /* 9999px — pills */
-```
-
-The palette is earthy/warm-toned. Three spacing sizes only — no xs, no xl.
-
-### Layout Primitives
-
-| Class | Purpose |
-|---|---|
-| `.container` | Max-width 720px, centered, horizontal padding |
-| `.stack-sm` | Vertical flex column, `gap: --sp-sm` |
-| `.stack` | Vertical flex column, `gap: --sp-md` |
-| `.stack-lg` | Vertical flex column, `gap: --sp-lg` |
-| `.group-sm` | Horizontal flex row, `gap: --sp-sm` |
-| `.group` | Horizontal flex row, `gap: --sp-md` |
-| `.group-lg` | Horizontal flex row, `gap: --sp-lg` |
-| `.flex-cols-2` | Responsive 2-column flex row (tiling) |
-| `.page-header` | Row on desktop, stacked column on mobile (`≤600px`) |
-
-### Components
-
-| Class | Purpose |
-|---|---|
-| `.card` | Bordered box, `1px solid var(--border)`, minimal radius |
-| `.card.sold-out` | Dimmed card (`opacity: 0.55`) for sold-out products |
-| `.card-accent` | Card with a bold left border (event details) |
-| `.panel` | Subtle background container (`--bg-subtle`) |
-| `.empty-state` | Dashed border centered placeholder with optional CTA |
-| `.nudge` | Subtle next-step prompt (subtle bg + border) |
-| `.badge` | Inline status label — variants: `.open`, `.closed`, `.draft` (no pill shape; uppercase, letter-spaced) |
-| `.nav-order-count` | Small count bubble on the nav bag icon |
-
-### Buttons
-
-| Class | Purpose |
-|---|---|
-| `button` / `.button` | Default bordered button |
-| `.primary` | Filled black button (primary CTA) |
-| `.small` | Compact button size |
-| `.secondary` | Muted/ghost button |
-| `.danger` | Red-tinted destructive action |
-| `.button-link` | Unstyled inline link-style button (used for `button_to`) |
-
-### Typography Helpers
-
-`.text-muted`, `.text-sm`, `.text-lg`, `.text-danger`, `.text-success`, `.font-bold`, `.text-center`, `.text-right`
-
-### Tables
-
-Global `table` styles apply to all tables. Use `.responsive-table` + `data-label="..."` on `<td>` for mobile card fallback (stacks rows at ≤600px).
-
-## Application Structure
-
-### Domain Models
+## Domain Models
 
 | Model | Description |
 |---|---|
 | `User` | Email-based account. Can be a baker (has store) and/or customer (has orders). |
-| `Store` | Baker's shop. One per user. Has a `slug` for public URL. `onboarding_steps` / `onboarding_complete?` methods track setup progress. |
+| `Store` | Baker's shop. One per user. Has a `slug` for public URL. `onboarding_steps` / `onboarding_complete?` track setup progress. |
 | `Event` | A bake/pickup event. Draft until `published_at` is set. Supports `repeat_cadence` for recurring events. |
 | `EventProduct` | A product in an event (name, quantity, price_cents). |
 | `Order` | One order per user per event. |
@@ -148,46 +39,14 @@ Global `table` styles apply to all tables. Use `.responsive-table` + `data-label
 | `LoginCode` | OTP for passwordless email auth. BCrypt digest, 10-min TTL, 5/hr rate limit. |
 | `StoreNotification` | Email subscription for a store. Has `unsubscribe_token`. |
 
-### Controllers
+## Controllers
 
 Two namespaces:
-- `Dashboard::` — baker-facing event/product management (authenticated, ownership-checked)
-- `Shop::` — customer-facing ordering flow (public store, authenticated ordering)
 
-Key controllers:
-- `SessionsController` — passwordless OTP auth (create → verify → confirm)
-- `DashboardController` — hub for baker tools + customer orders
-- `ShopController` — public store page
-- `Shop::OrderItemsController` — add/update/remove cart items (uses `with_lock` for inventory race conditions)
-- `PublicUnsubscribesController` — email unsubscribe via token
+- `Dashboard::` — baker-facing event/product management (authenticated, ownership-checked). See `app/controllers/dashboard/AGENTS.md`.
+- `Shop::` — customer-facing ordering flow (public store, authenticated ordering). See `app/controllers/shop/AGENTS.md`.
 
-### Routing Shape
-
-`bin/rails routes`
-
-### Views & Partials
-
-```
-layouts/application.html.erb         — container, header, flash toast (z-index + safe-area-inset for mobile)
-application/_header.html.erb         — logo + nav (Manage gated on store.persisted?; bag icon with upcoming order count)
-shop/_store_hero.html.erb      — store name + back link
-shop/_event_card.html.erb      — public event card
-shop/_event_details.html.erb   — event info card on order page (pickup location with maps link)
-shop/_product_card.html.erb    — product card; availability inline with price; .sold-out opacity when unavailable
-shop/_order_summary.html.erb   — order panel (.panel); native <select> for qty; pickup line at bottom
-dashboard/show.html.erb                 — baker dashboard page; events grouped into Drafts / Taking orders / Upcoming sections;
-                                       onboarding checklist card (session-dismissible) at top for new dash
-dashboard/event_products/_form.html.erb — shared product form
-```
-
-### Page Titles
-
-Every view sets a contextual `content_for :title`. Convention:
-- Public shop: `Store Name`
-- Public event: `Event Name — Store Name`
-- Baker management: `Store Name — Context` (e.g. `Morning Loaf — Events`)
-- Auth pages: `Sign in`
-- Fallback (layout default): `LocalBaker`
+Other key controllers: `SessionsController` (passwordless OTP auth), `ShopController` (public store page), `PublicUnsubscribesController` (token-based email unsubscribe).
 
 ## Authentication
 
@@ -197,49 +56,18 @@ Passwordless OTP flow:
 3. User submits 6-digit code → `SessionsController#confirm`
 4. BCrypt compare → `sign_in(user)` sets `session[:user_id]`
 
-Rate limiting: 5 codes per hour per user (enforced in `LoginCode.generate_for`).
-
-## Testing
-
-### Commands
-
-```bash
-bin/validate            # recommended: runs lint + unit + system tests
-bin/rails test          # unit + integration (fast)
-bin/rails test:system   # browser/system tests only
-bin/rails test:all      # everything
-```
-
-### System Tests
-
-Full lifecycle and feature tests in `test/system/`:
-- `baker_lifecycle_test.rb` — full baker journey (sign in through sign out)
-- `customer_lifecycle_test.rb` — full customer journey (sign in through sign out, qty select, remove item)
-- `onboarding_checklist_test.rb` — checklist card shows/completes/dismisses for new bakers
-- `recurring_events_test.rb` — publishing a weekly-repeat event spawns the next draft
-
-System tests use a **test-only sign-in bypass** instead of the OTP email flow:
-- Route: `GET /test/sign_in/:user_id` (only registered when `Rails.env.test?`)
-- Controller: `app/controllers/test/auth_controller.rb`
-- Helper: `sign_in_via_browser(user)` in `test/application_system_test_case.rb`
-
-The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`.
-
-### Test Helper
-
-`test/test_helper.rb` provides `sign_in_as(user)` for controller/integration tests — goes through the full OTP flow by reading from `ActionMailer::Base.deliveries`.
+Rate limiting: 5 codes per hour per user.
 
 ## Coding Conventions
 
 - **Style**: StandardRB. Run `bundle exec standardrb --fix` before committing.
-- **Architecture**: Conventional Rails — RESTful controllers, logic in models, thin controllers.
-- **Queries**: Use `includes` to avoid N+1s. Check controller `show` actions when adding associations to views.
-- **Prices**: Stored as integer cents (`price_cents`). Use `price_formatted` and `number_to_currency` helpers for display.
-- **Inventory**: `EventProduct#remaining` and `sold` are calculated, not stored. `with_lock` used in `OrderItemsController` to prevent race conditions.
-- **Authorization**: No gem — manual `current_user == @store.user` ownership checks. `require_authentication!` before_action for protected routes.
-- **No inline styles**: All styling via CSS classes and tokens. Inline `style=` attributes are strictly forbidden. Use layout primitives (.stack/.group) to handle spacing.
-- **Flexbox First**: Use `.stack` / `.stack-sm` / `.stack-lg` (vertical) and `.group` / `.group-sm` / `.group-lg` (horizontal) as the primary layout engines. Three sizes only — sm, (base), lg. No xs or xl variants.
-- **Database Migrations**: ALWAYS create a migration file for schema changes — never commit `db/schema.rb` directly. The schema file is auto-generated by `rails db:schema:dump`. Committing schema changes without a migration creates sync issues where fresh deployments fail trying to re-add columns that already exist in the schema. When reviewing PRs, watch for schema.rb changes without corresponding migration files in `db/migrate/`.
+- **Architecture**: RESTful controllers, logic in models, thin controllers.
+- **Queries**: Use `includes` to avoid N+1s.
+- **Prices**: Stored as integer cents (`price_cents`). Use `price_formatted` / `number_to_currency` for display.
+- **Authorization**: No gem — manual `current_user == @store.user` ownership checks.
+- **Database Migrations**: Always create a migration file — never commit `db/schema.rb` directly.
+- **Branch naming**: `feat/...`, `fix/...`, `chore/...`
+- **No CDN dependencies**: Assets are self-hosted via Propshaft.
 
 ## Development Workflow
 
@@ -247,26 +75,62 @@ The OTP flow itself is covered by `test/controllers/sessions_controller_test.rb`
 bundle install && bin/rails db:prepare   # setup
 bin/rails server                          # run
 bin/validate                              # full validation (lint + tests)
-bin/rails test:all                        # full test suite
 bundle exec standardrb --fix             # lint + fix
 bin/rails routes                          # inspect routes
 bin/rails console                         # REPL
-bin/rails db:seed                         # seed demo data
 ```
 
-### Seed Accounts (after `db:seed`)
+> See `.agent/skills/` for runnable skill commands (testing, lint, seed, migrate).
 
-- **Baker**: `baker@example.com` — store at `/s/the-crusty-loaf`
-- **Buyer 1**: `buyer1@example.com`
-- **Buyer 2**: `buyer2@example.com`
+## Testing
+
+**Do not run tests yourself.** Ask the user to run `bin/validate` and share results.
+
+> See `test/AGENTS.md` for testing strategy and auth bypass details.
 
 ## AI Interaction Guidelines
 
-- Use minimal, well-scoped changes.
-- Add or update tests for any behavior changes. System tests for user-facing flows, controller tests for auth/authorization.
+- Minimal, well-scoped changes only.
+- Add or update tests for any behavior changes.
 - Keep tooling consistent: use `bin/rails` and `bundle exec`.
-- Follow feature branch naming: `feat/...`, `fix/...`, `chore/...`.
 - Use conventional commit messages.
-- Do not add inline `style=` attributes — use CSS classes and tokens.
-- Do not introduce new CDN dependencies — assets are self-hosted via Propshaft.
-- Do not use emoji in views or copy.
+
+### Git & Review Workflow
+**You always handle git operations.** Claude never:
+- Creates branches
+- Makes commits
+- Creates or manages pull requests
+- Pushes to remote
+- Merges branches
+
+Claude's role is to:
+- Write and modify code files
+- Run tests and verification locally
+- Suggest changes and improvements
+- Explain what was done and why
+
+You review, commit, branch, and push everything yourself.
+
+## Maintaining This Documentation
+
+This project uses a **Skills + Localized Context** architecture to keep documentation fresh and focused.
+
+### Files to Update When You Change Code
+
+- **Refactoring a controller?** Update the relevant localized AGENTS.md (`app/controllers/dashboard/AGENTS.md` or `app/controllers/shop/AGENTS.md`). Keep it focused on *patterns and rules*, not implementation details.
+- **Changing a test command?** Update `.agent/skills/testing.md` once — that's it.
+- **Adding a design constraint or CSS pattern?** Update `app/assets/stylesheets/AGENTS.md`.
+- **Deleting a CSS class or controller method?** Just delete it from the code. Don't hunt for documentation to update.
+
+### What NOT to Document
+
+- Specific class names, method lists, or implementation details. Those belong in code comments, not AGENTS.md.
+- Anything that will go stale (current PR status, temporary workarounds). Use git commit messages or issue tracking instead.
+- Duplicate information. If it's in code or git history, don't repeat it in AGENTS.md.
+
+### What SHOULD Stay in AGENTS.md
+
+- Patterns and rules: "Ownership is always checked via `current_user == @store.user`"
+- Constraints: "Spacing scale has exactly 3 sizes: sm, base, lg"
+- Architectural decisions: "Inventory uses `with_lock` to prevent race conditions"
+- Workflow knowledge: "Events are drafted until `published_at` is set"
