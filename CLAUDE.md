@@ -13,3 +13,7 @@ When working in specific areas, see:
 - **`app/views/AGENTS.md`** — Partial philosophy, rendering conventions
 - **`app/assets/stylesheets/AGENTS.md`** — Design system constraints
 - **`test/AGENTS.md`** — Testing strategy, auth bypass details
+
+## Workflow
+
+**You always handle git.** Claude writes code, runs tests, and suggests changes. You review, commit, and push. Claude never creates branches, makes commits, or opens PRs.
