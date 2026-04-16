@@ -2,7 +2,7 @@ require "test_helper"
 
 class Shop::OrdersIntegrationTest < ActionDispatch::IntegrationTest
   setup do
-    @baker = User.create!(email: "baker-#{SecureRandom.hex}@example.com")
+    @baker = User.create!(email: "baker-#{SecureRandom.hex}@example.com", plan: "pro")
     @store = Store.create!(name: "Test Bakery", slug: "test-bakery-#{SecureRandom.hex}", user: @baker, address: "123 Main St")
     @event = @store.events.create!(
       name: "Big Bake",

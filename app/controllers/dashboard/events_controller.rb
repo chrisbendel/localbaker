@@ -41,8 +41,10 @@ module Dashboard
 
       @event.publish!
 
-      @store.notifications.includes(:user).find_each do |notification|
-        StoreMailer.new_event(@store, @event, notification).deliver_later
+      if current_user.pro?
+        @store.notifications.includes(:user).find_each do |notification|
+          StoreMailer.new_event(@store, @event, notification).deliver_later
+        end
       end
 
       notice = "Event published!"

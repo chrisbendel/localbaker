@@ -1,7 +1,9 @@
 ## Project Reference
 
 - **AGENTS.md** — Global project info (tech stack, domain models, conventions)
-- **`.agent/skills/`** — Runnable task workflows (test, lint, migrate, seed)
+- **`.agent/skills/`** — Runnable task workflows and principles
+  - `code-principles.md` — Andrej Karpathy's framework (Think, Simplicity, Surgical, Goal-Driven)
+  - `testing.md`, `lint.md`, `seed.md`, `db_migrate.md` — Task workflows
 - **`.agent/README.md`** — Skills + Localized Context architecture overview
 
 ## Localized Context
