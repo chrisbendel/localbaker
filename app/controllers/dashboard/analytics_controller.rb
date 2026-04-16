@@ -35,10 +35,11 @@ module Dashboard
     def fetch_orders_by_date(start_date, end_date)
       @store.orders
         .where(created_at: start_date.beginning_of_day..end_date.end_of_day)
-        .group("DATE(created_at)")
-        .order("DATE(created_at) ASC")
-        .count
-        .transform_keys { |date| date.to_s }
+        .select("DATE(orders.created_at) as date, COUNT(*) as count")
+        .group("DATE(orders.created_at)")
+        .order("DATE(orders.created_at) ASC")
+        .map { |row| [row.date.to_s, row.count] }
+        .to_h
     end
 
     def fetch_top_products_by_units(start_date, end_date)
