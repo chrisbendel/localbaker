@@ -20,6 +20,8 @@ When working in specific areas, see:
 
 **You always handle git.** Claude writes code, commits to the branch, and suggests changes. You review, run tests, and push. Claude never creates branches, creates commits, or opens PRs.
 
+**GitHub CLI.** Always use the `gh` CLI (installed via homebrew) for GitHub operations—viewing PRs, checking issues, fetching issue details, etc. Use `gh pr view`, `gh issue view`, `gh api`, etc. rather than web navigation or URL guessing.
+
 ## Testing & Verification
 
 **Manual testing after implementation (token-efficient)**
