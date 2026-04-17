@@ -12,15 +12,6 @@
       <%= link_to "Our Ethos", about_path %>
       <span class="sep"></span>
       <%= link_to "Contact", new_contact_path %>
-      
-      <% if authenticated? %>
-        <span class="sep"></span>
-        <% if current_user.pro? %>
-          <%= link_to "Pro", dashboard_payments_path %>
-        <% else %>
-          <%= link_to "Upgrade to Pro", billing_upgrade_path %>
-        <% end %>
-      <% end %>
     </nav>
   </div>
 </footer>

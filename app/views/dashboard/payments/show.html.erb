@@ -22,15 +22,4 @@
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
   <% end %>
-
-  <% if current_user.pro? || current_user.pay_subscriptions.any? %>
-    <hr class="divider">
-    <div class="card stack-sm">
-      <strong>Pro Subscription</strong>
-      <p>You're on the Pro plan. Manage your billing, update payment details, or cancel from the billing portal.</p>
-      <div class="group">
-        <%= button_to "Manage Subscription", billing_portal_path, method: :post, class: "button", data: { turbo: false } %>
-      </div>
-    </div>
-  <% end %>
 </div>
