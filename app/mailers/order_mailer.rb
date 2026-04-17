@@ -10,6 +10,17 @@ class OrderMailer < ApplicationMailer
     )
   end
 
+  def cancellation_email
+    @order = params[:order]
+    @event = @order.event
+    @store = @event.store
+
+    mail(
+      to: @order.user.email,
+      subject: "Order cancelled: #{@event.name} — #{@store.name}"
+    )
+  end
+
   def pickup_reminder
     @order = params[:order]
     @event = @order.event

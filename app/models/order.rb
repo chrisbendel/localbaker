@@ -40,6 +40,13 @@ class Order < ApplicationRecord
     update!(confirmed_at: nil)
   end
 
+  def cancel!
+    if event.store.user.pro?
+      OrderMailer.with(order: self).cancellation_email.deliver_later
+    end
+    destroy!
+  end
+
   private
 
   def delivery_address_within_zone
