@@ -18,7 +18,7 @@ When working in specific areas, see:
 
 ## Workflow
 
-**You always handle git.** Claude writes code, commits to the branch, and suggests changes. You review, run tests, and push. Claude never creates branches, creates commits, or opens PRs.
+**You handle all git operations.** Claude writes code and suggests changes. You review, stage/commit, run tests, and push. Claude never stages, commits, pushes, creates branches, or opens PRs.
 
 **GitHub CLI.** Always use the `gh` CLI (installed via homebrew) for GitHub operations—viewing PRs, checking issues, fetching issue details, etc. Use `gh pr view`, `gh issue view`, `gh api`, etc. rather than web navigation or URL guessing.
 

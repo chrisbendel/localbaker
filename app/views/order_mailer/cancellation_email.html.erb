@@ -1,0 +1,24 @@
+<h1>Order cancelled: <%= @event.name %></h1>
+
+<p>Hi <%= @order.user.email %>,</p>
+
+<p>Your order for <strong><%= @store.name %></strong> has been cancelled.</p>
+
+<div style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin: 20px 0;">
+  <h3>Cancelled Order</h3>
+  <ul>
+    <% @order.order_items.includes(:event_product).each do |item| %>
+      <li><%= item.quantity %> × <%= item.event_product.name %></li>
+    <% end %>
+  </ul>
+  <p><strong>Total:</strong> <%= number_to_currency(@order.total_price) %></p>
+</div>
+
+<p>
+  If you have any questions about this cancellation, please reach out to <%= link_to @store.name, shop_event_url(@store.slug, @event) %>.
+</p>
+
+<p>
+  Thanks for supporting local bakers!<br>
+  — The LocalBaker Team
+</p>

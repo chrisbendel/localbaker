@@ -107,6 +107,7 @@ Claude's role:
 - Run tests and verification locally
 - Suggest changes and improvements
 - Explain what was done and why
+- Never stages or commits files
 
 Your role (user):
 - Review all code changes
@@ -115,8 +116,6 @@ Your role (user):
 - Push to remote
 - Create and manage pull requests
 - Merge branches
-
-Claude stages changes and stops—you handle all git commit/branch/push operations.
 
 ## Maintaining This Documentation
 
