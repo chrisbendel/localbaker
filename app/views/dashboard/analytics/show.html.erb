@@ -24,11 +24,15 @@
   <!-- Summary Stats -->
   <div class="group">
     <div class="card stack-xs">
-      <small class="text-muted">Total Revenue</small>
+      <small class="text-muted">All-Time Revenue</small>
+      <h3><%= number_to_currency(@all_time_revenue) %></h3>
+    </div>
+    <div class="card stack-xs">
+      <small class="text-muted">Period Revenue</small>
       <h3><%= number_to_currency(@revenue_by_date.values.sum) %></h3>
     </div>
     <div class="card stack-xs">
-      <small class="text-muted">Total Orders</small>
+      <small class="text-muted">Period Orders</small>
       <h3><%= @orders_by_date.values.sum %></h3>
     </div>
     <div class="card stack-xs">
@@ -146,6 +150,87 @@
       </div>
     <% else %>
       <p class="text-muted">No product sales data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Orders by Event -->
+  <div class="card stack-sm">
+    <h4>Orders by Event</h4>
+    <% if @orders_by_event.any? %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Event</th>
+              <th style="text-align: right;">Orders</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders_by_event.each do |event| %>
+              <tr>
+                <td><%= event.name %></td>
+                <td style="text-align: right;"><strong><%= event.order_count %></strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No order data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Unique Customers Over Time -->
+  <div class="card stack-sm">
+    <h4>Unique Customers Over Time</h4>
+    <% if @unique_customers_over_time.any? %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th style="text-align: right;">Unique Customers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @unique_customers_over_time.sort.reverse.each do |date, count| %>
+              <tr>
+                <td><%= date %></td>
+                <td style="text-align: right;"><strong><%= count %></strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No customer data for the selected date range.</p>
+    <% end %>
+  </div>
+
+  <!-- Store Subscribers Over Time -->
+  <div class="card stack-sm">
+    <h4>Store Subscribers Over Time</h4>
+    <% if @subscribers_over_time.any? %>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th style="text-align: right;">New Subscribers</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @subscribers_over_time.sort.reverse.each do |date, count| %>
+              <tr>
+                <td><%= date %></td>
+                <td style="text-align: right;"><strong><%= count %></strong></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <p class="text-muted">No subscriber data for the selected date range.</p>
     <% end %>
   </div>
 </div>
