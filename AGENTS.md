@@ -104,7 +104,6 @@ Follow the **Code Principles** (`.agent/skills/code-principles.md`): Think befor
 
 Claude's role:
 - Write and modify code files
-- Stage changes (`git add`)
 - Run tests and verification locally
 - Suggest changes and improvements
 - Explain what was done and why
