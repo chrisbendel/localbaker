@@ -99,20 +99,24 @@ Follow the **Code Principles** (`.agent/skills/code-principles.md`): Think befor
 - Use conventional commit messages.
 
 ### Git & Review Workflow
-**You always handle git operations.** Claude never:
-- Creates branches
-- Makes commits
-- Creates or manages pull requests
-- Pushes to remote
-- Merges branches
 
-Claude's role is to:
+**CRITICAL: Claude does NOT commit code under any circumstances.**
+
+Claude's role:
 - Write and modify code files
 - Run tests and verification locally
 - Suggest changes and improvements
 - Explain what was done and why
 
-You review, commit, branch, and push everything yourself.
+Your role (user):
+- Review all code changes
+- Create branches
+- **Commit all changes** (Claude never commits)
+- Push to remote
+- Create and manage pull requests
+- Merge branches
+
+Claude stages changes and stops—you handle all git commit/branch/push operations.
 
 ## Maintaining This Documentation
 
