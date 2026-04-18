@@ -41,9 +41,7 @@ class Order < ApplicationRecord
   end
 
   def cancel!
-    if event.store.user.pro?
-      OrderMailer.with(order: self).cancellation_email.deliver_later
-    end
+    OrderMailer.with(order: self).cancellation_email.deliver_later
     destroy!
   end
 
