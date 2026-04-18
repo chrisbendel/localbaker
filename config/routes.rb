@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       member do
         post :confirm, controller: "orders"
         post :unconfirm, controller: "orders"
+        delete :destroy, controller: "orders"
       end
       resources :order_items, only: [:create, :destroy]
     end

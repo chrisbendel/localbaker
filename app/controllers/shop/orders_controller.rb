@@ -46,7 +46,7 @@ module Shop
       end
 
       @order.cancel!
-      redirect_to shop_event_path(@store.slug, @event), notice: "Order cancelled successfully."
+      redirect_to shop_event_path(@store.slug, @event), notice: "Order cancelled."
     end
 
     private
