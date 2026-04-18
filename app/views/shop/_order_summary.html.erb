@@ -40,6 +40,7 @@
         <div class="group">
           <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary", target: "_blank", rel: "noopener noreferrer" %>
           <%= button_to "Edit Order", unconfirm_shop_event_path(store.slug, event), method: :post, class: "button secondary" %>
+          <%= button_to "Cancel Order", shop_event_path(store.slug, event), method: :delete, class: "button secondary text-muted", form: { data: { turbo_confirm: "Are you sure you want to cancel your entire order? This cannot be undone." } } %>
         </div>
 
         <% if store.venmo_handle.present? || store.paypal_url.present? %>

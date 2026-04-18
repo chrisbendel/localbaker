@@ -32,6 +32,23 @@ module Shop
       redirect_to shop_event_path(@store.slug, @event)
     end
 
+    def destroy
+      @order = @event.orders.find_by!(user: current_user)
+
+      unless @order.confirmed?
+        redirect_to shop_event_path(@store.slug, @event), alert: "Can only cancel confirmed orders."
+        return
+      end
+
+      unless @event.orders_open?
+        redirect_to shop_event_path(@store.slug, @event), alert: "Cannot cancel orders after the order window has closed."
+        return
+      end
+
+      @order.cancel!
+      redirect_to shop_event_path(@store.slug, @event), notice: "Order cancelled."
+    end
+
     private
 
     def set_store

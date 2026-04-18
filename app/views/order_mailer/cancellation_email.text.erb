@@ -1,0 +1,17 @@
+Order cancelled: <%= @event.name %>
+
+Hi <%= @order.user.email %>,
+
+Your order for <%= @store.name %> has been cancelled.
+
+Cancelled Order:
+<% @order.order_items.includes(:event_product).each do |item| %>
+  <%= item.quantity %> × <%= item.event_product.name %>
+<% end %>
+
+Total: <%= number_to_currency(@order.total_price) %>
+
+If you have any questions about this cancellation, please reach out to <%= @store.name %>.
+
+Thanks for supporting local bakers!
+— The LocalBaker Team
