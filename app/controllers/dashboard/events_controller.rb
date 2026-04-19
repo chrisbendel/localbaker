@@ -41,10 +41,9 @@ module Dashboard
 
       @event.publish!
 
-      if current_user.pro?
-        @store.notifications.includes(:user).find_each do |notification|
-          StoreMailer.new_event(@store, @event, notification).deliver_later
-        end
+      # TODO: Consider gating new event notifications to pro tier if engagement metrics warrant differentiation
+      @store.notifications.includes(:user).find_each do |notification|
+        StoreMailer.new_event(@store, @event, notification).deliver_later
       end
 
       notice = "Event published!"
