@@ -26,21 +26,25 @@ These emails provide essential feedback about actions the customer took. They ar
   - Recipient: User (email)
   - Rationale: Required for authentication flow
 
-### Premium Features (Pro Tier Only)
-
-These emails provide additional value beyond core transactional feedback. They are premium features that differentiate the pro tier.
-
 - **Pickup Reminder** — Sent 24 hours before event pickup
   - File: `app/mailers/order_mailer.rb` → `pickup_reminder`
-  - Triggered: `app/jobs/pickup_reminder_job.rb:7` (pro-only gate)
+  - Triggered: `app/jobs/pickup_reminder_job.rb:7`
   - Recipient: Customer (order.user)
-  - Rationale: Convenience feature that adds value; only valuable when baker is active
+  - Rationale: Convenience feature that helps customers remember to pick up
 
 - **New Event Notification** — Sent to store followers when baker publishes an event
   - File: `app/mailers/store_mailer.rb` → `new_event`
-  - Triggered: `app/controllers/dashboard/events_controller.rb:44` (pro-only gate)
+  - Triggered: `app/controllers/dashboard/events_controller.rb:44`
   - Recipient: Store followers (subscribers)
-  - Rationale: Marketing/engagement feature that drives traffic; not essential
+  - Rationale: Engagement feature that keeps followers informed of new offerings
+
+### Premium Features (Pro Tier Only)
+
+Currently none. Pricing differentiation is managed through:
+- **Event limits**: Free tier limited to 3 active events; Pro tier unlimited
+- **Delivery features**: Delivery zone configuration (Pro only)
+
+*Note: If needed in the future, event notifications could be gated to Pro tier to incentivize subscription. See `app/controllers/dashboard/events_controller.rb` line 44.*
 
 ### System Emails (No Tier Gate)
 
@@ -50,22 +54,22 @@ These emails provide additional value beyond core transactional feedback. They a
 
 ## Adding New Transactional Emails
 
-When adding a new email feature, first determine its classification:
+**Current policy**: Send all transactional emails to all tiers. Pricing differentiation is handled through event limits, not email gates.
 
-1. **Does this provide essential feedback about an action the user took?**
-   - Yes → Core Transactional (all tiers)
-   - No → Continue to next question
+When adding a new email feature:
 
-2. **Is this a marketing, convenience, or premium feature?**
-   - Yes → Premium (pro-only with tier gate)
-   - No → Evaluate case-by-case
+1. **Send to all users by default** (no tier gate)
+2. **Only add a tier gate if**:
+   - The feature would create unbounded email volume (not constrained by event limits)
+   - It provides strategic value to pro tier beyond core functionality
+   - Business metrics show it's worth differentiation
 
-3. **Add the tier gate in the appropriate location:**
+3. **If adding a tier gate**, place it in the appropriate location:
    - Controller action: For immediate user-facing feedback
    - Model method: For model-triggered emails
    - Job: For scheduled/background emails
 
-Example tier gate:
+Example tier gate (if needed):
 ```ruby
 if event.store.user.pro?
   SomeMailer.with(data: @data).some_email.deliver_later
@@ -74,14 +78,13 @@ end
 
 ## Rationale
 
-**Core transactional emails are not premium features** because:
-- They provide essential user feedback, not added convenience
+**All transactional and convenience emails are sent to all tiers** because:
+- They provide essential user feedback on actions taken
 - Customers expect confirmation that their action succeeded
-- Removing them hurts UX for free-tier users without providing clear baker value
-- They are scalable and low-cost to send
+- Email volume is naturally constrained by the **event limit** (3 for free tier, unlimited for pro)
+- Pricing differentiation is managed through capacity (events) and features (delivery), not email gates
 
-**Premium features provide additional value** because:
-- They are convenience or marketing tools
-- They incentivize upgrading to pro tier
-- They justify the pro subscription cost
-- They can be disabled without breaking core functionality
+**Pricing model (free vs pro)**:
+- **Free tier**: 3 active events max (natural email volume constraint)
+- **Pro tier**: Unlimited events + delivery zone features
+- Email gates are simplified: send all transactional emails to all users, let event limits manage volume
