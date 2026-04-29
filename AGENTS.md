@@ -90,11 +90,17 @@ bin/rails console                         # REPL
 
 ## AI Interaction Guidelines
 
-Follow the **Code Principles** (`.agent/skills/code-principles.md`): Think before coding, Simplicity first, Surgical changes, Goal-driven execution.
+Follow the **Code Principles** (`.agent/skills/code-principles.md`):
+- **Discipline (Karpathy)**: Think before coding, Simplicity first, Surgical changes, Goal-driven execution.
+- **Anti-complexity (grug)**: Complexity is the enemy. Say no to unjustified features and abstractions. Ship the boring version. Don't abstract until the cut point is obvious. Respect Chesterton's Fence — find out why code exists before removing it.
 
+**Operating rules:**
 - Minimal, well-scoped changes only.
 - Ask clarifying questions before writing code.
-- Add or update tests for any behavior changes.
+- Push back when a request will add complexity disproportionate to its value — name the tradeoff, propose the simpler alternative.
+- Inline before you extract. Three similar blocks is not yet a pattern.
+- Add or update tests for any behavior changes; favor integration tests over heavily-mocked unit tests.
+- Don't optimize without profiling — for Rails, suspect N+1s and missing indexes first.
 - Keep tooling consistent: use `bin/rails` and `bundle exec`.
 - Use conventional commit messages.
 

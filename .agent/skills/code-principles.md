@@ -1,10 +1,16 @@
 ---
-description: Coding principles for LocalBaker (Andrej Karpathy's framework, adapted)
+description: Coding principles for LocalBaker (Karpathy's discipline + grug-brain anti-complexity)
 ---
 
 # Code Principles Skill
 
 These principles reduce mistakes, keep diffs clean, and prevent speculative overengineering. They apply to every code change.
+
+Two complementary lenses:
+1. **Karpathy-style discipline** (sections 1–4) — *how* to execute a change cleanly: think first, stay simple, stay surgical, drive toward a measurable goal.
+2. **Grug-brain anti-complexity** (section 5) — *what not to build*: complexity is the enemy, say no, defer abstractions, prefer the boring version.
+
+Use both. Discipline keeps the diff clean; grug keeps the diff from existing in the first place when it shouldn't.
 
 ## 1. Think Before Coding
 
@@ -156,3 +162,82 @@ Say: "The dashboard loads in <500ms and handles 100+ events without lag."
 - No "while I'm at it" refactoring
 - Tests pass on first or second iteration
 - Code reviewer understands the change immediately
+
+---
+
+## 5. Grug Brain Wisdom
+
+Adapted from [grugbrain.dev](https://grugbrain.dev/). The principles above tell you *how* to make a change cleanly. Grug tells you *what not to build in the first place* — and gives you the spine to push back when something would make the codebase worse.
+
+### The Core Belief: Complexity Is the Enemy
+
+Every line of code, every abstraction, every dependency is a future maintenance cost. **Complexity compounds.** A small unjustified abstraction today is a large untangling job in six months. When evaluating any change, the first question is not "is this clever?" but "does this make the system harder to understand?"
+
+LocalBaker is a small Rails app maintained by one person. We do not have the headcount to absorb accidental complexity. Default to the boring, obvious solution.
+
+### Say No
+
+The strongest tool against complexity is refusing to add things. Push back — politely, with reasoning — when:
+
+- A feature has unclear value or unclear users
+- A "configurable option" has no second caller asking for it
+- An abstraction is being introduced for a hypothetical future case
+- A new dependency replaces ~20 lines of straightforward code
+- A refactor is bundled into an unrelated change
+
+If Chris asks for X and you see X will make the system meaningfully worse, say so before writing the code. He'd rather have the conversation than the diff.
+
+### 80/20 — Ship the Boring Version First
+
+When a request has an elaborate "right" solution and a crude "good enough" solution, propose both and recommend the crude one unless there's a concrete reason for the elaborate one. The crude version ships, gets used, and tells you whether the elaborate version is even needed.
+
+### Don't Abstract Until the Cut Point Is Obvious
+
+Wait for repetition to scream at you. Three similar blocks of code is not yet a pattern — it's three blocks of code. Six similar blocks across two controllers, with the same shape and the same reason for existing, is a pattern. Premature abstraction is harder to undo than duplication.
+
+A partial, helper, concern, or service object should only exist when its absence causes friction. **Inline first. Extract when it hurts.**
+
+### Locality of Behavior > Separation of Concerns
+
+When code that belongs together is scattered across files, debugging becomes archaeology. Prefer keeping logic near the thing it controls — a Stimulus controller next to its template, validation on the model that owns the data, a query in the controller action that uses it (until it's used twice).
+
+This trades "neat layering" for "I can find everything in one place." For a codebase this size, that's the right trade.
+
+### DRY Is a Tool, Not a Religion
+
+Two pieces of code that look identical but exist for *different reasons* should stay separate — they will diverge. Eliminating duplication that isn't really duplication creates an abstraction that fights you every time the underlying reasons drift apart. Repeated code is cheap; the wrong abstraction is expensive.
+
+### Don't Optimize Without Measuring
+
+If you have not profiled, you do not know where the bottleneck is. For a Rails app, the bottleneck is almost always: N+1 queries, missing indexes, or a synchronous third-party call that should be a job. It is almost never: a loop that could be a hash lookup, a string concat, or a "more efficient" data structure.
+
+Add `includes` to fix N+1s when you see them. Don't rewrite working code on a hunch.
+
+### Chesterton's Fence
+
+If you find code whose purpose isn't obvious, **assume it's there for a reason you don't yet see.** Find the reason before deleting it. Git blame, grep for callers, ask Chris. The "obviously useless" code is sometimes load-bearing in a non-obvious way.
+
+This is doubly true for: validation rules, callbacks, weird-looking conditionals near payment/auth flows, and seemingly redundant CSS resets.
+
+### It's OK to Say "This Is Too Complex for Me"
+
+If a piece of the system genuinely doesn't fit in your head, the answer is not to fake confidence and ship something. The answer is to say so, simplify the surrounding code until it does fit, and then make the change. Confusion is a signal — usually that the code is bad, not that you are.
+
+### Tests: Favor Integration Over Unit
+
+A system test that exercises the real flow (user signs in, places order, sees confirmation) catches more real bugs per line of test code than a dozen mocked unit tests. Mocks lie; integrated paths don't. See `test/AGENTS.md` for the testing strategy already in place — it leans this way deliberately.
+
+### Tools Compound
+
+Time spent learning the debugger, the Rails console, `bin/validate`, and the actual error messages pays back many times over. Don't pattern-match a fix from a similar-looking error — read the stack trace, open the file, understand the failure.
+
+### Summary Aphorisms (for fast recall)
+
+- **Complexity very, very bad.** First question: does this make the system harder to understand?
+- **No is a feature.** Refuse what shouldn't exist.
+- **Boring beats clever.** Ship the obvious version.
+- **Inline first. Extract when it hurts.**
+- **Three is not a pattern.**
+- **Read the fence before tearing it down.**
+- **Profile, don't guess.**
+- **If it doesn't fit in your head, the code is wrong, not you.**
