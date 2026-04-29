@@ -6,6 +6,7 @@ This directory organizes guidance for AI agents (and human developers) into two 
 
 **How to do things.** Executable recipes and workflows.
 
+- `code-principles.md` — Karpathy discipline (think/simple/surgical/goal-driven) + grug-brain anti-complexity. Read this before any non-trivial change.
 - `testing.md` — How to run tests, understand test structure, common pitfalls
 - `lint.md` — How to run linting and formatting
 - `seed.md` — How to populate the database with demo data
