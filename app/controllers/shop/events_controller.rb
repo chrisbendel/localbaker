@@ -3,8 +3,6 @@ module Shop
     before_action :set_store
     before_action :set_event
 
-    include CalendarHelper
-
     def show
       @products = @event.event_products
       @order = @event.orders.find_by(user: current_user)

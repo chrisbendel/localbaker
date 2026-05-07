@@ -47,11 +47,6 @@
         <p>No bakeries found within <%= @radius %> miles.</p>
         <p>Try expanding your search radius or a different location, or <%= link_to "browse all partner bakers", bakers_path %>.</p>
       </div>
-    <% else %>
-      <div class="empty-state stack-sm">
-        <p>Enter your location above to find bakeries near you.</p>
-        <p><%= link_to "Browse all partner bakers →", bakers_path %></p>
-      </div>
     <% end %>
   </div>
 </div>

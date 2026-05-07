@@ -1,35 +1,36 @@
-<% content_for :title, "LocalBaker — Find a local baker near me" %>
-<% content_for :meta_description, "Find a local baker near you and order fresh bread from a neighborhood local bakery. LocalBaker makes it simple to discover home bakers and pre-order baked goods." %>
+<% content_for :title, "LocalBaker — A simple shop for home bakers" %>
+<% content_for :meta_description, "LocalBaker is a simple shop for home bakers. Post a bake, share a link, customers claim loaves. No app. No password." %>
 
 <div class="stack-lg">
-  <div class="stack text-center items-center">
-    <h1>Fresh bread from a local baker near you.</h1>
-    <p>
-      LocalBaker connects artisan home bakers with their community. Whether you're baking twenty loaves a week or just looking for great bread down the street, everything works seamlessly.
-    </p>
+  <div class="stack">
+    <h1>A simple shop for home bakers.</h1>
+    <p>No inventory system. No app to install. No password for customers. No subscription tiers full of features you won't use.</p>
+    <p><%= link_to "Read about LocalBaker", about_path %>.</p>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stack">
+    <h2>For customers</h2>
+    <p>Find a baker near you. Click the link, pick a loaf, pick it up.</p>
     <div class="group">
-      <% unless authenticated? %>
-        <%= link_to "Baker? Get started", new_session_path, class: "button primary" %>
+      <%= link_to "Find a baker", explore_path, class: "button primary" %>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stack">
+    <h2>For bakers</h2>
+    <p>Post what you're baking. Share a link. Get a list of who ordered what.</p>
+    <div class="group">
+      <% if authenticated? && current_user.store&.persisted? %>
+        <%= link_to "Manage your shop", dashboard_path, class: "button primary" %>
+      <% elsif authenticated? %>
+        <%= link_to "Open a shop", new_dashboard_store_path, class: "button primary" %>
+      <% else %>
+        <%= link_to "Open a shop", new_session_path, class: "button primary" %>
       <% end %>
-      <%= link_to "Explore Bakeries", explore_path, class: "button secondary" %>
     </div>
-  </div>
-
-  <div class="flex-cols-2">
-    <div class="card card-accent stack-sm">
-      <h3>For Neighborhood Bakers</h3>
-      <p>Post your upcoming bakes and share a simple link. We organize your list so you know exactly who gets what and when, letting you focus on the dough.</p>
-    </div>
-
-    <div class="card card-accent stack-sm">
-      <h3>For the Community</h3>
-      <p>Find amazing bread right in your neighborhood. Claim a loaf and pick it up hot from the oven—no passwords to remember or apps to download.</p>
-    </div>
-  </div>
-
-  <div class="empty-state stack items-center">
-    <h2>Community-first, software second</h2>
-    <p class="text-center">LocalBaker is built to stay out of your way. Learn more about our mission and why we keep things intentionally simple.</p>
-    <%= link_to "Read our Ethos", about_path, class: "button secondary" %>
   </div>
 </div>
