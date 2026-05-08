@@ -12,7 +12,7 @@ class OrderMailerTest < ActionMailer::TestCase
     )
     @product = @event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1200)
     @customer = User.create!(email: "customer@example.com")
-    @order = @event.orders.create!(user: @customer, confirmed_at: Time.current)
+    @order = @event.orders.create!(user: @customer)
     @order.order_items.create!(event_product: @product, quantity: 2)
   end
 

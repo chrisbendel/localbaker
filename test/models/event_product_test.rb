@@ -30,45 +30,24 @@ class EventProductTest < ActiveSupport::TestCase
     assert_equal "$15.50", product.price_formatted
   end
 
-  test "calculates sold, remaining and availability for confirmed orders" do
+  test "calculates sold, remaining and availability" do
     product = @event.event_products.create!(name: "Bread", price: 10, quantity: 10)
     customer = User.create!(email: "customer-#{SecureRandom.hex(4)}@example.com")
-    # Sell 3 items — confirmed
+    # Sell 3 items
     order = Order.create!(user: customer, event: @event)
     order.order_items.create!(event_product: product, quantity: 3, unit_price_cents: 1000)
-    order.confirm!
 
     assert_equal 3, product.sold
     assert_equal 7, product.remaining
     assert product.available?
 
-    # Sell remaining 7 items — confirmed
+    # Sell remaining 7 items
     order2 = Order.create!(user: User.create!(email: "customer2-#{SecureRandom.hex(4)}@example.com"), event: @event)
     order2.order_items.create!(event_product: product, quantity: 7, unit_price_cents: 1000)
-    order2.confirm!
 
     assert_equal 10, product.sold
     assert_equal 0, product.remaining
     assert_not product.available?
-  end
-
-  test "unconfirmed orders do not count toward sold" do
-    product = @event.event_products.create!(name: "Bread", price: 10, quantity: 10)
-    customer = User.create!(email: "customer-#{SecureRandom.hex(4)}@example.com")
-    order = Order.create!(user: customer, event: @event)
-    order.order_items.create!(event_product: product, quantity: 4, unit_price_cents: 1000)
-
-    # Order is not confirmed; cart-style hold should not affect inventory
-    assert_equal 0, product.sold
-    assert_equal 10, product.remaining
-
-    order.confirm!
-    assert_equal 4, product.sold
-    assert_equal 6, product.remaining
-
-    order.unconfirm!
-    assert_equal 0, product.sold
-    assert_equal 10, product.remaining
   end
 
   test "cannot be deleted if there are order items" do

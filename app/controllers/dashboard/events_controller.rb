@@ -8,7 +8,9 @@ module Dashboard
     end
 
     def show
-      @orders = @event.orders.includes(user: [], order_items: [:event_product]).order(created_at: :asc)
+      @orders = @event.orders
+        .includes(user: [], order_items: [:event_product])
+        .order(created_at: :asc)
     end
 
     def new
@@ -31,7 +33,6 @@ module Dashboard
 
     def pickup_sheet
       @orders = @event.orders
-        .where.not(confirmed_at: nil)
         .includes(:user, order_items: :event_product)
         .order("users.email ASC")
         .references(:user)
@@ -39,7 +40,9 @@ module Dashboard
     end
 
     def export_orders
-      orders = @event.orders.includes(:user, order_items: :event_product).order(created_at: :asc)
+      orders = @event.orders
+        .includes(:user, order_items: :event_product)
+        .order(created_at: :asc)
       filename = "orders-#{@event.name.parameterize}-#{Date.current}.csv"
       send_data Order.to_csv(orders), filename: filename, type: "text/csv"
     end

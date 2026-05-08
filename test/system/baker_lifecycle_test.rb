@@ -174,7 +174,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Saturday Bake (Updated)"
 
     accept_confirm do
-      click_on "Reuse Event"
+      click_on "Reuse"
     end
 
     assert_text "Event duplicated. Please verify dates."
@@ -191,7 +191,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_css ".badge.draft"
 
     # Verify product was copied
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "12"
       assert_text "$14.00"
     end
@@ -199,7 +199,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 13. Delete event
     # ----------------------------------------------------------------
-    click_on "Edit Event"
+    click_on "Edit", match: :first
     accept_confirm do
       click_on "Delete Event"
     end
@@ -217,10 +217,8 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Save Changes"
     assert_text "Store settings updated."
 
-    # Navigate back to dashboard to start next event
-    within "header nav" do
-      find('a[aria-label="Bakery Management"]').click
-    end
+    # Navigate to events page to start next event
+    visit dashboard_events_path
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
     execute_script("document.getElementById('event_orders_close_at').value = '#{5.days.from_now.strftime("%Y-%m-%d")}'")
@@ -238,7 +236,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Add Product"
 
     assert_text "Product added"
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "15"
       assert_text "$14.00"
     end

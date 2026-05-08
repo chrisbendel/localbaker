@@ -36,12 +36,6 @@ Rails.application.routes.draw do
         end
         resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
       end
-
-      resources :orders, only: [], controller: "orders" do
-        collection do
-          get :export, defaults: {format: "csv"}
-        end
-      end
     end
   end
 
@@ -60,14 +54,8 @@ Rails.application.routes.draw do
   scope "/shop/:slug", module: :shop, as: :shop do
     resource :notification, only: [:create, :destroy]
 
-    resources :events, only: [:show], shallow: true do
-      member do
-        post :confirm, controller: "orders"
-        post :unconfirm, controller: "orders"
-        patch :update_order, controller: "orders", action: :update
-        delete :destroy, controller: "orders"
-      end
-      resources :order_items, only: [:create, :destroy]
+    resources :events, only: [:show] do
+      resource :order, only: [:create, :update, :destroy], controller: "orders"
     end
     # ICS download removed — use Google Calendar button instead
   end

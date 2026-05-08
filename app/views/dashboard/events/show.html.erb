@@ -103,12 +103,7 @@
         <% @orders.each do |order| %>
           <article class="order-card stack-sm">
             <header class="group justify-between items-baseline">
-              <div class="group-sm items-baseline">
-                <strong><%= mail_to order.user.email, order.user.email %></strong>
-                <% if !order.confirmed? %>
-                  <span class="badge draft">Pending</span>
-                <% end %>
-              </div>
+              <strong><%= mail_to order.user.email, order.user.email %></strong>
               <div class="group-sm items-baseline">
                 <strong><%= number_to_currency(order.total_price) %></strong>
                 <small class="text-muted" title="<%= order.created_at.strftime('%Y-%m-%d %H:%M') %>"><%= nice_date(order.created_at) %></small>

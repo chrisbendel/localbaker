@@ -8,9 +8,9 @@ class RecurringEventsTest < ApplicationSystemTestCase
   end
 
   test "publishing an event with weekly repeat spawns next draft" do
-    visit dashboard_path
+    visit dashboard_events_path
 
-    click_on "New Event"
+    click_on "+ New Event"
     fill_in "Name", with: "Weekly Sourdough"
 
     orders_close_date = 1.day.from_now.to_date

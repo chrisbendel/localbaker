@@ -77,7 +77,7 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # 4. Open the event
     # ----------------------------------------------------------------
     click_on "Sunday Bake"
-    assert_text(/products/i)
+    assert_text "Place your order"
     assert_text "Sourdough"
     assert_text "Focaccia"
     assert_no_text "Your order is saved"
@@ -87,59 +87,29 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     assert_no_text "123 Home Bakery Ln"
 
     # ----------------------------------------------------------------
-    # 5. Add sourdough to order
+    # 5. Place order via single form: 2 sourdough + 1 focaccia = $40
     # ----------------------------------------------------------------
-    within find(".card-item", text: "Sourdough") do
-      find("button[aria-label='Add to Order']").click
-    end
+    fill_in "items_#{@sourdough.id}", with: "2"
+    fill_in "items_#{@focaccia.id}", with: "1"
+    click_on "Place Order"
 
-    assert_text "Added Sourdough"
-
-    within "aside" do
-      assert_text "Sourdough"
-      assert_text "$14.00"
-      assert_text "Pickup"
-    end
-
-    # ----------------------------------------------------------------
-    # 6. Add focaccia to order
-    # ----------------------------------------------------------------
-    within find(".card-item", text: "Focaccia") do
-      find("button[aria-label='Add to Order']").click
-    end
+    assert_text "Order placed"
 
     within "aside" do
       assert_text "Sourdough"
       assert_text "Focaccia"
-      # Total: $14 + $12 = $26
-      assert_text "$26.00"
-    end
-
-    # ----------------------------------------------------------------
-    # 7. Add sourdough again to bump quantity to 2
-    # ----------------------------------------------------------------
-    within find(".card-item", text: "Sourdough") do
-      find("button[aria-label='Add to Order']").click
-    end
-
-    assert_text "Added Sourdough"
-
-    within "aside" do
-      # Total: $14*2 + $12 = $40
       assert_text "$40.00"
+      assert_text "Pickup"
     end
 
     # ----------------------------------------------------------------
-    # 8. Remove sourdough via × button
+    # 6. Update order — drop sourdough, keep focaccia (total $12)
     # ----------------------------------------------------------------
-    accept_confirm do
-      within "aside" do
-        find("button[aria-label='Remove Sourdough']").click
-      end
-    end
+    click_on "Update Order"
+    fill_in "items_#{@sourdough.id}", with: "0"
+    click_on "Save Changes"
 
-    assert_text "Removed Sourdough"
-
+    assert_text "Order updated"
     within "aside" do
       assert_no_text "Sourdough"
       assert_text "Focaccia"
@@ -147,11 +117,11 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     end
 
     # ----------------------------------------------------------------
-    # 9. Add sourdough back so order has both items again
+    # 7. Update again — re-add sourdough so order has both items
     # ----------------------------------------------------------------
-    within find(".card-item", text: "Sourdough") do
-      find("button[aria-label='Add to Order']").click
-    end
+    click_on "Update Order"
+    fill_in "items_#{@sourdough.id}", with: "1"
+    click_on "Save Changes"
 
     within "aside" do
       assert_text "Sourdough"
@@ -174,7 +144,6 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
 
     # Clicking the order card goes to the shop event
     find(".card", text: "The Bread Barn").click
-    assert_text(/products/i)
     assert_text "Your order"
 
     # ----------------------------------------------------------------

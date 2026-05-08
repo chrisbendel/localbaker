@@ -1,0 +1,70 @@
+<%#
+  Single-form order placement / editing.
+  - When `order` is nil → new order, POST.
+  - When `order` is present → editing, PATCH.
+  Quantity max accounts for the user's existing items so they can keep them.
+%>
+<% existing = order ? order.order_items.index_by(&:event_product_id).transform_values(&:quantity) : {} %>
+<% form_url = order ? shop_event_order_path(store.slug, event) : shop_event_order_path(store.slug, event) %>
+<% form_method = order ? :patch : :post %>
+
+<section class="stack">
+  <h3><%= order ? "Update your order" : "Place your order" %></h3>
+
+  <%= form_with url: form_url, method: form_method, local: true do |f| %>
+    <ul class="product-list stack">
+      <% products.each do |product| %>
+        <% existing_qty = existing[product.id] || 0 %>
+        <% max = product.remaining + existing_qty %>
+        <% available = max > 0 %>
+        <li class="product-row group justify-between items-center<%= ' sold-out' unless available %>">
+          <div class="group items-center">
+            <% if product.image.attached? %>
+              <%= image_tag product.image.variant(resize_to_limit: [60, 60], format: :webp), class: "img-thumb-lg" %>
+            <% end %>
+            <div class="stack-sm">
+              <strong><%= product.name %></strong>
+              <small class="text-muted">
+                <%= product.price_formatted %>
+                <% if available %>
+                  &middot; <%= max %> left
+                <% else %>
+                  &middot; Sold out
+                <% end %>
+              </small>
+            </div>
+          </div>
+          <div class="group-sm items-center">
+            <% if available %>
+              <%= label_tag "items_#{product.id}", "Qty", class: "text-muted" %>
+              <%= number_field_tag "items[#{product.id}]", existing_qty, min: 0, max: max, step: 1, id: "items_#{product.id}", style: "width: 5rem;" %>
+            <% else %>
+              <small class="text-muted">—</small>
+            <% end %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+
+    <% if event.delivery_enabled? %>
+      <div class="stack-sm">
+        <%= label_tag :delivery_address, "Delivery Address (Optional)" %>
+        <%= text_field_tag :delivery_address, order&.delivery_address,
+            placeholder: "Street address, city, state, zip" %>
+        <small class="text-muted">Leave blank for pickup.</small>
+      </div>
+    <% end %>
+
+    <div class="stack-sm">
+      <%= label_tag :notes, "Note for the baker (optional)" %>
+      <%= text_area_tag :notes, order&.notes, rows: 2, placeholder: "e.g. nut allergy, please slice the sourdough" %>
+    </div>
+
+    <div class="group">
+      <%= f.submit(order ? "Save Changes" : "Place Order", class: "button primary") %>
+      <% if order %>
+        <%= link_to "Cancel edit", shop_event_path(store.slug, event), class: "button" %>
+      <% end %>
+    </div>
+  <% end %>
+</section>

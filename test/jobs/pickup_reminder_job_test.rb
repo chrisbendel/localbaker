@@ -13,7 +13,7 @@ class PickupReminderJobTest < ActiveJob::TestCase
     @product = @event.event_products.create!(name: "Sourdough", quantity: 10, price_cents: 1200)
     @event.update_columns(published_at: Time.current)
     @customer = User.create!(email: "customer@example.com")
-    @order = @event.orders.create!(user: @customer, confirmed_at: Time.current)
+    @order = @event.orders.create!(user: @customer)
     @order.order_items.create!(event_product: @product, quantity: 1)
     ActionMailer::Base.deliveries.clear
   end
