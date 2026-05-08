@@ -34,6 +34,7 @@
   <div class="page-header">
     <h1><%= @store.name %></h1>
     <div class="group">
+      <%= link_to "Export Orders", export_dashboard_orders_path, class: "button secondary" %>
       <%= link_to "+ New Event", new_dashboard_event_path, class: "button primary" %>
     </div>
   </div>
@@ -46,7 +47,7 @@
 
   <% unless current_user.pro? %>
     <div class="nudge">
-      <span>Email features (order confirmations, event notifications, pickup reminders) require Pro. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to keep customers updated automatically.</span>
+      <span>Order confirmation emails and follower event notifications require Pro. <%= link_to "Upgrade to Pro", billing_upgrade_path %> to keep customers updated automatically.</span>
     </div>
   <% end %>
 

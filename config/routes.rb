@@ -31,8 +31,16 @@ Rails.application.routes.draw do
           post :publish
           post :duplicate
           get :prep
+          get :pickup_sheet
+          get :export_orders, defaults: {format: "csv"}
         end
         resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
+      end
+
+      resources :orders, only: [], controller: "orders" do
+        collection do
+          get :export, defaults: {format: "csv"}
+        end
       end
     end
   end
@@ -77,6 +85,8 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
   get "about", to: "pages#about", as: :about
+  get "terms", to: "pages#terms", as: :terms
+  get "privacy", to: "pages#privacy", as: :privacy
   get "explore", to: "locations#explore", as: :explore
   get "bakers", to: "locations#bakers", as: :bakers
 

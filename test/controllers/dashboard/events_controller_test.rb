@@ -139,6 +139,7 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     customer = User.create!(email: "customer@example.com")
     order = @event.orders.create!(user: customer)
     order.order_items.create!(event_product: @event.event_products.first, quantity: 3)
+    order.confirm!
 
     get prep_event_path(@event)
 
@@ -244,5 +245,35 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to event_path(@event)
     follow_redirect!
     assert_select ".alert", /Past events cannot be edited/i
+  end
+
+  # --- export_orders ---
+
+  test "GET export_orders returns CSV with header row" do
+    get export_orders_event_path(@event)
+    assert_response :success
+    assert_equal "text/csv", response.media_type
+    first_line = response.body.lines.first.strip
+    assert_includes first_line, "order_date"
+    assert_includes first_line, "customer_email"
+    assert_includes first_line, "items"
+    assert_includes first_line, "notes"
+  end
+
+  test "GET export_orders includes a sample order with note" do
+    product = @event.event_products.create!(name: "Sourdough", price_cents: 1000, quantity: 5)
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer, notes: "nut allergy please")
+    order.order_items.create!(event_product: product, quantity: 2, unit_price_cents: 1000)
+    order.confirm!
+
+    get export_orders_event_path(@event)
+
+    assert_response :success
+    body = response.body
+    assert_includes body, "buyer@example.com"
+    assert_includes body, "2x Sourdough"
+    assert_includes body, "nut allergy please"
+    assert_includes body, "confirmed"
   end
 end

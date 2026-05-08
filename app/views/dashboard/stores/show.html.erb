@@ -45,6 +45,18 @@
       <% end %>
     </div>
 
+    <div>
+      <%= f.label :contact_email, "Contact Email" %>
+      <%= f.email_field :contact_email, placeholder: "you@example.com" %>
+      <p class="field-hint">Optional. Shown on your storefront for customer questions (allergies, substitutions).</p>
+    </div>
+
+    <div>
+      <%= f.label :contact_phone, "Contact Phone" %>
+      <%= f.telephone_field :contact_phone, placeholder: "(555) 123-4567" %>
+      <p class="field-hint">Optional. Shown on your storefront as a tap-to-call link.</p>
+    </div>
+
     <hr class="divider">
 
     <% if current_user.pro? %>

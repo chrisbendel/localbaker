@@ -2,9 +2,25 @@
 <h3>Edit Event</h3>
 
 <%= form_with model: [@event], local: true do |form| %>
+  <% if @event.errors.any? %>
+    <div class="panel text-danger">
+      <p>Please fix the errors below before saving.</p>
+      <% if @event.errors[:base].any? %>
+        <ul class="stack-sm">
+          <% @event.errors[:base].each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  <% end %>
+
   <div>
     <%= form.label :name %>
     <%= form.text_field :name, required: true %>
+    <% if @event.errors[:name].any? %>
+      <p class="field-error"><%= @event.errors[:name].join(", ") %></p>
+    <% end %>
   </div>
 
   <div>
@@ -33,17 +49,26 @@
   <div>
     <%= form.label :orders_close_at, "Orders close at" %>
     <%= form.date_field :orders_close_at, required: true, min: Date.current %>
+    <% if @event.errors[:orders_close_at].any? %>
+      <p class="field-error"><%= @event.errors[:orders_close_at].join(", ") %></p>
+    <% end %>
   </div>
 
   <div>
     <%= form.label :pickup_starts_at, "Pickup window start" %>
     <%= form.datetime_local_field :pickup_starts_at, required: true, min: Date.current %>
+    <% if @event.errors[:pickup_starts_at].any? %>
+      <p class="field-error"><%= @event.errors[:pickup_starts_at].join(", ") %></p>
+    <% end %>
   </div>
 
   <div>
     <%= form.label :pickup_ends_at, "Pickup window end" %>
     <%= form.datetime_local_field :pickup_ends_at, required: true, min: Date.current %>
     <p class="field-hint">Set a window customers can arrive during, e.g. 11am – 4pm.</p>
+    <% if @event.errors[:pickup_ends_at].any? %>
+      <p class="field-error"><%= @event.errors[:pickup_ends_at].join(", ") %></p>
+    <% end %>
   </div>
 
   <div>

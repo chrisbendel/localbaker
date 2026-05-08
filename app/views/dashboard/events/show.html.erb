@@ -125,7 +125,11 @@
     <div class="group justify-between items-baseline">
       <h4>Orders <% if @orders.any? %><small>(<%= @orders.count %>)</small><% end %></h4>
       <% if @orders.any? %>
-        <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button secondary" %>
+        <div class="group">
+          <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button secondary" %>
+          <%= link_to "Pickup Sheet", pickup_sheet_event_path(@event), target: "_blank", class: "button secondary" %>
+          <%= link_to "Export CSV", export_orders_event_path(@event), class: "button secondary" %>
+        </div>
       <% end %>
     </div>
 

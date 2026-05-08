@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Pickup Sheet — <%= @event.name %></title>
+  <style>
+    /* Screen + print styles. The on-screen view is a preview of the printed page.
+       Use the browser's print dialog to send to printer. */
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 1.5rem;
+      max-width: 800px;
+      margin: 0 auto;
+      color: #000;
+      background: #fff;
+      font-size: 14pt;
+      line-height: 1.4;
+    }
+
+    .sheet-header { margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #000; }
+    .sheet-header h1 { font-size: 22pt; margin: 0 0 0.25rem; }
+    .sheet-header h2 { font-size: 16pt; margin: 0 0 0.5rem; font-weight: normal; }
+    .sheet-header p { margin: 0; font-size: 12pt; color: #333; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    thead th {
+      text-align: left;
+      font-size: 11pt;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 2px solid #000;
+      padding: 0.5rem 0.5rem;
+    }
+    tbody td {
+      padding: 0.85rem 0.5rem;
+      border-bottom: 1px solid #999;
+      vertical-align: top;
+      font-size: 13pt;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .checkbox-cell { text-align: center; width: 64px; }
+    .checkbox-cell .box {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 2px solid #000;
+      vertical-align: middle;
+    }
+
+    .items { font-size: 12pt; line-height: 1.5; }
+    .items div { margin: 2px 0; }
+
+    .note {
+      font-style: italic;
+      font-size: 11pt;
+      margin-top: 4px;
+      padding: 4px 6px;
+      background: #f0f0f0;
+      border-left: 3px solid #000;
+    }
+
+    .empty {
+      padding: 2rem;
+      text-align: center;
+      font-size: 14pt;
+      color: #555;
+    }
+
+    @media print {
+      body { padding: 0.5in; font-size: 12pt; }
+      .no-print { display: none; }
+      table { page-break-inside: auto; }
+      tr { page-break-inside: avoid; page-break-after: auto; }
+      thead { display: table-header-group; }
+    }
+
+    .no-print {
+      margin-bottom: 1rem;
+      padding: 0.5rem 0.75rem;
+      background: #eee;
+      border: 1px solid #999;
+      font-size: 11pt;
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    Press <strong>Cmd/Ctrl + P</strong> to print this sheet. This banner is hidden on the printed page.
+  </div>
+
+  <div class="sheet-header">
+    <h1><%= @event.name %></h1>
+    <h2><%= @event.store.name %></h2>
+    <p><strong>Pickup:</strong> <%= pickup_window(@event) %></p>
+    <% if @event.address.present? %>
+      <p><strong>Location:</strong> <%= @event.address %></p>
+    <% end %>
+  </div>
+
+  <% if @orders.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Items</th>
+          <th class="checkbox-cell">Picked up</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @orders.each do |order| %>
+          <tr>
+            <td>
+              <strong><%= order.user.email %></strong>
+              <% if order.delivery_address.present? %>
+                <div style="font-size: 11pt; color: #555;">Delivery: <%= order.delivery_address %></div>
+              <% end %>
+              <% if order.notes.present? %>
+                <div class="note">Note: <%= order.notes %></div>
+              <% end %>
+            </td>
+            <td class="items">
+              <% order.order_items.each do |item| %>
+                <div><%= item.quantity %> &times; <%= item.event_product.name %></div>
+              <% end %>
+            </td>
+            <td class="checkbox-cell"><span class="box"></span></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="empty">No confirmed orders yet.</p>
+  <% end %>
+</body>
+</html>

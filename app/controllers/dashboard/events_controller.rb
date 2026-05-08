@@ -1,6 +1,6 @@
 module Dashboard
   class EventsController < BaseController
-    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep, :pickup_sheet, :export_orders]
     before_action :ensure_event_not_past!, only: [:edit, :update, :destroy, :publish]
 
     def index
@@ -27,6 +27,21 @@ module Dashboard
 
     def prep
       render layout: false
+    end
+
+    def pickup_sheet
+      @orders = @event.orders
+        .where.not(confirmed_at: nil)
+        .includes(:user, order_items: :event_product)
+        .order("users.email ASC")
+        .references(:user)
+      render layout: false
+    end
+
+    def export_orders
+      orders = @event.orders.includes(:user, order_items: :event_product).order(created_at: :asc)
+      filename = "orders-#{@event.name.parameterize}-#{Date.current}.csv"
+      send_data Order.to_csv(orders), filename: filename, type: "text/csv"
     end
 
     def duplicate

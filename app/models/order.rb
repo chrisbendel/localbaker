@@ -1,4 +1,8 @@
+require "csv"
+
 class Order < ApplicationRecord
+  CSV_HEADERS = %w[order_date customer_email items item_count subtotal_cents fulfillment pickup_time paid_status notes].freeze
+
   belongs_to :user
   belongs_to :event
   has_many :order_items, dependent: :destroy
@@ -6,6 +10,29 @@ class Order < ApplicationRecord
 
   validates :user_id, uniqueness: {scope: :event_id}
   validate :delivery_address_within_zone, if: :delivery_requested?
+
+  # Render an Active Record collection as CSV for baker exports.
+  # Eager-load order_items.event_product, user, and event before calling
+  # to keep this O(orders) instead of O(orders * items).
+  def self.to_csv(orders)
+    CSV.generate do |csv|
+      csv << CSV_HEADERS
+      orders.each do |o|
+        items = o.order_items.map { |i| "#{i.quantity}x #{i.event_product.name}" }.join(" | ")
+        csv << [
+          o.created_at.iso8601,
+          o.user.email,
+          items,
+          o.order_items.sum(&:quantity),
+          o.total_price_cents,
+          o.delivery_address.present? ? "delivery" : "pickup",
+          o.event.pickup_starts_at.iso8601,
+          o.confirmed? ? "confirmed" : "pending",
+          o.notes.to_s
+        ]
+      end
+    end
+  end
 
   before_validation { self.delivery_address = AddressParser.normalize(delivery_address) if delivery_address.present? }
 

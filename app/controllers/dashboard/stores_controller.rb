@@ -50,7 +50,7 @@ module Dashboard
     private
 
     def store_params
-      permitted = [:name, :slug, :description, :address, :listed, :banner_image, :remove_banner_image]
+      permitted = [:name, :slug, :description, :address, :listed, :banner_image, :remove_banner_image, :contact_email, :contact_phone]
       permitted += [:delivery_zone_type, :delivery_zone_radius_miles, :delivery_zone_postal_codes] if current_user.pro?
       params.expect(store: permitted)
     end

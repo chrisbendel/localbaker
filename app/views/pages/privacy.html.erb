@@ -1,0 +1,50 @@
+<% content_for :title, "Privacy Policy — LocalBaker" %>
+<% content_for :meta_description, "LocalBaker Privacy Policy — what we collect, how we use it, and how to delete your data." %>
+
+<div class="stack-lg">
+  <h1>Privacy Policy</h1>
+
+  <div class="stack">
+    <p><small>Last updated: <%= Date.current.strftime("%B %d, %Y") %>. We are not lawyers. This is a starting point — review with one before relying on it.</small></p>
+
+    <h2>What we collect</h2>
+    <ul class="stack-sm">
+      <li>Your email address (for sign-in and notifications)</li>
+      <li>Your address (only if you enter one — used for delivery matching and "near me" search)</li>
+      <li>Order history (which bakes you've reserved or sold)</li>
+      <li>Basic technical info (IP, browser) needed to keep the site running</li>
+    </ul>
+
+    <h2>What we do with it</h2>
+    <ul class="stack-sm">
+      <li>Sign you in via magic link</li>
+      <li>Show your orders to you and to the baker fulfilling them</li>
+      <li>Send transactional emails (order confirmations, pickup reminders, baker-followed event announcements)</li>
+      <li>Show your storefront in the partner bakers directory if you opt in</li>
+    </ul>
+
+    <h2>Who we share it with</h2>
+    <p>Only with the third parties we need to run the service:</p>
+    <ul class="stack-sm">
+      <li><strong>Resend</strong> — delivers transactional and notification emails</li>
+      <li><strong>Stripe</strong> — processes Pro plan subscription payments</li>
+      <li><strong>Hosting provider</strong> — runs the application servers and database</li>
+    </ul>
+    <p>We do not sell your data. We do not run ad networks on the site.</p>
+
+    <h2>Cookies and sessions</h2>
+    <p>We use a session cookie to keep you signed in. We do not use third-party tracking cookies.</p>
+
+    <h2>Deleting your account</h2>
+    <p>From <%= link_to "settings", settings_account_path %>, you can delete your account. This removes your user record, your store (if any), your orders, and your subscriptions to baker notifications. Some records may persist briefly in backups before being purged.</p>
+
+    <h2>Email unsubscribes</h2>
+    <p>Every notification email includes a one-click unsubscribe link. You can also manage notification subscriptions in <%= link_to "settings", settings_notifications_path %>.</p>
+
+    <h2>Children</h2>
+    <p>LocalBaker is not intended for use by anyone under 13.</p>
+
+    <h2>Contact</h2>
+    <p><%= link_to "Get in touch", new_contact_path %> with privacy questions or data deletion requests.</p>
+  </div>
+</div>
