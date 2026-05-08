@@ -25,8 +25,11 @@ class EventProduct < ApplicationRecord
     "$%.2f" % price
   end
 
+  # Confirmed orders only — open carts (unconfirmed orders) do NOT reserve
+  # inventory. Inventory is checked at confirmation time inside a row lock
+  # in Shop::OrdersController#confirm to guard against oversell races.
   def sold
-    order_items.sum(:quantity)
+    order_items.joins(:order).where.not(orders: {confirmed_at: nil}).sum(:quantity)
   end
 
   def remaining

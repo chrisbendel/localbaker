@@ -37,6 +37,16 @@
 
   <% if event.orders_open? %>
     <% if order.confirmed? %>
+        <div class="stack-sm">
+          <%= form_with url: update_order_shop_event_path(store.slug, event), method: :patch, local: true do |f| %>
+            <%= f.label :notes, "Note for the baker (optional)" %>
+            <%= f.text_area :notes, value: order.notes, rows: 2, placeholder: "e.g. nut allergy, please slice the sourdough" %>
+            <div class="group">
+              <%= f.submit "Save note", class: "button secondary" %>
+            </div>
+          <% end %>
+        </div>
+
         <div class="group">
           <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button secondary", target: "_blank", rel: "noopener noreferrer" %>
           <%= button_to "Edit Order", unconfirm_shop_event_path(store.slug, event), method: :post, class: "button secondary" %>
@@ -73,6 +83,10 @@
             <small>Leave blank for pickup. Enter an address for delivery.</small>
           </div>
         <% end %>
+        <div class="stack-sm">
+          <%= f.label :notes, "Note for the baker (optional)" %>
+          <%= f.text_area :notes, value: order.notes, rows: 2, placeholder: "e.g. nut allergy, please slice the sourdough" %>
+        </div>
         <div class="group">
           <%= f.submit "Complete Order", class: "button primary" %>
         </div>

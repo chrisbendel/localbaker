@@ -149,6 +149,7 @@
             <% if @event.delivery_enabled? %>
               <th>Delivery Address</th>
             <% end %>
+            <th>Note</th>
             <th>Placed</th>
           </tr>
         </thead>
@@ -171,6 +172,11 @@
                   <% end %>
                 </td>
               <% end %>
+              <td data-label="Note">
+                <% if order.notes.present? %>
+                  <small title="<%= order.notes %>"><%= truncate(order.notes, length: 60) %></small>
+                <% end %>
+              </td>
               <td data-label="Placed"><%= nice_date(order.created_at) %></td>
             </tr>
           <% end %>
