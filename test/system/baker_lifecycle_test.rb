@@ -105,7 +105,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Edit a product
     # ----------------------------------------------------------------
-    within "table" do
+    within ".product-list" do
       click_on "Edit", match: :first
     end
     assert_text "Edit Sourdough Loaf"
@@ -116,16 +116,16 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Product updated"
 
     # Back on event page, updated quantity reflected
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "12"
     end
 
     # ----------------------------------------------------------------
     # 8. Delete a product
     # ----------------------------------------------------------------
-    product_row_count_before = all("tbody tr").count
+    product_row_count_before = all(".product-row").count
 
-    within find("tr", text: "Olive Focaccia") do
+    within find(".product-row", text: "Olive Focaccia") do
       click_on "Edit"
     end
 
@@ -135,7 +135,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     assert_text "Product removed"
     assert_no_text "Olive Focaccia"
-    assert_equal product_row_count_before - 1, all("tbody tr").count
+    assert_equal product_row_count_before - 1, all(".product-row").count
 
     # ----------------------------------------------------------------
     # 9. Store shows event card (not table)
@@ -150,7 +150,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 10. Edit event
     # ----------------------------------------------------------------
     click_on "Saturday Bake"
-    click_on "Edit Event"
+    click_on "Edit", match: :first
     assert_text "Edit Event"
 
     fill_in "Name", with: "Saturday Bake (Updated)"

@@ -2,35 +2,37 @@
 <% content_for :meta_description, "LocalBaker is a simple shop for home bakers. Post a bake, share a link, customers claim loaves. No app. No password." %>
 
 <div class="stack-lg">
-  <div class="stack">
+  <section class="stack">
     <h1>A simple shop for home bakers.</h1>
-    <p>No inventory system. No app to install. No password for customers. No subscription tiers full of features you won't use.</p>
-    <p><%= link_to "Read about LocalBaker", about_path %>.</p>
-  </div>
-
-  <hr class="divider">
-
-  <div class="stack">
-    <h2>For customers</h2>
-    <p>Find a baker near you. Click the link, pick a loaf, pick it up.</p>
+    <p>Post a bake. Share a link. Customers claim loaves. No app. No password.</p>
     <div class="group">
       <%= link_to "Find a baker", explore_path, class: "button primary" %>
+      <% if authenticated? && current_user.store&.persisted? %>
+        <%= link_to "Manage your shop", dashboard_path, class: "button" %>
+      <% elsif authenticated? %>
+        <%= link_to "Open a shop", new_dashboard_store_path, class: "button" %>
+      <% else %>
+        <%= link_to "Open a shop", new_session_path, class: "button" %>
+      <% end %>
     </div>
-  </div>
+  </section>
 
   <hr class="divider">
 
-  <div class="stack">
-    <h2>For bakers</h2>
-    <p>Post what you're baking. Share a link. Get a list of who ordered what.</p>
-    <div class="group">
-      <% if authenticated? && current_user.store&.persisted? %>
-        <%= link_to "Manage your shop", dashboard_path, class: "button primary" %>
-      <% elsif authenticated? %>
-        <%= link_to "Open a shop", new_dashboard_store_path, class: "button primary" %>
-      <% else %>
-        <%= link_to "Open a shop", new_session_path, class: "button primary" %>
-      <% end %>
-    </div>
-  </div>
+  <dl class="facts">
+    <dt>What it does</dt>
+    <dd>Post a bake. Share a link. Get a pickup list.</dd>
+
+    <dt>What it doesn't</dt>
+    <dd>No inventory system. No app. No customer passwords.</dd>
+
+    <dt>Who it's for</dt>
+    <dd>People baking 5&ndash;50 loaves a week for neighbors, gym lobbies, office swaps. Not commercial bakeries.</dd>
+
+    <dt>How it works</dt>
+    <dd>Customers click your link, pick items, check out. Magic-link email &mdash; no password. You get a clear list of orders by pickup time.</dd>
+
+    <dt>What it costs</dt>
+    <dd>Free for <%= User::FREE_EVENT_LIMIT %> active events. Pro is $9/month &mdash; unlimited events and delivery zones.</dd>
+  </dl>
 </div>

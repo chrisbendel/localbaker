@@ -16,6 +16,7 @@ class Event < ApplicationRecord
   validate :orders_close_before_pickup
   validate :pickup_ends_after_starts
   validate :must_have_products, if: :published?
+  validate :publish_dates_in_future, if: :publishing_now?
   scope :published, -> { where.not(published_at: nil) }
   scope :draft, -> { where(published_at: nil) }
   scope :current, -> { published.where("pickup_starts_at >= ?", 3.days.ago) }
@@ -78,6 +79,29 @@ class Event < ApplicationRecord
     update_column(:pickup_reminder_job_id, nil)
   end
 
+  # Can this draft be published right now? Used to gate the publish button.
+  # Returns false when dates are in the past, no products, or already published.
+  def publishable?
+    return false unless draft?
+    return false unless event_products.exists?
+    return false if pickup_starts_at.blank? || pickup_starts_at <= Time.current
+    return false if orders_close_at.blank? || orders_close_at <= Time.current
+    true
+  end
+
+  # Reasons this draft can't be published. Empty array if it's good to go.
+  def publish_blockers
+    blockers = []
+    blockers << "Add at least one product before publishing." unless event_products.exists?
+    if pickup_starts_at.blank? || pickup_starts_at <= Time.current
+      blockers << "Pickup date must be in the future."
+    end
+    if orders_close_at.blank? || orders_close_at <= Time.current
+      blockers << "Orders close time must be in the future."
+    end
+    blockers
+  end
+
   def spawn_next_event
     interval_weeks = ((repeat_interval == "biweekly") ? 2 : 1)
 
@@ -127,5 +151,21 @@ class Event < ApplicationRecord
     if event_products.empty?
       errors.add(:base, "You must add at least one product before publishing.")
     end
+  end
+
+  def publish_dates_in_future
+    if pickup_starts_at && pickup_starts_at <= Time.current
+      errors.add(:pickup_starts_at, "must be in the future before publishing.")
+    end
+    if orders_close_at && orders_close_at <= Time.current
+      errors.add(:orders_close_at, "must be in the future before publishing.")
+    end
+  end
+
+  # Fires only when the event is being published right now (draft → published
+  # transition). Lets us re-save published events whose dates have since passed
+  # without re-running this guard.
+  def publishing_now?
+    published_at_changed? && published_at.present?
   end
 end

@@ -116,12 +116,9 @@ body::before {
   opacity: 0.075;
 }
 
-h1 {
-  font-size: var(--text-2xl);
-  font-family: var(--font-heading);
-  letter-spacing: -0.01em;
-}
-
+/* h1 styled visually identical to h2 — keep semantic h1 in HTML for a11y/SEO,
+   but no oversized page titles. */
+h1,
 h2 {
   font-size: var(--text-xl);
   font-family: var(--font-heading);
@@ -389,12 +386,75 @@ strong {
   box-shadow: var(--shadow-press);
 }
 
-/* Empty state */
+/* Empty state — flat, no box. Centered muted text with breathing room.
+   Use semantic <p> inside; the wrapper just provides alignment + space. */
 .empty-state {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
   padding: var(--sp-lg) var(--sp-md);
   text-align: center;
+  color: var(--text-muted);
+}
+
+/* === Order card — baker-side order display ===
+   Replaces the old orders table. One card per order, breathes vertically.
+   Items, notes, delivery address each get their own line — no truncation. */
+.order-card {
+  padding: var(--sp-md) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-card:last-child {
+  border-bottom: none;
+}
+
+.order-card-items {
+  margin: 0;
+  padding-left: var(--sp-md);
+  list-style: disc;
+}
+
+.order-card-items li {
+  list-style: disc;
+  padding: 2px 0;
+}
+
+.order-card-note {
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--text);
+  padding: var(--sp-sm) var(--sp-md);
+  font-style: italic;
+}
+
+/* Definition list — semantic key/value rows for fact tables, marketing
+   bullets, etc. Two columns on wide screens, stacked on narrow. */
+dl.facts {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) 3fr;
+  gap: var(--sp-md);
+  margin: 0;
+}
+
+dl.facts dt {
+  font-weight: var(--font-bold);
+  margin: 0;
+}
+
+dl.facts dd {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  dl.facts {
+    grid-template-columns: 1fr;
+    gap: var(--sp-sm);
+  }
+
+  dl.facts dt {
+    margin-top: var(--sp-sm);
+  }
+
+  dl.facts dt:first-child {
+    margin-top: 0;
+  }
 }
 
 /* Badges */

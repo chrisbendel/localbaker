@@ -85,7 +85,8 @@ class EventTest < ActiveSupport::TestCase
     @event.pickup_ends_at = 5.hours.from_now
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
-    @event.publish!
+    # Bypass publish-time date validation — simulating a previously-published event
+    @event.update_column(:published_at, Time.current)
     refute @event.orders_open?
   end
 
@@ -100,7 +101,7 @@ class EventTest < ActiveSupport::TestCase
     @event.pickup_ends_at = 5.hours.from_now
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
-    @event.publish!
+    @event.update_column(:published_at, Time.current)
     assert @event.orders_closed?
   end
 
@@ -122,7 +123,7 @@ class EventTest < ActiveSupport::TestCase
     @event.pickup_ends_at = 4.days.ago + 5.hours
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
-    @event.publish!
+    @event.update_column(:published_at, 5.days.ago)
     refute_includes Event.current, @event
   end
 
@@ -132,7 +133,7 @@ class EventTest < ActiveSupport::TestCase
     @event.pickup_ends_at = 2.days.ago + 5.hours
     @event.save!(validate: false)
     @event.event_products.create!(name: "Item", price: 10, quantity: 10)
-    @event.publish!
+    @event.update_column(:published_at, 3.days.ago)
     assert_includes Event.current, @event
   end
 

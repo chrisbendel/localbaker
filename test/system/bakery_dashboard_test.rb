@@ -62,14 +62,14 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     visit dashboard_events_path
     within "tr", text: "Centralized Bake" do
       assert_no_link "Edit"
-      assert_no_button "Reuse Event"
-      assert_no_button "Delete Event"
+      assert_no_button "Reuse"
+      assert_no_button "Delete"
       click_on "Centralized Bake"
     end
 
     assert_current_path event_path(event)
-    assert_link "Edit Event"
-    assert_button "Reuse Event"
-    assert_button "Delete Event"
+    assert_link "Edit"
+    assert_button "Reuse"
+    assert_button "Delete"
   end
 end
