@@ -27,7 +27,10 @@
               <small class="text-muted">
                 <%= product.price_formatted %>
                 <% if available %>
-                  &middot; <%= max %> left
+                  &middot; <%= product.remaining %> left
+                  <% if existing_qty > 0 %>
+                    &middot; you have <%= existing_qty %>
+                  <% end %>
                 <% else %>
                   &middot; Sold out
                 <% end %>

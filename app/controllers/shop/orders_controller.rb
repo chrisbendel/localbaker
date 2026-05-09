@@ -1,5 +1,12 @@
 module Shop
   class OrdersController < ApplicationController
+    # Single-form ordering: customer submits a quantity per product. Order is
+    # created (or replaced wholesale) atomically. No cart state.
+    #
+    # Errors live on the Order itself; controller actions read order.errors
+    # and flash them. No row locks — low traffic + honor system means we accept
+    # rare oversell races. Add locks if it ever matters.
+
     before_action :require_authentication!
     before_action :set_store
     before_action :set_event
@@ -7,30 +14,38 @@ module Shop
     # POST /shop/:slug/events/:event_id/order
     def create
       if @event.orders.exists?(user: current_user)
-        return redirect_to shop_event_path(@store.slug, @event),
+        return redirect_to event_path,
           alert: "You already have an order for this bake. Update or cancel it instead."
       end
 
-      build_and_save_order(Order.new(user: current_user, event: @event), notice: "Order placed. We've sent a receipt to your email.", send_email: true)
+      order = Order.new(user: current_user, event: @event)
+      if save_order(order)
+        OrderMailer.with(order: order).confirmation_email.deliver_later
+        redirect_to event_path, notice: "Order placed. We've sent a receipt to your email."
+      else
+        redirect_to event_path, alert: order.errors.full_messages.to_sentence
+      end
     end
 
     # PATCH /shop/:slug/events/:event_id/order
     def update
       order = @event.orders.find_by!(user: current_user)
-      build_and_save_order(order, notice: "Order updated.", send_email: false, replace_items: true)
+      if save_order(order)
+        redirect_to event_path, notice: "Order updated."
+      else
+        redirect_to event_path, alert: order.errors.full_messages.to_sentence
+      end
     end
 
     # DELETE /shop/:slug/events/:event_id/order
     def destroy
       order = @event.orders.find_by!(user: current_user)
-
       unless @event.orders_open?
-        return redirect_to shop_event_path(@store.slug, @event),
-          alert: "Cannot cancel orders after the order window has closed."
+        return redirect_to event_path, alert: "Cannot cancel orders after the order window has closed."
       end
 
       order.cancel!
-      redirect_to shop_event_path(@store.slug, @event), notice: "Order cancelled."
+      redirect_to event_path, notice: "Order cancelled."
     end
 
     private
@@ -43,53 +58,36 @@ module Shop
       @event = @store.events.find(params[:event_id])
     end
 
-    # Shared create + update flow.
-    # - replace_items: when true (update), wipes existing items first.
-    # - Inventory check runs inside a transaction with row locks on each
-    #   touched product. The order's own existing items are excluded from
-    #   the "sold" comparison so updating quantities doesn't self-block.
-    def build_and_save_order(order, notice:, send_email:, replace_items: false)
+    def event_path
+      shop_event_path(@store.slug, @event)
+    end
+
+    # Wipe + rebuild items from request params, then save. Errors accumulate
+    # on the order; caller flashes order.errors.full_messages.
+    def save_order(order)
       unless @event.orders_open?
-        return redirect_to shop_event_path(@store.slug, @event),
-          alert: "Sorry, orders for this bake have closed."
+        order.errors.add(:base, "Sorry, orders for this bake have closed.")
+        return false
       end
 
       requested = parse_quantities(params[:items])
-
       if requested.empty?
-        return redirect_to shop_event_path(@store.slug, @event),
-          alert: "Please select at least one item."
+        order.errors.add(:base, "Please select at least one item.")
+        return false
       end
 
-      if @event.delivery_enabled? && params.key?(:delivery_address)
-        order.delivery_address = params[:delivery_address].presence
-      end
+      order.delivery_address = params[:delivery_address].presence if @event.delivery_enabled?
       order.notes = params[:notes].presence
 
-      oversold_product = nil
-      saved = false
-
       ActiveRecord::Base.transaction do
-        # Lock every product the customer is requesting plus any product
-        # already on this order (so we can free its quantity for the recompute).
-        product_ids = requested.keys
-        product_ids |= order.order_items.pluck(:event_product_id) if replace_items
-        products = @event.event_products.where(id: product_ids).lock("FOR UPDATE").index_by(&:id)
-
-        # Wipe existing items so remaining stock is computed against the new
-        # order shape, not the old one. dependent: :destroy not needed here
-        # because we're inside a tx and won't commit if the rebuild fails.
-        order.order_items.destroy_all if replace_items
+        order.order_items.destroy_all
 
         requested.each do |product_id, quantity|
-          product = products[product_id]
-          unless product
-            order.errors.add(:base, "One of the requested products is no longer available.")
-            raise ActiveRecord::Rollback
-          end
-          # remaining now reflects sold-not-counting-this-order since we wiped.
+          product = @event.event_products.find_by(id: product_id)
+          next unless product
+
           if quantity > product.remaining
-            oversold_product = product
+            order.errors.add(:base, "Sorry, #{product.name} doesn't have that much left. Please adjust your order.")
             raise ActiveRecord::Rollback
           end
 
@@ -100,35 +98,20 @@ module Shop
           )
         end
 
-        if order.save
-          saved = true
-        else
-          raise ActiveRecord::Rollback
-        end
+        raise ActiveRecord::Rollback if order.errors.any?
+        order.save!
       end
 
-      if oversold_product
-        redirect_to shop_event_path(@store.slug, @event),
-          alert: "Sorry, #{oversold_product.name} doesn't have that much left. Please adjust your order."
-      elsif saved
-        OrderMailer.with(order: order).confirmation_email.deliver_later if send_email
-        redirect_to shop_event_path(@store.slug, @event), notice: notice
-      else
-        redirect_to shop_event_path(@store.slug, @event),
-          alert: order.errors.full_messages.to_sentence.presence || "Could not save your order. Please try again."
-      end
+      order.errors.empty? && order.persisted?
     end
 
-    # `params[:items]` shape:
-    #   { "<event_product_id>" => "<quantity>", ... }
-    # Returns a hash of { product_id (Integer) => quantity (Integer) },
-    # with zero/blank quantities dropped.
+    # `params[:items]` shape: { "<event_product_id>" => "<quantity>" }
+    # Returns { product_id (Integer) => quantity (Integer) }, blanks/zeros dropped.
     def parse_quantities(raw)
-      return {} unless raw.respond_to?(:to_unsafe_h) || raw.is_a?(Hash)
-      hash = raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : raw
-      hash.each_with_object({}) do |(product_id, qty), out|
+      hash = raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : (raw || {})
+      hash.each_with_object({}) do |(pid, qty), out|
         q = qty.to_i
-        out[product_id.to_i] = q if q > 0
+        out[pid.to_i] = q if q > 0
       end
     end
   end
