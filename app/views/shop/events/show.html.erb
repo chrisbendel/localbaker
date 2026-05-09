@@ -40,22 +40,21 @@
     </div>
   </header>
 
+  <%# Saved-order status banner — shown when customer has an order. %>
+  <% if @order %>
+    <%= render "shop/order_summary", order: @order, store: @store, event: @event %>
+  <% end %>
+
   <% if @event.orders_closed? && !@order %>
     <div class="nudge">
       Orders for this bake have closed.
     </div>
   <% end %>
 
-  <% if @order && !@editing %>
-    <%# Customer has an order — show summary with update/cancel actions %>
-    <%= render "shop/order_summary", order: @order, store: @store, event: @event %>
-
-  <% elsif authenticated? && @event.orders_open? %>
-    <%# Show order form (new or edit) %>
+  <% if authenticated? && @event.orders_open? %>
+    <%# Order form — pre-filled if order exists, blank otherwise. %>
     <%= render "shop/order_form", store: @store, event: @event, products: @products, order: @order %>
-
   <% elsif !authenticated? && @event.orders_open? %>
-    <%# Guest — show product list + sign-in CTA %>
     <div class="panel stack-sm">
       <h3>Ready to order?</h3>
       <p><small>Sign in with an email link. No password.</small></p>

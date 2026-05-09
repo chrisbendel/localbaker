@@ -29,8 +29,7 @@ class OrderConfirmationTest < ApplicationSystemTestCase
     assert_selector "aside", text: "Your order"
     assert_selector "aside", text: "Add to Google Calendar"
 
-    # 2. Update the order — change quantity
-    click_on "Update Order"
+    # 2. Update the order — change quantity (form is always visible below summary)
     assert_text "Update your order"
 
     fill_in "items_#{@product.id}", with: "3"

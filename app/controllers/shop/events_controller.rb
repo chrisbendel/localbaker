@@ -6,7 +6,6 @@ module Shop
     def show
       @products = @event.event_products
       @order = @event.orders.find_by(user: current_user)
-      @editing = params[:edit].present? && @order.present?
     end
 
     private

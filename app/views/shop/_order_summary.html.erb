@@ -25,19 +25,14 @@
     <p><small><strong>Note:</strong> <%= order.notes %></small></p>
   <% end %>
 
-  <% if event.orders_open? %>
-    <div class="group">
-      <%= link_to "Update Order", shop_event_path(store.slug, event, edit: 1), class: "button" %>
+  <div class="group">
+    <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button", target: "_blank", rel: "noopener noreferrer" %>
+    <% if event.orders_open? %>
       <%= button_to "Cancel Order", shop_event_order_path(store.slug, event), method: :delete,
           class: "button",
           form: { data: { turbo_confirm: "Cancel your entire order? This cannot be undone." } } %>
-      <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button", target: "_blank", rel: "noopener noreferrer" %>
-    </div>
-  <% else %>
-    <div class="group">
-      <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button", target: "_blank", rel: "noopener noreferrer" %>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 
   <% if store.venmo_handle.present? || store.paypal_url.present? %>
     <div class="stack-sm order-summary-payment">

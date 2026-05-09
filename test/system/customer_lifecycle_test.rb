@@ -105,7 +105,6 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 6. Update order — drop sourdough, keep focaccia (total $12)
     # ----------------------------------------------------------------
-    click_on "Update Order"
     fill_in "items_#{@sourdough.id}", with: "0"
     click_on "Save Changes"
 
@@ -119,7 +118,6 @@ class CustomerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Update again — re-add sourdough so order has both items
     # ----------------------------------------------------------------
-    click_on "Update Order"
     fill_in "items_#{@sourdough.id}", with: "1"
     click_on "Save Changes"
 
