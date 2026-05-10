@@ -32,6 +32,7 @@ Rails.application.routes.draw do
           post :duplicate
           get :prep
           get :pickup_sheet
+          get :orders
           get :export_orders, defaults: {format: "csv"}
         end
         resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
@@ -73,11 +74,6 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
   get "legal", to: "pages#legal", as: :legal
-  # Old separate routes redirect to the combined page
-  get "terms", to: redirect("/legal")
-  get "privacy", to: redirect("/legal")
-  # Old about page merged into home
-  get "about", to: redirect("/")
   get "explore", to: "locations#explore", as: :explore
   get "bakers", to: "locations#bakers", as: :bakers
 

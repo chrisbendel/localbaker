@@ -70,7 +70,12 @@ module Shop
         return false
       end
 
-      requested = parse_quantities(params[:items])
+      # params[:items] shape: { "<event_product_id>" => "<quantity>" }
+      requested = (params[:items]&.to_unsafe_h || {})
+        .transform_keys(&:to_i)
+        .transform_values(&:to_i)
+        .select { |_, qty| qty > 0 }
+
       if requested.empty?
         order.errors.add(:base, "Please select at least one item.")
         return false
@@ -103,16 +108,6 @@ module Shop
       end
 
       order.errors.empty? && order.persisted?
-    end
-
-    # `params[:items]` shape: { "<event_product_id>" => "<quantity>" }
-    # Returns { product_id (Integer) => quantity (Integer) }, blanks/zeros dropped.
-    def parse_quantities(raw)
-      hash = raw.respond_to?(:to_unsafe_h) ? raw.to_unsafe_h : (raw || {})
-      hash.each_with_object({}) do |(pid, qty), out|
-        q = qty.to_i
-        out[pid.to_i] = q if q > 0
-      end
     end
   end
 end

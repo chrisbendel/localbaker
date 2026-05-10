@@ -41,7 +41,7 @@ class OrderConfirmationTest < ApplicationSystemTestCase
 
     # 3. Cancel
     accept_confirm do
-      click_on "Cancel Order"
+      click_on "Cancel order"
     end
 
     assert_text "Order cancelled"

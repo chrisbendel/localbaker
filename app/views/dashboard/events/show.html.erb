@@ -18,23 +18,14 @@
       <% if @event.repeat_interval.present? && !@event.no_repeat? %>
         <small>Repeats <%= @event.repeat_interval.humanize %></small>
       <% end %>
+      <% if current_user == @store.user && @event.published? %>
+        <small><%= link_to "View as customer →", shop_event_path(@store.slug, @event), target: "_blank", rel: "noopener noreferrer" %></small>
+      <% end %>
     </div>
 
-    <% if current_user == @store.user %>
+    <% if current_user == @store.user && !@event.past? %>
       <div class="group items-center">
-        <% unless @event.past? %>
-          <%= link_to "Edit", edit_event_path(@event), class: "button" %>
-        <% end %>
-        <%= button_to "Reuse", duplicate_event_path(@event),
-            method: :post,
-            class: "button",
-            data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } %>
-        <% if !@event.past? && (@event.draft? || @event.orders.empty?) %>
-          <%= button_to "Delete", event_path(@event),
-              method: :delete,
-              class: "button",
-              data: { turbo_confirm: "Are you sure? This will permanently delete the event." } %>
-        <% end %>
+        <%= link_to "Edit", edit_event_path(@event), class: "button" %>
       </div>
     <% end %>
   </div>
@@ -76,21 +67,12 @@
   <% end %>
 <% end %>
 
-<%# === Orders (published only) === %>
+<%# === Orders rollup (published only) === %>
 <% if @event.published? %>
   <hr class="divider">
 
   <div class="stack-sm">
-    <div class="group justify-between items-baseline">
-      <h3>Orders <% if @orders.any? %><small>(<%= @orders.count %>)</small><% end %></h3>
-      <% if @orders.any? %>
-        <div class="group">
-          <%= link_to "Pickup Sheet", pickup_sheet_event_path(@event), target: "_blank", class: "button" %>
-          <%= link_to "Prep List", prep_event_path(@event), target: "_blank", class: "button" %>
-          <%= link_to "Export CSV", export_orders_event_path(@event), class: "button" %>
-        </div>
-      <% end %>
-    </div>
+    <h3>Orders <% if @orders.any? %><small>(<%= @orders.count %>)</small><% end %></h3>
 
     <% if @orders.any? %>
       <small class="text-muted">
@@ -99,37 +81,7 @@
         <%= @orders.sum { |o| o.order_items.sum(&:quantity) } %> items
       </small>
 
-      <div class="stack">
-        <% @orders.each do |order| %>
-          <article class="order-card stack-sm">
-            <header class="group justify-between items-baseline">
-              <strong><%= mail_to order.user.email, order.user.email %></strong>
-              <div class="group-sm items-baseline">
-                <strong><%= number_to_currency(order.total_price) %></strong>
-                <small class="text-muted" title="<%= order.created_at.strftime('%Y-%m-%d %H:%M') %>"><%= nice_date(order.created_at) %></small>
-              </div>
-            </header>
-
-            <ul class="order-card-items">
-              <% order.order_items.each do |item| %>
-                <li><%= item.quantity %> &times; <%= item.event_product.name %></li>
-              <% end %>
-            </ul>
-
-            <% if order.notes.present? %>
-              <div class="order-card-note">
-                <strong>Note:</strong> <%= order.notes %>
-              </div>
-            <% end %>
-
-            <% if order.delivery_address.present? %>
-              <div class="order-card-delivery text-muted">
-                <small><strong>Delivery:</strong> <%= order.delivery_address %></small>
-              </div>
-            <% end %>
-          </article>
-        <% end %>
-      </div>
+      <small><%= link_to "View all orders →", orders_event_path(@event) %></small>
     <% else %>
       <div class="empty-state">
         <p>No orders yet. Share your shop link so customers can place orders.</p>
@@ -148,6 +100,10 @@
       <%= link_to "+ Add Product", new_event_event_product_path(@event), class: "button" %>
     <% end %>
   </div>
+
+  <% if @event.published? && @event.event_products.any? && @orders.any? %>
+    <small><%= link_to "Print prep list →", prep_event_path(@event), target: "_blank", rel: "noopener noreferrer" %></small>
+  <% end %>
 
   <% if @event.event_products.any? %>
     <ul class="product-list stack-sm">

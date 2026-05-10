@@ -169,12 +169,14 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
-    # 12. Duplicate event
+    # 12. Duplicate event — Reuse lives on the events index per-row
     # ----------------------------------------------------------------
-    click_on "Saturday Bake (Updated)"
+    visit dashboard_events_path
 
-    accept_confirm do
-      click_on "Reuse"
+    within find("tr", text: "Saturday Bake (Updated)") do
+      accept_confirm do
+        click_on "Reuse"
+      end
     end
 
     assert_text "Event duplicated. Please verify dates."

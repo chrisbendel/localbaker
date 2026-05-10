@@ -25,12 +25,13 @@
     <p><small><strong>Note:</strong> <%= order.notes %></small></p>
   <% end %>
 
-  <div class="group">
-    <%= link_to "Add to Google Calendar", google_calendar_url(event), class: "button", target: "_blank", rel: "noopener noreferrer" %>
+  <div class="group-sm items-center">
+    <small><%= link_to "Add to Google Calendar →", google_calendar_url(event), target: "_blank", rel: "noopener noreferrer" %></small>
     <% if event.orders_open? %>
-      <%= button_to "Cancel Order", shop_event_order_path(store.slug, event), method: :delete,
-          class: "button",
-          form: { data: { turbo_confirm: "Cancel your entire order? This cannot be undone." } } %>
+      <small>&middot;</small>
+      <small><%= button_to "Cancel order", shop_event_order_path(store.slug, event), method: :delete,
+          class: "button-link text-muted",
+          form: { data: { turbo_confirm: "Cancel your entire order? This cannot be undone." } } %></small>
     <% end %>
   </div>
 

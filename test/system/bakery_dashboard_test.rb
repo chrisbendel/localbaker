@@ -58,18 +58,16 @@ class BakeryDashboardTest < ApplicationSystemTestCase
       pickup_starts_at: 2.days.from_now,
       pickup_ends_at: 2.days.from_now + 4.hours
     )
+    event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 5)
+    event.publish!
 
     visit dashboard_events_path
     within "tr", text: "Centralized Bake" do
-      assert_no_link "Edit"
-      assert_no_button "Reuse"
-      assert_no_button "Delete"
+      assert_button "Reuse"
       click_on "Centralized Bake"
     end
 
     assert_current_path event_path(event)
     assert_link "Edit"
-    assert_button "Reuse"
-    assert_button "Delete"
   end
 end

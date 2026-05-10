@@ -1,6 +1,6 @@
 module Dashboard
   class EventsController < BaseController
-    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep, :pickup_sheet, :export_orders]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep, :pickup_sheet, :orders, :export_orders]
     before_action :ensure_event_not_past!, only: [:edit, :update, :destroy, :publish]
 
     def index
@@ -37,6 +37,13 @@ module Dashboard
         .order("users.email ASC")
         .references(:user)
       render layout: false
+    end
+
+    # Full per-order card view. Linked from event show "View all orders →".
+    def orders
+      @orders = @event.orders
+        .includes(user: [], order_items: [:event_product])
+        .order(created_at: :asc)
     end
 
     def export_orders

@@ -6,17 +6,17 @@
   </div>
 
   <% if @notifications.any? %>
-    <div class="stack-sm">
+    <ul class="product-list stack-sm">
       <% @notifications.each do |notification| %>
-        <div class="card group justify-between items-center">
+        <li class="product-row group justify-between items-center">
           <div>
             <strong><%= notification.store.name %></strong>
-            <p><small class="text-muted">New event notifications</small></p>
+            <small class="text-muted">New event notifications</small>
           </div>
-          <%= button_to "Unsubscribe", settings_notification_path(notification), method: :delete, class: "button secondary" %>
-        </div>
+          <%= button_to "Unsubscribe", settings_notification_path(notification), method: :delete, class: "button-link text-muted" %>
+        </li>
       <% end %>
-    </div>
+    </ul>
   <% else %>
     <div class="empty-state">
       <p>You're not subscribed to any bakeries.</p>

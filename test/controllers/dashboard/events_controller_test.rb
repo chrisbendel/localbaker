@@ -273,4 +273,41 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_includes body, "2x Sourdough"
     assert_includes body, "nut allergy please"
   end
+
+  # --- orders (full per-order view) ---
+
+  test "GET orders renders empty state when no orders" do
+    get orders_event_path(@event)
+    assert_response :success
+    assert_select ".empty-state", /No orders yet/i
+  end
+
+  test "GET orders shows full per-order details" do
+    product = @event.event_products.create!(name: "Sourdough", price_cents: 1000, quantity: 5)
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer, notes: "slice please", delivery_address: "123 Main St")
+    order.order_items.create!(event_product: product, quantity: 2, unit_price_cents: 1000)
+
+    get orders_event_path(@event)
+
+    assert_response :success
+    assert_select ".order-card", count: 1
+    assert_select ".order-card", /buyer@example.com/
+    assert_select ".order-card", /Sourdough/
+    assert_select ".order-card-note", /slice please/
+    assert_select ".order-card-delivery", /123 Main St/
+  end
+
+  test "event show page links to full orders view" do
+    @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
+    @event.publish!
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer)
+    order.order_items.create!(event_product: @event.event_products.first, quantity: 1, unit_price_cents: 1000)
+
+    get event_path(@event)
+
+    assert_response :success
+    assert_select "a[href=?]", orders_event_path(@event), text: /View all orders/i
+  end
 end

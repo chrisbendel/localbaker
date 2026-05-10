@@ -17,6 +17,7 @@
             <th>Name</th>
             <th>Orders Close</th>
             <th>Pickup</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -33,6 +34,12 @@
                 <% end %>
               </td>
               <td data-label="Pickup"><%= nice_date(event.pickup_starts_at) %></td>
+              <td data-label="">
+                <%= button_to "Reuse", duplicate_event_path(event),
+                    method: :post,
+                    class: "button-link text-muted",
+                    form: { data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } } %>
+              </td>
             </tr>
           <% end %>
         </tbody>
@@ -79,6 +86,7 @@
             <th>Name</th>
             <th>Orders Close</th>
             <th>Pickup</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -89,6 +97,12 @@
               </td>
               <td data-label="Orders Close"><%= nice_date(event.orders_close_at) %></td>
               <td data-label="Pickup"><%= nice_date(event.pickup_starts_at) %></td>
+              <td data-label="">
+                <%= button_to "Reuse", duplicate_event_path(event),
+                    method: :post,
+                    class: "button-link text-muted",
+                    form: { data: { turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft." } } %>
+              </td>
             </tr>
           <% end %>
         </tbody>

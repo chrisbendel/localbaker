@@ -1,11 +1,9 @@
 <% content_for :title, "Store Info — Baker Portal" %>
 
 <div class="stack">
-  <div class="group justify-between items-center">
+  <div class="stack-sm">
     <h3>Store Info</h3>
-    <div class="group">
-      <%= link_to "Print QR Poster", qr_dashboard_store_path, class: "button secondary small", target: "_blank", rel: "noopener noreferrer" %>
-    </div>
+    <small><%= link_to "Print QR poster →", qr_dashboard_store_path, target: "_blank", rel: "noopener noreferrer" %></small>
   </div>
 
   <%= form_with model: @store, url: dashboard_store_path do |f| %>
@@ -115,11 +113,11 @@
 
   <hr class="divider">
 
-  <div class="card stack-sm">
-    <strong>Delete Store</strong>
-    <p>Permanently remove your shop and all its data. This cannot be undone.</p>
-    <div class="group">
-      <%= button_to "Delete Store", dashboard_store_path, method: :delete, class: "button secondary",
+  <div class="stack-sm">
+    <h4>Delete Store</h4>
+    <p><small>Permanently remove your shop and all its data. This cannot be undone.</small></p>
+    <div>
+      <%= button_to "Delete Store", dashboard_store_path, method: :delete, class: "button",
           data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
     </div>
   </div>
