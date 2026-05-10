@@ -54,10 +54,10 @@
 
   <% if !current_user.store&.persisted? %>
     <hr class="divider">
-    <div class="card stack-sm">
-      <strong>Are you a baker?</strong>
-      <p>Create your shop to start taking pre-orders for your next bake.</p>
-      <div class="group">
+    <div class="stack-sm">
+      <h4>Are you a baker?</h4>
+      <p><small>Create your shop to start taking pre-orders for your next bake.</small></p>
+      <div>
         <%= link_to "Create your store", new_dashboard_store_path, class: "button" %>
       </div>
     </div>

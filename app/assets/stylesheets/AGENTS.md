@@ -2,6 +2,16 @@
 
 **The design system is intentionally minimal and closed. Resist expansion.**
 
+## Principles
+
+Inspired by [GOV.UK Design Principles](https://www.gov.uk/guidance/government-design-principles). These guide *why* we build the way we do; constraints below enforce *how*.
+
+1. **Start with the baker's kitchen.** Real bakes at human scale (5–50 loaves), not enterprise inventory.
+2. **Do less.** If it isn't bread → customer, cut it. Fewer features beat more.
+3. **Do the hard work to make it simple.** Constraint takes effort. Three spacing sizes is the result of decisions, not laziness.
+4. **For everyone.** Works on a flip-phone browser. No app install, no password, no JavaScript-required flows where it can be avoided.
+5. **Be consistent, not uniform.** Same patterns wherever possible. Adapt only when evidence demands.
+
 ## Core Philosophy
 
 This is a constraint-based system, not a utility library. We have exactly 3 spacing sizes. Exactly 8 colors. We say "no" to feature requests. This keeps the UI predictable and prevents visual debt.

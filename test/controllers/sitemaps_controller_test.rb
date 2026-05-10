@@ -55,14 +55,15 @@ class SitemapsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_sitemap_excludes_past_events
-    past_event = @store.events.create!(
+    past_event = @store.events.new(
       name: "Past Event",
       orders_close_at: 5.days.ago,
       pickup_starts_at: 4.days.ago,
       pickup_ends_at: 4.days.ago + 4.hours
     )
+    past_event.save!(validate: false)
     past_event.event_products.create!(name: "Item", price: 10, quantity: 10)
-    past_event.publish!
+    past_event.update_column(:published_at, 5.days.ago)
 
     get sitemap_url(format: :xml)
     assert_response :success

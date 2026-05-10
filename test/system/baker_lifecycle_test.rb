@@ -105,7 +105,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 7. Edit a product
     # ----------------------------------------------------------------
-    within "table" do
+    within ".product-list" do
       click_on "Edit", match: :first
     end
     assert_text "Edit Sourdough Loaf"
@@ -116,16 +116,16 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Product updated"
 
     # Back on event page, updated quantity reflected
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "12"
     end
 
     # ----------------------------------------------------------------
     # 8. Delete a product
     # ----------------------------------------------------------------
-    product_row_count_before = all("tbody tr").count
+    product_row_count_before = all(".product-row").count
 
-    within find("tr", text: "Olive Focaccia") do
+    within find(".product-row", text: "Olive Focaccia") do
       click_on "Edit"
     end
 
@@ -135,7 +135,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     assert_text "Product removed"
     assert_no_text "Olive Focaccia"
-    assert_equal product_row_count_before - 1, all("tbody tr").count
+    assert_equal product_row_count_before - 1, all(".product-row").count
 
     # ----------------------------------------------------------------
     # 9. Store shows event card (not table)
@@ -150,7 +150,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # 10. Edit event
     # ----------------------------------------------------------------
     click_on "Saturday Bake"
-    click_on "Edit Event"
+    click_on "Edit", match: :first
     assert_text "Edit Event"
 
     fill_in "Name", with: "Saturday Bake (Updated)"
@@ -169,12 +169,14 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
-    # 12. Duplicate event
+    # 12. Duplicate event — Reuse lives on the events index per-row
     # ----------------------------------------------------------------
-    click_on "Saturday Bake (Updated)"
+    visit dashboard_events_path
 
-    accept_confirm do
-      click_on "Reuse Event"
+    within find("tr", text: "Saturday Bake (Updated)") do
+      accept_confirm do
+        click_on "Reuse"
+      end
     end
 
     assert_text "Event duplicated. Please verify dates."
@@ -191,7 +193,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_css ".badge.draft"
 
     # Verify product was copied
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "12"
       assert_text "$14.00"
     end
@@ -199,7 +201,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     # ----------------------------------------------------------------
     # 13. Delete event
     # ----------------------------------------------------------------
-    click_on "Edit Event"
+    click_on "Edit", match: :first
     accept_confirm do
       click_on "Delete Event"
     end
@@ -217,10 +219,8 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Save Changes"
     assert_text "Store settings updated."
 
-    # Navigate back to dashboard to start next event
-    within "header nav" do
-      find('a[aria-label="Bakery Management"]').click
-    end
+    # Navigate to events page to start next event
+    visit dashboard_events_path
     click_on "+ New Event"
     fill_in "Name", with: "Sunday Bake"
     execute_script("document.getElementById('event_orders_close_at').value = '#{5.days.from_now.strftime("%Y-%m-%d")}'")
@@ -238,7 +238,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Add Product"
 
     assert_text "Product added"
-    within find("tr", text: "Sourdough Loaf") do
+    within find(".product-row", text: "Sourdough Loaf") do
       assert_text "15"
       assert_text "$14.00"
     end

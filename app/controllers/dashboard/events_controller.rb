@@ -1,6 +1,6 @@
 module Dashboard
   class EventsController < BaseController
-    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep]
+    before_action :set_event, only: [:show, :edit, :update, :destroy, :publish, :duplicate, :prep, :pickup_sheet, :orders, :export_orders]
     before_action :ensure_event_not_past!, only: [:edit, :update, :destroy, :publish]
 
     def index
@@ -8,7 +8,9 @@ module Dashboard
     end
 
     def show
-      @orders = @event.orders.includes(user: [], order_items: [:event_product]).order(created_at: :asc)
+      @orders = @event.orders
+        .includes(user: [], order_items: [:event_product])
+        .order(created_at: :asc)
     end
 
     def new
@@ -27,6 +29,29 @@ module Dashboard
 
     def prep
       render layout: false
+    end
+
+    def pickup_sheet
+      @orders = @event.orders
+        .includes(:user, order_items: :event_product)
+        .order("users.email ASC")
+        .references(:user)
+      render layout: false
+    end
+
+    # Full per-order card view. Linked from event show "View all orders →".
+    def orders
+      @orders = @event.orders
+        .includes(user: [], order_items: [:event_product])
+        .order(created_at: :asc)
+    end
+
+    def export_orders
+      orders = @event.orders
+        .includes(:user, order_items: :event_product)
+        .order(created_at: :asc)
+      filename = "orders-#{@event.name.parameterize}-#{Date.current}.csv"
+      send_data Order.to_csv(orders), filename: filename, type: "text/csv"
     end
 
     def duplicate

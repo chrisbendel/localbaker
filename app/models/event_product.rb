@@ -25,6 +25,9 @@ class EventProduct < ApplicationRecord
     "$%.2f" % price
   end
 
+  # All orders are committed (no cart/pending state). Sum is straightforward.
+  # Inventory check still happens inside a row lock in Shop::OrdersController
+  # to guard against oversell races on simultaneous order placement.
   def sold
     order_items.sum(:quantity)
   end

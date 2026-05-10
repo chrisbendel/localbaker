@@ -44,7 +44,9 @@
   /* Typography Scale */
   --text-sm: 0.875rem;
   --text-base: 1rem;
-  --text-lg: 1.5rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.75rem;
+  --text-2xl: 2.5rem;
   --font-bold: 700;
   --font-medium: 600;
 }
@@ -103,7 +105,8 @@ body {
   position: relative;
 }
 
-/* Global Fiber Paper Texture */
+/* Global Fiber Paper Texture — printed-paper feel.
+   Subtle enough to read as material, not noise. */
 body::before {
   content: "";
   position: fixed;
@@ -113,25 +116,24 @@ body::before {
   opacity: 0.075;
 }
 
-h1 {
-  font-size: var(--text-lg);
-  font-family: var(--font-heading);
-}
-
+/* h1 styled visually identical to h2 — keep semantic h1 in HTML for a11y/SEO,
+   but no oversized page titles. */
+h1,
 h2 {
-  font-size: var(--text-lg);
+  font-size: var(--text-xl);
   font-family: var(--font-heading);
 }
 
 h3 {
-  font-size: var(--text-base);
+  font-size: var(--text-lg);
+  font-family: var(--font);
 }
 
 h1,
 h2,
 h3 {
   font-weight: var(--font-bold);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 h4 {
@@ -168,10 +170,19 @@ strong {
 
 /* === LAYOUT === */
 .container {
-  max-width: 720px;
+  max-width: 880px;
   margin-inline: auto;
   padding-inline: var(--sp-md);
-  padding-block: var(--sp-sm);
+  padding-block: var(--sp-md);
+}
+
+/* Narrow reading column — long-form prose, marketing pages.
+   Mirrors GOV.UK two-thirds reading width. */
+.container-narrow {
+  max-width: 640px;
+  margin-inline: auto;
+  padding-inline: var(--sp-md);
+  padding-block: var(--sp-md);
 }
 
 /* Vertical stack */
@@ -261,23 +272,6 @@ strong {
   text-align: right;
 }
 
-.card-item {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--sp-md);
-  padding: var(--sp-md) 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.card-item>*:not(img):not(form) {
-  flex: 1;
-}
-
-.card-item:last-child {
-  border-bottom: none;
-}
-
 .img-product-linear {
   width: 80px;
   height: 80px;
@@ -318,49 +312,12 @@ strong {
 
 /* Card — lifted off the surface */
 .card,
-.card-accent,
-.card-item {
+.card-accent {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--sp-md);
   box-shadow: var(--shadow-lift);
-}
-
-.card-item h3 {
-  font-family: var(--font-heading);
-  font-size: 1.25rem;
-  letter-spacing: 0.01em;
-  margin: 0;
-}
-
-.button-add {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: transparent;
-  color: var(--text);
-  font-size: 1.2rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.1s ease;
-  padding: 0;
-  line-height: 1;
-}
-
-.button-add:hover {
-  border-color: var(--text);
-  background: rgba(0, 0, 0, 0.02);
-  transform: scale(1.05);
-}
-
-.button-add:active {
-  transform: scale(0.95);
-  box-shadow: var(--shadow-press);
 }
 
 .card-accent {
@@ -375,12 +332,75 @@ strong {
   box-shadow: var(--shadow-press);
 }
 
-/* Empty state */
+/* Empty state — flat, no box. Centered muted text with breathing room.
+   Use semantic <p> inside; the wrapper just provides alignment + space. */
 .empty-state {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
   padding: var(--sp-lg) var(--sp-md);
   text-align: center;
+  color: var(--text-muted);
+}
+
+/* === Order card — baker-side order display ===
+   Replaces the old orders table. One card per order, breathes vertically.
+   Items, notes, delivery address each get their own line — no truncation. */
+.order-card {
+  padding: var(--sp-md) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-card:last-child {
+  border-bottom: none;
+}
+
+.order-card-items {
+  margin: 0;
+  padding-left: var(--sp-md);
+  list-style: disc;
+}
+
+.order-card-items li {
+  list-style: disc;
+  padding: 2px 0;
+}
+
+.order-card-note {
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--text);
+  padding: var(--sp-sm) var(--sp-md);
+  font-style: italic;
+}
+
+/* Definition list — semantic key/value rows for fact tables, marketing
+   bullets, etc. Two columns on wide screens, stacked on narrow. */
+dl.facts {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1fr) 3fr;
+  gap: var(--sp-md);
+  margin: 0;
+}
+
+dl.facts dt {
+  font-weight: var(--font-bold);
+  margin: 0;
+}
+
+dl.facts dd {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  dl.facts {
+    grid-template-columns: 1fr;
+    gap: var(--sp-sm);
+  }
+
+  dl.facts dt {
+    margin-top: var(--sp-sm);
+  }
+
+  dl.facts dt:first-child {
+    margin-top: 0;
+  }
 }
 
 /* Badges */
@@ -507,9 +527,10 @@ button,
   border: 1px solid var(--border-strong);
   background: var(--bg);
   color: var(--text);
-  padding: 0.2rem 0.5rem;
+  padding: 0.3rem 0.7rem;
   border-radius: var(--radius);
   font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
@@ -695,11 +716,13 @@ a.nav-logo {
 }
 
 /* Order summary item rows */
+.order-items>li,
 .order-items>div {
   padding: var(--sp-sm) 0;
   border-bottom: 1px solid var(--border);
 }
 
+.order-items>li:first-child,
 .order-items>div:first-child {
   border-top: 1px solid var(--border);
 }

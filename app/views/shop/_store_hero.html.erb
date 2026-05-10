@@ -75,6 +75,20 @@
 
   <%= render "application/address_line", model: store %>
 
+  <% if store.contact_email.present? || store.contact_phone.present? %>
+    <div class="group-sm text-muted">
+      <% if store.contact_email.present? %>
+        <small><%= mail_to store.contact_email %></small>
+      <% end %>
+      <% if store.contact_email.present? && store.contact_phone.present? %>
+        <small>&middot;</small>
+      <% end %>
+      <% if store.contact_phone.present? %>
+        <small><%= link_to store.contact_phone, "tel:#{store.contact_phone}" %></small>
+      <% end %>
+    </div>
+  <% end %>
+
   <% if store.description.present? %>
     <p><%= store.description %></p>
   <% end %>

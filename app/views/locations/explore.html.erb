@@ -17,14 +17,16 @@
               data: { geolocation_target: "addressInput" } %>
         </div>
 
-        <div class="group">
-          <button type="button"
-                  class="button secondary"
-                  data-action="geolocation#requestLocation"
-                  data-geolocation-target="locationButton">
-            Use My Location
-          </button>
+        <div class="group items-center">
           <%= f.submit "Search", class: "button primary" %>
+          <small>
+            <button type="button"
+                    class="button-link"
+                    data-action="geolocation#requestLocation"
+                    data-geolocation-target="locationButton">
+              Use my location
+            </button>
+          </small>
         </div>
 
         <%= f.hidden_field :latitude, value: @latitude, data: { geolocation_target: "latitude" } %>
@@ -46,11 +48,6 @@
       <div class="empty-state stack-sm">
         <p>No bakeries found within <%= @radius %> miles.</p>
         <p>Try expanding your search radius or a different location, or <%= link_to "browse all partner bakers", bakers_path %>.</p>
-      </div>
-    <% else %>
-      <div class="empty-state stack-sm">
-        <p>Enter your location above to find bakeries near you.</p>
-        <p><%= link_to "Browse all partner bakers →", bakers_path %></p>
       </div>
     <% end %>
   </div>

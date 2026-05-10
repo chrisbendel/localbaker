@@ -62,5 +62,16 @@ module ActiveSupport
 
       user
     end
+
+    # Toggle the plan on a user. Returns the user so it can be chained.
+    def as_pro(user)
+      user.update!(plan: :pro)
+      user
+    end
+
+    def as_free(user)
+      user.update!(plan: :free)
+      user
+    end
   end
 end

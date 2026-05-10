@@ -16,43 +16,37 @@ class OrderConfirmationTest < ApplicationSystemTestCase
     @customer = User.create!(email: "customer@example.com")
   end
 
-  test "full order confirmation flow" do
+  test "full order placement flow" do
     sign_in_via_browser(@customer)
     visit shop_event_path(@store.slug, @event)
 
-    # 1. Add item
-    within ".card-item", text: "Sourdough" do
-      find("button[aria-label='Add to Order']").click
-    end
+    # 1. Place an order via single form
+    fill_in "items_#{@product.id}", with: "2"
+    fill_in "Note for the baker (optional)", with: "slice please"
+    click_on "Place Order"
 
-    assert_text "Added Sourdough"
-    assert_button "Complete Order"
-
-    # 2. Confirm order
-    click_on "Complete Order"
-
-    assert_text "Order confirmed!"
-    assert_selector "aside", text: "Order confirmed"
+    assert_text "Order placed"
+    assert_selector "aside", text: "Your order"
     assert_selector "aside", text: "Add to Google Calendar"
 
-    # 3. Add another item (should unconfirm via Edit Order first)
-    click_on "Edit Order"
-    assert_text "Your order"
+    # 2. Update the order — change quantity (form is always visible below summary)
+    assert_text "Update your order"
 
-    within ".card-item", text: "Sourdough" do
-      find("button[aria-label='Add to Order']").click
+    fill_in "items_#{@product.id}", with: "3"
+    click_on "Save Changes"
+
+    assert_text "Order updated"
+    order = @event.orders.find_by!(user: @customer)
+    assert_equal 3, order.order_items.first.quantity
+
+    # 3. Cancel
+    accept_confirm do
+      click_on "Cancel order"
     end
 
-    # Should reset to draft
-    assert_text "Added Sourdough"
-    assert_selector "aside", text: "Your order"
-    assert_button "Complete Order"
-
-    # 4. Edit Order button should unconfirm
-    click_on "Complete Order"
-    assert_text "Order confirmed!"
-
-    click_on "Edit Order"
-    assert_button "Complete Order"
+    assert_text "Order cancelled"
+    assert_no_selector "aside", text: "Your order"
+    # Form is back
+    assert_button "Place Order"
   end
 end

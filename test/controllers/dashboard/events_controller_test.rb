@@ -245,4 +245,69 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_select ".alert", /Past events cannot be edited/i
   end
+
+  # --- export_orders ---
+
+  test "GET export_orders returns CSV with header row" do
+    get export_orders_event_path(@event)
+    assert_response :success
+    assert_equal "text/csv", response.media_type
+    first_line = response.body.lines.first.strip
+    assert_includes first_line, "order_date"
+    assert_includes first_line, "customer_email"
+    assert_includes first_line, "items"
+    assert_includes first_line, "notes"
+  end
+
+  test "GET export_orders includes a sample order with note" do
+    product = @event.event_products.create!(name: "Sourdough", price_cents: 1000, quantity: 5)
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer, notes: "nut allergy please")
+    order.order_items.create!(event_product: product, quantity: 2, unit_price_cents: 1000)
+
+    get export_orders_event_path(@event)
+
+    assert_response :success
+    body = response.body
+    assert_includes body, "buyer@example.com"
+    assert_includes body, "2x Sourdough"
+    assert_includes body, "nut allergy please"
+  end
+
+  # --- orders (full per-order view) ---
+
+  test "GET orders renders empty state when no orders" do
+    get orders_event_path(@event)
+    assert_response :success
+    assert_select ".empty-state", /No orders yet/i
+  end
+
+  test "GET orders shows full per-order details" do
+    product = @event.event_products.create!(name: "Sourdough", price_cents: 1000, quantity: 5)
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer, notes: "slice please", delivery_address: "123 Main St")
+    order.order_items.create!(event_product: product, quantity: 2, unit_price_cents: 1000)
+
+    get orders_event_path(@event)
+
+    assert_response :success
+    assert_select ".order-card", count: 1
+    assert_select ".order-card", /buyer@example.com/
+    assert_select ".order-card", /Sourdough/
+    assert_select ".order-card-note", /slice please/
+    assert_select ".order-card-delivery", /123 Main St/
+  end
+
+  test "event show page links to full orders view" do
+    @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
+    @event.publish!
+    customer = User.create!(email: "buyer@example.com")
+    order = @event.orders.create!(user: customer)
+    order.order_items.create!(event_product: @event.event_products.first, quantity: 1, unit_price_cents: 1000)
+
+    get event_path(@event)
+
+    assert_response :success
+    assert_select "a[href=?]", orders_event_path(@event), text: /View all orders/i
+  end
 end

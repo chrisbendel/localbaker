@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_15_114446) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_08_202458) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -89,14 +89,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_15_114446) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.datetime "confirmed_at"
     t.datetime "created_at", null: false
     t.text "delivery_address"
     t.integer "event_id", null: false
+    t.text "notes"
     t.datetime "updated_at", null: false
     t.integer "user_id", null: false
-    t.index ["confirmed_at"], name: "index_orders_on_confirmed_at"
     t.index ["event_id"], name: "index_orders_on_event_id"
+    t.index ["user_id", "event_id"], name: "index_orders_on_user_id_and_event_id", unique: true
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -214,6 +214,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_15_114446) do
   create_table "stores", force: :cascade do |t|
     t.string "address"
     t.text "bio"
+    t.string "contact_email"
+    t.string "contact_phone"
     t.datetime "created_at", null: false
     t.text "delivery_zone_postal_codes"
     t.integer "delivery_zone_radius_miles", default: 25

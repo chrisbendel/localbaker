@@ -52,9 +52,8 @@ class BakerProfileTest < ApplicationSystemTestCase
     @order.order_items.create!(event_product: @product, quantity: 1, unit_price_cents: 1000)
 
     visit shop_event_path(@store.slug, @event)
-    click_on "Complete Order"
 
-    assert_text "Order confirmed"
+    assert_text "Your order"
     assert_text "Venmo (@crusty-baker)"
 
     # Check content presence on shop

@@ -1,0 +1,56 @@
+<% content_for :title, "Legal — LocalBaker" %>
+<% content_for :meta_description, "LocalBaker terms and privacy in plain English." %>
+
+<div class="stack-lg">
+  <section class="stack">
+    <h1>Legal</h1>
+    <p><small>Last updated: <%= Date.current.strftime("%B %d, %Y") %>. We are not lawyers. Review this with one before relying on it.</small></p>
+  </section>
+
+  <section class="stack">
+    <h2>Terms</h2>
+    <dl class="facts">
+      <dt>What this is</dt>
+      <dd>LocalBaker is software that helps home bakers post bakes and customers reserve them. We are not a party to any sale.</dd>
+
+      <dt>Your account</dt>
+      <dd>You're responsible for the email you sign up with and keeping your sign-in link to yourself.</dd>
+
+      <dt>Your content</dt>
+      <dd>Bakers own what they post. You give us permission to display it on your storefront.</dd>
+
+      <dt>Food safety</dt>
+      <dd>Bakers are responsible for following local cottage food laws. We don't inspect kitchens.</dd>
+
+      <dt>Liability</dt>
+      <dd>Service is as-is. Not liable for downtime, no-shows, allergic reactions, or anything outside our reasonable control.</dd>
+
+      <dt>Termination</dt>
+      <dd>Delete your account any time from <%= link_to "settings", settings_account_path %>. We can suspend accounts that break these terms.</dd>
+    </dl>
+  </section>
+
+  <section class="stack">
+    <h2>Privacy</h2>
+    <dl class="facts">
+      <dt>What we collect</dt>
+      <dd>Email, address (if you enter one), order history, basic technical info.</dd>
+
+      <dt>What we do with it</dt>
+      <dd>Sign you in, show your orders, send transactional emails, list your store in the directory if you opt in.</dd>
+
+      <dt>Who we share it with</dt>
+      <dd>Resend (email), Stripe (payments), our hosting provider. We do not sell data or run ad networks.</dd>
+
+      <dt>Cookies</dt>
+      <dd>Session cookie for sign-in. No third-party tracking.</dd>
+
+      <dt>Deleting your data</dt>
+      <dd>Delete your account from <%= link_to "settings", settings_account_path %>. Removes user, store, orders, and notification subscriptions.</dd>
+    </dl>
+  </section>
+
+  <hr class="divider">
+
+  <p><%= link_to "Contact us", new_contact_path %> with questions or data deletion requests.</p>
+</div>

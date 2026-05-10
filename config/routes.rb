@@ -31,6 +31,9 @@ Rails.application.routes.draw do
           post :publish
           post :duplicate
           get :prep
+          get :pickup_sheet
+          get :orders
+          get :export_orders, defaults: {format: "csv"}
         end
         resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
       end
@@ -52,13 +55,8 @@ Rails.application.routes.draw do
   scope "/shop/:slug", module: :shop, as: :shop do
     resource :notification, only: [:create, :destroy]
 
-    resources :events, only: [:show], shallow: true do
-      member do
-        post :confirm, controller: "orders"
-        post :unconfirm, controller: "orders"
-        delete :destroy, controller: "orders"
-      end
-      resources :order_items, only: [:create, :destroy]
+    resources :events, only: [:show] do
+      resource :order, only: [:create, :update, :destroy], controller: "orders"
     end
     # ICS download removed — use Google Calendar button instead
   end
@@ -75,7 +73,7 @@ Rails.application.routes.draw do
 
   root to: "pages#home"
   get "home", to: "pages#home" # Keep landing page accessible at /home
-  get "about", to: "pages#about", as: :about
+  get "legal", to: "pages#legal", as: :legal
   get "explore", to: "locations#explore", as: :explore
   get "bakers", to: "locations#bakers", as: :bakers
 
