@@ -47,6 +47,10 @@ module Dashboard
 
       if photos.empty?
         redirect_to dashboard_store_path, alert: "Choose at least one photo."
+      elsif photos.any? { |p| !p.content_type.to_s.start_with?("image/") }
+        # accept="image/*" is client-side only; a non-image blob would 500
+        # the storefront when variant() tries to process it.
+        redirect_to dashboard_store_path, alert: "Photos must be image files."
       elsif @store.gallery_photos.count + photos.size > Store::GALLERY_PHOTO_LIMIT
         redirect_to dashboard_store_path, alert: "Photos are limited to #{Store::GALLERY_PHOTO_LIMIT}."
       else

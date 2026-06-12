@@ -18,13 +18,13 @@ class StoreNotification < ApplicationRecord
   TOKEN_TTL = 7.days
 
   def self.generate_confirmation_token(email:, store:)
-    verifier.generate({"email" => email, "store_id" => store.id}, expires_in: TOKEN_TTL)
+    verifier.generate({"email" => email, "store_id" => store.id}, expires_in: TOKEN_TTL, purpose: :subscribe)
   end
 
   # Returns the (created or existing) notification, or nil if the token is
   # invalid or expired.
   def self.redeem_confirmation_token(token)
-    data = verifier.verified(token)
+    data = verifier.verified(token, purpose: :subscribe)
     return nil unless data
 
     user = User.find_or_create_by!(email: data["email"])

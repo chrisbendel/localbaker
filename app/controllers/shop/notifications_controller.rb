@@ -26,7 +26,9 @@ class Shop::NotificationsController < ApplicationController
 
   # Confirmation link from the email. Redeeming the token creates the
   # subscription and proves inbox ownership, so it also signs the user in
-  # (same trust level as the OTP flow).
+  # (same trust level as the OTP flow). Deliberately not rate-limited:
+  # tokens are signed and unguessable, and a limit would only punish
+  # email-scanner prefetches and double-clicks.
   def confirm
     notification = StoreNotification.redeem_confirmation_token(params[:token])
 

@@ -43,8 +43,10 @@ class Store < ApplicationRecord
   # The storefront hero image. Explicitly picked via cover_photo_id, falling
   # back to the first gallery photo. A stale or foreign id falls through to
   # the fallback — no cleanup needed when photos are purged.
+  # detect (not find_by) so preloaded attachments don't trigger extra queries
+  # on directory pages that render many stores.
   def cover_photo
-    gallery_photos.find_by(id: cover_photo_id) || gallery_photos.first
+    gallery_photos.detect { it.id == cover_photo_id } || gallery_photos.first
   end
 
   def active_orders?

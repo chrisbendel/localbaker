@@ -39,6 +39,7 @@ class LocationsController < ApplicationController
         .reorder(nil)  # Clear Geocoder's ORDER BY distance since we can't select it after joins
         .distinct
         .limit(10)
+        .with_attached_photo
 
       store_ids = @stores.pluck(:id)
       @next_events_by_store = Event.orders_open
@@ -58,5 +59,6 @@ class LocationsController < ApplicationController
       .merge(Event.orders_open)
       .distinct
       .order(:name)
+      .with_attached_gallery_photos
   end
 end

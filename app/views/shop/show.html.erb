@@ -2,7 +2,7 @@
 
 <% content_for(:meta_description, @store.description.presence || "Order fresh bread and baked goods from #{@store.name}, a local bakery near you. Pre-order and pick up from this neighborhood home baker on LocalBaker.") %>
 <% if @store.cover_photo %>
-  <% content_for(:og_image, url_for(@store.cover_photo)) %>
+  <% content_for(:og_image, url_for(@store.cover_photo.variant(resize_to_limit: [1200, 630], format: :webp))) %>
 <% else %>
   <% content_for(:og_image, root_url.chomp("/") + "/baguette-solid.png") %>
 <% end %>

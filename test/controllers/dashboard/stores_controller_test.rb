@@ -120,6 +120,17 @@ module Dashboard
       assert_equal Store::GALLERY_PHOTO_LIMIT, store.reload.gallery_photos.count
     end
 
+    test "add_photos rejects non-image files" do
+      store = Store.create!(name: "Mine", slug: "mine", user: @user)
+
+      post photos_dashboard_store_path, params: {
+        gallery_photos: [fixture_file_upload("bread.jpeg", "application/pdf")]
+      }
+
+      assert_redirected_to dashboard_store_path
+      assert_equal 0, store.reload.gallery_photos.count
+    end
+
     test "remove_photo purges a single photo" do
       store = Store.create!(name: "Mine", slug: "mine", user: @user)
       store.gallery_photos.attach(fixture_file_upload("bread.jpeg", "image/jpeg"))

@@ -7,6 +7,12 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ["dialog", "image", "thumb"]
 
+  // Close before Turbo snapshots the page, or back-navigation restores a
+  // stuck-open modal from the cache.
+  disconnect() {
+    if (this.hasDialogTarget) this.dialogTarget.close()
+  }
+
   open(event) {
     this.index = event.params.index
     this.show()
