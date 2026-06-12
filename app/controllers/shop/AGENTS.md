@@ -8,7 +8,7 @@ This namespace handles the public storefront and customer ordering flow.
 |---|---|
 | `EventsController` | Public event browsing — renders the order form or summary |
 | `OrdersController` | Single-form order placement, update, and cancellation |
-| `NotificationsController` | Subscribe/unsubscribe from store email notifications |
+| `NotificationsController` | Subscribe/unsubscribe from store email notifications. Logged-out subscribe is public: email form → signed token in confirmation email → redeeming it creates the subscription and signs the user in. Nothing is stored until redemption |
 
 Also related (not in `Shop::` namespace):
 - `ShopController` — public store homepage (`/s/:slug`)

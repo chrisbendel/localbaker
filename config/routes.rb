@@ -37,6 +37,8 @@ Rails.application.routes.draw do
         end
         resources :event_products, shallow: true, only: [:new, :create, :edit, :update, :destroy]
       end
+
+      resources :orders, only: [:update]
     end
   end
 
@@ -53,7 +55,9 @@ Rails.application.routes.draw do
   get "/shop/:slug/about", to: "shop#about", as: :shop_about
 
   scope "/shop/:slug", module: :shop, as: :shop do
-    resource :notification, only: [:create, :destroy]
+    resource :notification, only: [:new, :create, :destroy] do
+      get :confirm
+    end
 
     resources :events, only: [:show] do
       resource :order, only: [:create, :update, :destroy], controller: "orders"

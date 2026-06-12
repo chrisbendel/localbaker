@@ -37,7 +37,7 @@ A Ruby on Rails SaaS application for small home bakeries to manage pickup events
 | `Order` | One order per user per event. |
 | `OrderItem` | Line item in an order. Captures `unit_price_cents` at order time. |
 | `LoginCode` | OTP for passwordless email auth. BCrypt digest, 10-min TTL, 5/hr rate limit. |
-| `StoreNotification` | Email subscription for a store. Has `unsubscribe_token`. |
+| `StoreNotification` | Email subscription for a store. Has `unsubscribe_token`. Row existence means confirmed subscriber — logged-out signups are double opt-in via a signed emailed token, and the row is only created when the token is redeemed. |
 
 ## Controllers
 

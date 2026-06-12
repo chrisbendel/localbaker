@@ -198,13 +198,15 @@ if Rails.env.development?
   end
 
   puts "Publishing events..."
-  # 4b. Publish events now that they have products
-  s1_past.update!(published_at: 3.weeks.ago)
-  s1_active.update!(published_at: 1.day.ago)
-  s1_prep.update!(published_at: 3.days.ago)
-  s2_active.update!(published_at: 2.days.ago)
-  s3_active.update!(published_at: 4.days.ago)
-  s3_prep.update!(published_at: 5.days.ago)
+  # 4b. Publish events now that they have products. update_columns skips the
+  # publish-time validation (pickup/close must be in the future), which would
+  # reject the backdated past/prep events we seed as history.
+  s1_past.update_columns(published_at: 3.weeks.ago)
+  s1_active.update_columns(published_at: 1.day.ago)
+  s1_prep.update_columns(published_at: 3.days.ago)
+  s2_active.update_columns(published_at: 2.days.ago)
+  s3_active.update_columns(published_at: 4.days.ago)
+  s3_prep.update_columns(published_at: 5.days.ago)
 
   puts "Placing sample orders..."
   # 5. Create Orders

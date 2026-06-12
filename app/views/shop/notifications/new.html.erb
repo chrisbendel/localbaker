@@ -1,0 +1,15 @@
+<% content_for(:title, "Get updates from #{@store.name}") %>
+
+<div class="stack-lg">
+  <div class="stack-sm">
+    <h1>Get bake-day emails</h1>
+    <p>
+      Enter your email and <%= @store.name %> will let you know whenever a new
+      bake opens for orders. One email per bake, unsubscribe anytime.
+    </p>
+  </div>
+
+  <%= render "shop/subscribe_form", store: @store %>
+
+  <small><%= link_to "← Back to #{@store.name}", shop_path(@store.slug) %></small>
+</div>

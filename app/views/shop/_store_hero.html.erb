@@ -60,15 +60,19 @@
         </div>
       <% end %>
 
-      <% notification = store.notifications.find_by(user_id: current_user&.id) %>
-      <% if notification.present? %>
-        <%= button_to shop_notification_path(store.slug), method: :delete, class: "button secondary small", title: "Unsubscribe from email updates" do %>
-          Unsubscribe
+      <% if current_user %>
+        <% notification = store.notifications.find_by(user_id: current_user.id) %>
+        <% if notification.present? %>
+          <%= button_to shop_notification_path(store.slug), method: :delete, class: "button secondary small", title: "Unsubscribe from email updates" do %>
+            Unsubscribe
+          <% end %>
+        <% else %>
+          <%= button_to shop_notification_path(store.slug), method: :post, class: "button secondary small", title: "Subscribe to email updates" do %>
+            Subscribe
+          <% end %>
         <% end %>
       <% else %>
-        <%= button_to shop_notification_path(store.slug), method: :post, class: "button secondary small", title: "Subscribe to email updates" do %>
-          Subscribe
-        <% end %>
+        <%= link_to "Subscribe", new_shop_notification_path(store.slug), class: "button secondary small", title: "Get an email when a new bake is posted" %>
       <% end %>
     </div>
   </div>
