@@ -3,8 +3,8 @@
 <% og_description = @event.description.present? ? @event.description : "Order bread and baked goods for pick up from #{@store.name}, your local bakery, on #{pickup_datetime(@event.pickup_starts_at)}." %>
 <% content_for(:meta_description, og_description) %>
 
-<% if @store.banner_image.attached? %>
-  <% content_for(:og_image, url_for(@store.banner_image)) %>
+<% if @store.cover_photo %>
+  <% content_for(:og_image, url_for(@store.cover_photo)) %>
 <% else %>
   <% content_for(:og_image, root_url.chomp("/") + "/baguette-solid.png") %>
 <% end %>

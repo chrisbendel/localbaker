@@ -26,24 +26,6 @@ class Order < ApplicationRecord
     event.delivery_enabled? && delivery_address.present?
   end
 
-  def paid?
-    paid_at.present?
-  end
-
-  def picked_up?
-    picked_up_at.present?
-  end
-
-  # Checkbox-friendly setters: "1"/"0" from button_to params toggle the
-  # timestamp without clobbering an existing one.
-  def paid=(flag)
-    self.paid_at = ActiveModel::Type::Boolean.new.cast(flag) ? (paid_at || Time.current) : nil
-  end
-
-  def picked_up=(flag)
-    self.picked_up_at = ActiveModel::Type::Boolean.new.cast(flag) ? (picked_up_at || Time.current) : nil
-  end
-
   def total_price_cents
     order_items.sum do |item|
       item.quantity * item.unit_price_cents

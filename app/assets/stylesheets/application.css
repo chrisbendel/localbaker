@@ -593,33 +593,6 @@ button.secondary,
 
 /* === IMAGE UTILITIES === */
 
-/* Full-width banner (16:9) — store hero, event hero.
-   Wrapper needed for the vignette pseudo-element. */
-.img-banner-wrap {
-  position: relative;
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: var(--sp-sm);
-  box-shadow: var(--shadow-lift);
-}
-
-/* Inner vignette — darkroom print burned at the edges */
-.img-banner-wrap::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius);
-  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.22) 100%);
-  pointer-events: none;
-}
-
-.img-banner {
-  width: 100%;
-  aspect-ratio: 16/9;
-  object-fit: cover;
-  display: block;
-}
-
 /* Small thumbnail — used in list/table rows */
 .img-thumb {
   width: 40px;
@@ -638,6 +611,61 @@ button.secondary,
   border-radius: var(--radius);
   border: 1px solid var(--border);
   flex-shrink: 0;
+}
+
+/* Photo gallery — horizontal scroll strip (storefront + store settings).
+   Photos scroll/swipe sideways natively on every screen size. */
+.photo-gallery {
+  display: flex;
+  gap: var(--sp-sm);
+  overflow-x: auto;
+}
+
+.photo-gallery img {
+  height: 180px;
+  width: auto;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+/* Strip photos are <button popovertarget> — strip chrome, keep the image */
+.photo-gallery-item {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Lightbox — one shared <dialog> (lightbox Stimulus controller).
+   Esc closes natively; backdrop click handled by the controller. */
+.lightbox {
+  border: none;
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: var(--sp-sm);
+  max-width: 94vw;
+  max-height: 94vh;
+  box-shadow: var(--shadow-lift);
+}
+
+/* height:auto beats the strip's 180px thumb rule — the dialog lives
+   inside .photo-gallery, so its image matches `.photo-gallery img` too. */
+.lightbox img {
+  display: block;
+  height: auto;
+  width: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  margin-bottom: var(--sp-sm);
+  border: none;
+}
+
+.lightbox::backdrop {
+  background: color-mix(in srgb, var(--text) 75%, transparent);
 }
 
 /* Baker directory — 2-column tile grid */

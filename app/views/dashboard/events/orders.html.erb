@@ -49,20 +49,6 @@
           </div>
         <% end %>
 
-        <footer class="group items-center">
-          <%= button_to order.paid? ? "Paid ✓" : "Mark paid",
-                dashboard_order_path(order),
-                method: :patch,
-                params: {order: {paid: order.paid? ? "0" : "1"}},
-                class: "button secondary small",
-                title: order.paid? ? "Click to undo" : "Record payment received" %>
-          <%= button_to order.picked_up? ? "Picked up ✓" : "Mark picked up",
-                dashboard_order_path(order),
-                method: :patch,
-                params: {order: {picked_up: order.picked_up? ? "0" : "1"}},
-                class: "button secondary small",
-                title: order.picked_up? ? "Click to undo" : "Record order handed off" %>
-        </footer>
       </article>
     <% end %>
   </div>

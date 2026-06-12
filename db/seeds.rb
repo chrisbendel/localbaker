@@ -44,8 +44,10 @@ if Rails.env.development?
     s.instagram_handle = "thecrustyloaf"
     s.venmo_handle = "alicebakes"
   end
-  attach_placeholder(store1, :banner_image)
   attach_placeholder(store1, :photo, "baker.jpeg")
+  %w[banner.jpeg gallery1.jpeg gallery2.jpeg gallery3.jpeg gallery4.jpeg].each do |g|
+    attach_placeholder(store1, :gallery_photos, g)
+  end
 
   store2 = Store.find_or_create_by!(user: baker2) do |s|
     s.name = "The Sweet Spot"
@@ -53,7 +55,7 @@ if Rails.env.development?
     s.description = "Decadent cakes, cookies, and sweet treats perfect for any occasion."
     s.address = "716 Pine Street, Burlington, VT 05401"
   end
-  attach_placeholder(store2, :banner_image)
+  attach_placeholder(store2, :gallery_photos, "banner.jpeg")
   attach_placeholder(store2, :photo, "baker.jpeg")
 
   store3 = Store.find_or_create_by!(user: baker3) do |s|
@@ -61,6 +63,9 @@ if Rails.env.development?
     s.slug = "sunrise-bagels"
     s.description = "Authentic boiled and baked New York style bagels."
     s.address = "266 Pine Street, Burlington, VT 05401"
+  end
+  %w[gallery2.jpeg gallery4.jpeg].each do |g|
+    attach_placeholder(store3, :gallery_photos, g)
   end
 
   puts "Creating events..."
