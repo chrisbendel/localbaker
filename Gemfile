@@ -73,3 +73,5 @@ gem "StreetAddress", "~> 1.0", require: "street_address"
 gem "geocoder", "~> 1.8"
 gem "pay", "~> 11.5"
 gem "stripe", "~> 19.0"
+
+gem "honeybadger", "~> 6.9"

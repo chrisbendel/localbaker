@@ -7,7 +7,13 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :authenticated?
 
+  before_action :set_honeybadger_context
+
   private
+
+  def set_honeybadger_context
+    Honeybadger.context(user_id: current_user.id, email: current_user.email) if current_user
+  end
 
   def current_user
     return @current_user if defined?(@current_user)
@@ -25,10 +31,12 @@ class ApplicationController < ActionController::Base
     reset_session
     session[:user_id] = user.id
     session[:return_to] = return_to if return_to.present?
+    @current_user = user
   end
 
   def sign_out
     reset_session
+    @current_user = nil
   end
 
   def require_authentication!
