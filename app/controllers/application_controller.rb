@@ -31,10 +31,12 @@ class ApplicationController < ActionController::Base
     reset_session
     session[:user_id] = user.id
     session[:return_to] = return_to if return_to.present?
+    @current_user = user
   end
 
   def sign_out
     reset_session
+    @current_user = nil
   end
 
   def require_authentication!
