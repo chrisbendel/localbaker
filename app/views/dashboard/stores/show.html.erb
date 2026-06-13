@@ -90,22 +90,6 @@
 
     <hr class="divider">
 
-    <div data-controller="image-upload">
-      <%= f.label :banner_image, "Store Banner" %>
-      <% if @store.banner_image.attached? %>
-        <div class="img-banner-wrap">
-          <%= image_tag @store.banner_image.variant(resize_to_fill: [1200, 675], format: :webp), class: "img-banner" %>
-        </div>
-        <label>
-          <%= f.check_box :remove_banner_image %> Remove current banner
-        </label>
-      <% end %>
-      <div class="group items-center">
-        <%= f.file_field :banner_image, data: { image_upload_target: "input", action: "change->image-upload#changed" } %>
-        <button type="button" class="button secondary hidden" data-image-upload-target="cancelButton" data-action="image-upload#cancel">Cancel</button>
-      </div>
-    </div>
-
     <div>
       <%= f.submit "Save Changes", class: "button primary" %>
     </div>
@@ -114,9 +98,42 @@
   <hr class="divider">
 
   <div class="stack-sm">
+    <h4>Photos</h4>
+    <p class="field-hint">Up to <%= Store::GALLERY_PHOTO_LIMIT %>. The cover leads your storefront; customers swipe through the rest — bakes, your kitchen, market days.</p>
+
+    <% if @store.gallery_photos.attached? %>
+      <div class="photo-gallery">
+        <% @store.gallery_photos.each do |photo| %>
+          <div class="stack-sm">
+            <%= image_tag photo.variant(resize_to_limit: [400, 400], format: :webp) %>
+            <div class="group-sm items-center">
+              <% if @store.cover_photo == photo %>
+                <span class="badge">Cover</span>
+              <% else %>
+                <%= button_to "Make cover", cover_photo_dashboard_store_path(photo_id: photo.id), method: :patch, class: "button secondary small" %>
+              <% end %>
+              <%= button_to "Remove", photo_dashboard_store_path(photo_id: photo.id), method: :delete, class: "button secondary small",
+                  data: {turbo_confirm: "Remove this photo?"} %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @store.gallery_photos.count < Store::GALLERY_PHOTO_LIMIT %>
+      <%= form_with url: photos_dashboard_store_path, multipart: true, data: {controller: "autosubmit"} do %>
+        <%= file_field_tag :gallery_photos, multiple: true, accept: "image/*",
+            data: {action: "change->autosubmit#submit"} %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <hr class="divider">
+
+  <div class="stack-sm">
     <h4>Delete Store</h4>
     <p><small>Permanently remove your shop and all its data. This cannot be undone.</small></p>
-    <div>
+    <div class="group">
       <%= button_to "Delete Store", dashboard_store_path, method: :delete, class: "button",
           data: { turbo_confirm: "Are you absolutely sure? This will delete your store and all its data." } %>
     </div>

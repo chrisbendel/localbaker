@@ -179,4 +179,60 @@ class Shop::OrdersIntegrationTest < ActionDispatch::IntegrationTest
     order = @event.orders.find_by!(user: @customer)
     assert_nil order.notes
   end
+
+  # --- Sellout scenarios ---
+  # Sequential edge cases only. True concurrent oversell is deliberately
+  # untested: the controller accepts rare oversell races by design (no row
+  # locks — see Shop::OrdersController). Revisit alongside payments.
+
+  test "buying exactly the remaining stock succeeds and sells the product out" do
+    post shop_event_order_path(@store.slug, @event), params: {
+      items: {@product.id.to_s => "10"}
+    }
+
+    assert @event.orders.exists?(user: @customer)
+    assert_equal 0, @product.reload.remaining
+    assert_not @product.available?
+  end
+
+  test "a second customer cannot order from a sold-out product" do
+    @event.orders.create!(user: @customer)
+      .order_items.create!(event_product: @product, quantity: 10, unit_price_cents: 1000)
+
+    rival = User.create!(email: "rival-#{SecureRandom.hex}@example.com")
+    sign_in_as(rival)
+
+    assert_no_difference "Order.count" do
+      post shop_event_order_path(@store.slug, @event), params: {
+        items: {@product.id.to_s => "1"}
+      }
+    end
+    follow_redirect!
+    assert_select ".alert", /doesn't have that much left/i
+  end
+
+  test "a mixed order with one sold-out item is rejected wholesale, not partially" do
+    second_product = @event.event_products.create!(name: "Baguette", quantity: 5, price_cents: 400)
+    hoarder = User.create!(email: "hoarder-#{SecureRandom.hex}@example.com")
+    @event.orders.create!(user: hoarder)
+      .order_items.create!(event_product: @product, quantity: 10, unit_price_cents: 1000)
+
+    assert_no_difference ["Order.count", "OrderItem.count"] do
+      post shop_event_order_path(@store.slug, @event), params: {
+        items: {@product.id.to_s => "1", second_product.id.to_s => "2"}
+      }
+    end
+  end
+
+  test "sold-out product renders without a quantity input on the event page" do
+    hoarder = User.create!(email: "hoarder-#{SecureRandom.hex}@example.com")
+    @event.orders.create!(user: hoarder)
+      .order_items.create!(event_product: @product, quantity: 10, unit_price_cents: 1000)
+
+    get shop_event_path(@store.slug, @event)
+
+    assert_response :success
+    assert_select ".product-row.sold-out", minimum: 1
+    assert_select "#items_#{@product.id}", count: 0
+  end
 end

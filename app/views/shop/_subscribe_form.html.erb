@@ -1,0 +1,5 @@
+<%# Email capture for logged-out visitors. %>
+<%= form_with url: shop_notification_path(store.slug) do |f| %>
+  <%= f.email_field :email, placeholder: "you@example.com", required: true, autocomplete: "email" %>
+  <%= f.submit "Notify me", class: "button" %>
+<% end %>

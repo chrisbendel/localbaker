@@ -44,8 +44,10 @@ if Rails.env.development?
     s.instagram_handle = "thecrustyloaf"
     s.venmo_handle = "alicebakes"
   end
-  attach_placeholder(store1, :banner_image)
   attach_placeholder(store1, :photo, "baker.jpeg")
+  %w[banner.jpeg gallery1.jpeg gallery2.jpeg gallery3.jpeg gallery4.jpeg].each do |g|
+    attach_placeholder(store1, :gallery_photos, g)
+  end
 
   store2 = Store.find_or_create_by!(user: baker2) do |s|
     s.name = "The Sweet Spot"
@@ -53,7 +55,7 @@ if Rails.env.development?
     s.description = "Decadent cakes, cookies, and sweet treats perfect for any occasion."
     s.address = "716 Pine Street, Burlington, VT 05401"
   end
-  attach_placeholder(store2, :banner_image)
+  attach_placeholder(store2, :gallery_photos, "banner.jpeg")
   attach_placeholder(store2, :photo, "baker.jpeg")
 
   store3 = Store.find_or_create_by!(user: baker3) do |s|
@@ -61,6 +63,9 @@ if Rails.env.development?
     s.slug = "sunrise-bagels"
     s.description = "Authentic boiled and baked New York style bagels."
     s.address = "266 Pine Street, Burlington, VT 05401"
+  end
+  %w[gallery2.jpeg gallery4.jpeg].each do |g|
+    attach_placeholder(store3, :gallery_photos, g)
   end
 
   puts "Creating events..."
@@ -198,13 +203,15 @@ if Rails.env.development?
   end
 
   puts "Publishing events..."
-  # 4b. Publish events now that they have products
-  s1_past.update!(published_at: 3.weeks.ago)
-  s1_active.update!(published_at: 1.day.ago)
-  s1_prep.update!(published_at: 3.days.ago)
-  s2_active.update!(published_at: 2.days.ago)
-  s3_active.update!(published_at: 4.days.ago)
-  s3_prep.update!(published_at: 5.days.ago)
+  # 4b. Publish events now that they have products. update_columns skips the
+  # publish-time validation (pickup/close must be in the future), which would
+  # reject the backdated past/prep events we seed as history.
+  s1_past.update_columns(published_at: 3.weeks.ago)
+  s1_active.update_columns(published_at: 1.day.ago)
+  s1_prep.update_columns(published_at: 3.days.ago)
+  s2_active.update_columns(published_at: 2.days.ago)
+  s3_active.update_columns(published_at: 4.days.ago)
+  s3_prep.update_columns(published_at: 5.days.ago)
 
   puts "Placing sample orders..."
   # 5. Create Orders

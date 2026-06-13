@@ -5,9 +5,11 @@ class Store < ApplicationRecord
   has_many :notifications, class_name: "StoreNotification", dependent: :destroy
   has_many :orders, through: :events
 
-  has_one_attached :banner_image
+  GALLERY_PHOTO_LIMIT = 6
+
   has_one_attached :photo
-  attr_accessor :remove_banner_image, :remove_photo
+  has_many_attached :gallery_photos
+  attr_accessor :remove_photo
 
   validates :name, presence: true
   validates :slug,
@@ -36,6 +38,15 @@ class Store < ApplicationRecord
 
   def monetization_allowed?
     user.pro?
+  end
+
+  # The storefront hero image. Explicitly picked via cover_photo_id, falling
+  # back to the first gallery photo. A stale or foreign id falls through to
+  # the fallback — no cleanup needed when photos are purged.
+  # detect (not find_by) so preloaded attachments don't trigger extra queries
+  # on directory pages that render many stores.
+  def cover_photo
+    gallery_photos.detect { it.id == cover_photo_id } || gallery_photos.first
   end
 
   def active_orders?
@@ -76,7 +87,6 @@ class Store < ApplicationRecord
   end
 
   def purge_attachments_if_requested
-    banner_image.purge if remove_banner_image == "1"
     photo.purge if remove_photo == "1"
   end
 

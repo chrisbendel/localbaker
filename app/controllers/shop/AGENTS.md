@@ -1,59 +1,14 @@
-# Shop Controllers — Customer-Facing Domain Knowledge
+# Shop Controllers — Customer-Facing Rules
 
-This namespace handles the public storefront and customer ordering flow.
+Public storefront + ordering flow. Browsing is public; placing/updating/cancelling an order requires authentication.
 
-## Controllers
+## Invariants — do not weaken
 
-| Controller | Responsibility |
-|---|---|
-| `EventsController` | Public event browsing — renders the order form or summary |
-| `OrdersController` | Single-form order placement, update, and cancellation |
-| `NotificationsController` | Subscribe/unsubscribe from store email notifications |
+- **Inventory checks are deliberately lock-free**: `save_order` wipes existing items and rebuilds inside a transaction, comparing against `remaining` without row locks — low traffic + honor system accepts rare oversell races (see the comment atop `OrdersController`). Don't add locks without evidence of real oversells.
+- **Orders close enforcement**: create, update, and cancel are all rejected once `orders_open?` is false — both controller-side and in the UI.
+- **No cart, no pending state**: an `Order` exists only when committed. Create builds the `Order` + all `OrderItem`s atomically from one form; cancel destroys and emails the customer.
+- **One order per user per event** — enforced by model validation *and* a unique composite index.
 
-Also related (not in `Shop::` namespace):
-- `ShopController` — public store homepage (`/s/:slug`)
-- `PublicUnsubscribesController` — token-based unsubscribe (no auth required)
+## Subscriptions
 
-## Public vs. Authenticated Routes
-
-- **Public**: store page, event listing, individual event page — no login required
-- **Authenticated**: placing, updating, or cancelling an order — requires `require_authentication!`
-
-## Order model — no cart, no pending state
-
-An `Order` exists only when a customer has committed. There is no intermediate
-"cart" or "pending" state. `OrdersController#create` builds the `Order` and all
-its `OrderItem`s atomically from a single form submission.
-
-- **Create**: POST `/shop/:slug/events/:event_id/order` with `items[<product_id>] = qty`
-- **Update**: PATCH same path — replaces all items on the existing order
-- **Cancel**: DELETE same path — destroys the order and emails the customer
-
-## Inventory Race Condition
-
-`OrdersController#create` and `#update` lock each touched `EventProduct` row
-with `FOR UPDATE` inside a transaction, then compare requested quantities
-against `product.remaining`. On update, existing items are wiped first so
-remaining stock is computed against the new order shape, not the old one.
-**Never remove the lock.**
-
-## One Order Per User Per Event
-
-A user can have at most one `Order` per `Event`. Enforced at both the model
-level (`validates uniqueness`) and the database level (unique composite index).
-
-## Email Notifications
-
-`StoreNotification` records an email subscription for a store. Unsubscribe uses
-a token (`unsubscribe_token`) — no authentication required. The unsubscribe
-route lives in `PublicUnsubscribesController`, not `Shop::`.
-
-## Views
-
-```
-shop/_store_hero.html.erb      — store name + back link
-shop/_event_card.html.erb      — public event card
-shop/_event_details.html.erb   — event info on order page (pickup location + maps link)
-shop/_order_form.html.erb      — single-form checkout (used for create + update)
-shop/_order_summary.html.erb   — committed-order panel with Update / Cancel actions
-```
+Logged-out subscribe stores nothing: a signed token (`{email, store_id}`, 7-day expiry) goes out by email, and redeeming it creates the User + StoreNotification and signs them in. Row existence = confirmed subscriber. Unsubscribe is token-based via `PublicUnsubscribesController` (no auth).

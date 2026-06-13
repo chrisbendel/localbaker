@@ -313,35 +313,22 @@ class StoreTest < ActiveSupport::TestCase
     assert_predicate store, :valid?
   end
 
-  test "banner_image is purged when remove_banner_image flag is set" do
+  test "cover_photo prefers cover_photo_id and falls back to first photo" do
     store = Store.create!(user: @user, name: "Test", slug: "test")
+    assert_nil store.cover_photo
 
-    # Attach a banner image
     banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
-    assert store.banner_image.attached?
+    2.times { store.gallery_photos.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg") }
+    first, second = store.gallery_photos.to_a
 
-    # Update with remove_banner_image flag
-    store.remove_banner_image = "1"
-    store.save!
+    assert_equal first, store.cover_photo
 
-    # Banner should be purged
-    refute store.banner_image.attached?
-  end
+    store.update!(cover_photo_id: second.id)
+    assert_equal second, store.cover_photo
 
-  test "banner_image is not purged when remove_banner_image flag is not set" do
-    store = Store.create!(user: @user, name: "Test", slug: "test")
-
-    # Attach a banner image
-    banner_path = Rails.root.join("test/fixtures/files/banner.jpeg")
-    store.banner_image.attach(io: File.open(banner_path), filename: "banner.jpeg", content_type: "image/jpeg")
-    assert store.banner_image.attached?
-
-    # Update without remove_banner_image flag
-    store.update!(name: "Updated Name")
-
-    # Banner should still be attached
-    assert store.banner_image.attached?
+    # Stale id (photo purged) falls back to the first remaining photo
+    second.purge
+    assert_equal first, store.reload.cover_photo
   end
 
   test "slug cannot be changed when store has active orders" do

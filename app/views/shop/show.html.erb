@@ -1,8 +1,8 @@
 <%= content_for(:title, "#{@store.name} | Local bakery near me") %>
 
 <% content_for(:meta_description, @store.description.presence || "Order fresh bread and baked goods from #{@store.name}, a local bakery near you. Pre-order and pick up from this neighborhood home baker on LocalBaker.") %>
-<% if @store.banner_image.attached? %>
-  <% content_for(:og_image, url_for(@store.banner_image)) %>
+<% if @store.cover_photo %>
+  <% content_for(:og_image, url_for(@store.cover_photo.variant(resize_to_limit: [1200, 630], format: :webp))) %>
 <% else %>
   <% content_for(:og_image, root_url.chomp("/") + "/baguette-solid.png") %>
 <% end %>
@@ -20,8 +20,22 @@
         <% end %>
       </div>
     <% else %>
-      <p class="text-center">No upcoming events scheduled right now. Check back soon!</p>
+      <div class="empty-state stack">
+        <p>No bakes scheduled yet.</p>
+        <% if current_user %>
+          <% if @store.notifications.exists?(user_id: current_user.id) %>
+            <p>You’re on the list — we’ll email you when the next bake opens.</p>
+          <% else %>
+            <%= button_to "Notify me about the next bake", shop_notification_path(@store.slug), method: :post, class: "button" %>
+          <% end %>
+        <% else %>
+          <p>Leave your email and be the first to know when the next bake opens.</p>
+          <%= render "shop/subscribe_form", store: @store %>
+        <% end %>
+      </div>
     <% end %>
   </section>
+
+
 </div>
 

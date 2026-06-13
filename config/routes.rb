@@ -21,6 +21,9 @@ Rails.application.routes.draw do
     scope module: :dashboard do
       resource :store, only: [:new, :create, :show, :update, :destroy], controller: "stores" do
         get :qr, on: :member
+        post "photos", action: :add_photos, as: :photos
+        patch "photos/:photo_id/cover", action: :set_cover_photo, as: :cover_photo
+        delete "photos/:photo_id", action: :remove_photo, as: :photo
       end
       resource :profile, only: [:show, :update], controller: "profiles"
       resource :payments, only: [:show, :update], controller: "payments"
@@ -53,7 +56,9 @@ Rails.application.routes.draw do
   get "/shop/:slug/about", to: "shop#about", as: :shop_about
 
   scope "/shop/:slug", module: :shop, as: :shop do
-    resource :notification, only: [:create, :destroy]
+    resource :notification, only: [:new, :create, :destroy] do
+      get :confirm
+    end
 
     resources :events, only: [:show] do
       resource :order, only: [:create, :update, :destroy], controller: "orders"
