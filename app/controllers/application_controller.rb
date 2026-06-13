@@ -7,7 +7,13 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :authenticated?
 
+  before_action :set_honeybadger_context
+
   private
+
+  def set_honeybadger_context
+    Honeybadger.context(user_id: current_user.id, email: current_user.email) if current_user
+  end
 
   def current_user
     return @current_user if defined?(@current_user)
