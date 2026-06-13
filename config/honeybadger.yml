@@ -15,9 +15,9 @@ development_environments:
 - development
 - cucumber
 
-# By default, Honeybadger won't report errors in the development_environments.
-# You can override this by explicitly setting report_data to true.
-# report_data: true
+# Only send data (errors + Insights events) when an API key is configured.
+# Keeps local dev/test fully silent without relying on env-name matching.
+report_data: <%= ENV["HONEYBADGER_API_KEY"].present? %>
 
 # The current Git revision of your project. Defaults to the last commit hash.
 # revision: null
