@@ -100,7 +100,7 @@ module Dashboard
     # in one transaction, then email customers AFTER commit so we never tell
     # anyone "cancelled" for a delete that didn't actually happen.
     def destroy
-      reason = params[:reason].to_s.strip
+      reason = params[:reason].to_s.strip.first(1000)
       recipients = @event.orders.includes(:user).map { |o| o.user.email }.uniq
       event_name = @event.name
       store_name = @store.name
@@ -129,6 +129,10 @@ module Dashboard
 
     def set_event
       @event = @store.events.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      # Event already gone — e.g. a double-submitted cancel. Land on the list
+      # instead of a bare 404.
+      redirect_to dashboard_events_path, alert: "That event no longer exists."
     end
 
     def ensure_event_not_past!

@@ -1,26 +1,14 @@
 <% content_for :title, @event.name %>
 
-<%
-  mode = if @event.past?
-    :past
-  elsif @event.draft?
-    :draft
-  elsif @event.orders_open?
-    :live
-  else
-    :prep
-  end
-%>
-
 <div class="stack-sm">
   <div class="group justify-between items-start">
     <div class="group items-center">
       <h2><%= @event.name %></h2>
-      <span class="badge <%= "draft" if mode == :draft %>">
-        <%= {draft: "Draft", live: "Taking orders", prep: "Orders closed", past: "Past"}[mode] %>
+      <span class="badge <%= "draft" if @event.draft? %>">
+        <% if @event.draft? %>Draft<% elsif @event.past? %>Past<% elsif @event.orders_open? %>Taking orders<% else %>Orders closed<% end %>
       </span>
     </div>
-    <% if mode != :past %>
+    <% unless @event.past? %>
       <%= link_to "Edit", edit_event_path(@event) %>
     <% end %>
   </div>
@@ -36,7 +24,7 @@
 <div class="event-hub">
   <%# ===== MAIN ===== %>
   <div class="stack">
-    <% if mode == :draft %>
+    <% if @event.draft? %>
       <%# Builder. The bold number is the planned quantity; the name is the edit
           link; price hangs right. Same row shape as the live bake list. %>
       <div class="stack-sm">
@@ -58,6 +46,20 @@
             <%= link_to "Add a product", new_event_event_product_path(@event) %>
           </div>
         <% end %>
+      </div>
+    <% elsif @event.past? %>
+      <%# Read-only record of what this event sold. No capacity/edit framing —
+          the event is over, nothing here is actionable. %>
+      <div class="stack-sm">
+        <h4>Sold</h4>
+        <ul class="lineup">
+          <% @event_products.each do |product| %>
+            <li>
+              <span class="lineup-qty"><%= @sold_by_product.fetch(product.id, 0) %></span>
+              <span><%= product.name %></span>
+            </li>
+          <% end %>
+        </ul>
       </div>
     <% else %>
       <%# The kitchen notepad: how many of each to bake (ordered), of the capacity. %>
@@ -81,12 +83,12 @@
   <aside class="event-hub-rail stack-sm">
     <div class="stack-sm text-muted">
       <small>Pickup <%= pickup_window(@event) %></small>
-      <% if mode == :draft || mode == :live %>
+      <% if @event.draft? || @event.orders_open? %>
         <small>Closes <%= nice_date(@event.orders_close_at) %></small>
       <% end %>
     </div>
 
-    <% if mode == :draft %>
+    <% if @event.draft? %>
       <hr class="divider">
       <%# Actions — change this event. Link-styled for a uniform rail. %>
       <div class="event-hub-group stack-sm">
@@ -116,7 +118,7 @@
         <%= button_to "Reuse", duplicate_event_path(@event), method: :post, class: "button-link",
             form: {data: {turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft."}} %>
 
-        <% if mode != :past %>
+        <% unless @event.past? %>
           <% if @orders.any? %>
             <%# Has orders: cancelling emails customers, so confirm with an optional reason. %>
             <div data-controller="dialog">
@@ -129,7 +131,7 @@
 
                   <label class="stack-sm">
                     <span>Reason for customers <span class="text-muted">(optional)</span></span>
-                    <%= f.text_area :reason, rows: 3, placeholder: "e.g. Oven repair — so sorry, I'll be back next week!" %>
+                    <%= f.text_area :reason, rows: 3, maxlength: 1000, placeholder: "e.g. Oven repair — so sorry, I'll be back next week!" %>
                   </label>
 
                   <div class="group justify-between items-center">
