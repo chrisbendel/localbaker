@@ -668,6 +668,26 @@ button.secondary,
   background: color-mix(in srgb, var(--text) 75%, transparent);
 }
 
+/* Confirm dialog — modal <dialog> for confirm-with-input flows (dialog
+   Stimulus controller). Esc closes natively; backdrop click via controller. */
+.confirm-dialog {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  padding: var(--sp-md);
+  max-width: min(90vw, 32rem);
+  box-shadow: var(--shadow-lift);
+}
+
+.confirm-dialog::backdrop {
+  background: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+.confirm-dialog textarea {
+  width: 100%;
+}
+
 /* Baker directory — 2-column tile grid */
 .baker-grid {
   display: grid;

@@ -89,12 +89,34 @@ module Dashboard
       end
     end
 
+    # Cancel + delete are one action. With no orders it's a silent delete; with
+    # orders it's a cancellation — snapshot the recipients, delete event + orders
+    # in one transaction, then email customers AFTER commit so we never tell
+    # anyone "cancelled" for a delete that didn't actually happen.
     def destroy
-      if @event.destroy
-        redirect_to dashboard_events_path, notice: "Event deleted."
-      else
-        redirect_to event_path(@event), alert: "Cannot delete event: #{@event.errors.full_messages.to_sentence}"
+      reason = params[:reason].to_s.strip
+      recipients = @event.orders.includes(:user).map { |o| o.user.email }.uniq
+      event_name = @event.name
+      store_name = @store.name
+
+      @event.transaction do
+        @event.orders.destroy_all
+        @event.destroy!
       end
+
+      recipients.each do |email|
+        OrderMailer.with(
+          to: email,
+          event_name: event_name,
+          store_name: store_name,
+          reason: reason
+        ).event_cancellation.deliver_later
+      end
+
+      notice = recipients.any? ? "Event cancelled. #{helpers.pluralize(recipients.size, "customer")} notified." : "Event deleted."
+      redirect_to dashboard_events_path, notice: notice
+    rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid
+      redirect_to event_path(@event), alert: "Cannot delete event: #{@event.errors.full_messages.to_sentence}"
     end
 
     private

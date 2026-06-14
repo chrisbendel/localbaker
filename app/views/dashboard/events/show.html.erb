@@ -26,6 +26,35 @@
     <% if current_user == @store.user && !@event.past? %>
       <div class="group items-center">
         <%= link_to "Edit", edit_event_path(@event), class: "button" %>
+        <% if @event.orders.exists? %>
+          <%# Has orders: cancelling notifies customers, so confirm with an optional reason. %>
+          <div data-controller="dialog">
+            <button type="button" class="button secondary small" data-action="dialog#open">Cancel event</button>
+
+            <dialog class="confirm-dialog" data-dialog-target="dialog"
+                data-action="click->dialog#backdropClose">
+              <%= form_with url: event_path(@event), method: :delete, class: "stack-sm" do |f| %>
+                <h3>Cancel this event?</h3>
+                <p>This permanently deletes the event and emails all <%= pluralize(@event.orders.count, "customer") %> that their order is cancelled. This can't be undone.</p>
+
+                <label class="stack-sm">
+                  <span>Reason for customers <span class="text-muted">(optional)</span></span>
+                  <%= f.text_area :reason, rows: 3, placeholder: "e.g. Oven repair — so sorry, I'll be back next week!" %>
+                </label>
+
+                <div class="group justify-between items-center">
+                  <button type="button" class="button" data-action="dialog#close">Keep event</button>
+                  <%= f.submit "Cancel event & notify", class: "button primary" %>
+                </div>
+              <% end %>
+            </dialog>
+          </div>
+        <% else %>
+          <%# No orders: silent delete, plain confirm. %>
+          <%= button_to "Delete", event_path(@event), method: :delete,
+              class: "button secondary small",
+              data: { turbo_confirm: "Delete this event?" } %>
+        <% end %>
       </div>
     <% end %>
   </div>

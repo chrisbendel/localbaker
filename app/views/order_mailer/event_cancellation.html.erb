@@ -1,0 +1,17 @@
+<h1>Event cancelled: <%= @event_name %></h1>
+
+<p>Unfortunately, <strong><%= @store_name %></strong> has cancelled this event, so your order will not be fulfilled.</p>
+
+<% if @reason %>
+  <div style="background: #f9f9f9; padding: 15px; border: 1px solid #ddd; margin: 20px 0;">
+    <p><strong>A note from the baker:</strong></p>
+    <p><%= @reason %></p>
+  </div>
+<% end %>
+
+<p>No action is needed on your end. We're sorry for the inconvenience.</p>
+
+<p>
+  Thanks for supporting local bakers!<br>
+  — The LocalBaker Team
+</p>

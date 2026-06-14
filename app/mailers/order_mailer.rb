@@ -21,6 +21,20 @@ class OrderMailer < ApplicationMailer
     )
   end
 
+  # Sent when a baker cancels an entire event. The order is already destroyed by
+  # the time this fires (emails fan out post-commit), so it takes primitives
+  # snapshotted before the delete rather than an Order record.
+  def event_cancellation
+    @event_name = params[:event_name]
+    @store_name = params[:store_name]
+    @reason = params[:reason].presence
+
+    mail(
+      to: params[:to],
+      subject: "Event cancelled: #{@event_name} — #{@store_name}"
+    )
+  end
+
   def pickup_reminder
     @order = params[:order]
     @event = @order.event

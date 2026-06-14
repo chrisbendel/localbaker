@@ -167,6 +167,32 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".notice", /deleted/i
   end
 
+  test "DELETE destroy with orders cancels event, deletes orders, and notifies customers" do
+    @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
+    @event.publish!
+    @event.orders.create!(user: User.create!(email: "c1@example.com"))
+    @event.orders.create!(user: User.create!(email: "c2@example.com"))
+
+    assert_difference "Order.count", -2 do
+      assert_difference "@store.events.count", -1 do
+        assert_enqueued_emails 2 do
+          delete event_path(@event), params: {reason: "Oven repair"}
+        end
+      end
+    end
+
+    assert_redirected_to dashboard_events_path
+    follow_redirect!
+    assert_select ".notice", /cancelled/i
+    assert_select ".notice", /2 customers/i
+  end
+
+  test "DELETE destroy without orders does not enqueue any email" do
+    assert_no_enqueued_emails do
+      delete event_path(@event)
+    end
+  end
+
   # --- plan limit ---
 
   test "POST publish is blocked when free user is at event limit" do

@@ -1,0 +1,13 @@
+Event cancelled: <%= @event_name %>
+
+Unfortunately, <%= @store_name %> has cancelled this event, so your order will not be fulfilled.
+
+<% if @reason %>
+A note from the baker:
+<%= @reason %>
+
+<% end %>
+No action is needed on your end. We're sorry for the inconvenience.
+
+Thanks for supporting local bakers!
+— The LocalBaker Team
