@@ -317,11 +317,11 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     get orders_event_path(@event)
 
     assert_response :success
-    assert_select ".order-card", count: 1
-    assert_select ".order-card", /buyer@example.com/
-    assert_select ".order-card", /Sourdough/
-    assert_select ".order-card-note", /slice please/
-    assert_select ".order-card-delivery", /123 Main St/
+    assert_select "tbody tr", count: 1
+    assert_select "td", /buyer@example.com/
+    assert_select "td", /Sourdough/
+    assert_select "td", /slice please/
+    assert_select "td", /123 Main St/
   end
 
   test "event show page links to full orders view" do
@@ -334,6 +334,6 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     get event_path(@event)
 
     assert_response :success
-    assert_select "a[href=?]", orders_event_path(@event), text: /View all orders/i
+    assert_select "a[href=?]", orders_event_path(@event), text: /order/i
   end
 end

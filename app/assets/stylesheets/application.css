@@ -340,36 +340,6 @@ strong {
   color: var(--text-muted);
 }
 
-/* === Order card — baker-side order display ===
-   Replaces the old orders table. One card per order, breathes vertically.
-   Items, notes, delivery address each get their own line — no truncation. */
-.order-card {
-  padding: var(--sp-md) 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.order-card:last-child {
-  border-bottom: none;
-}
-
-.order-card-items {
-  margin: 0;
-  padding-left: var(--sp-md);
-  list-style: disc;
-}
-
-.order-card-items li {
-  list-style: disc;
-  padding: 2px 0;
-}
-
-.order-card-note {
-  background: var(--bg-subtle);
-  border-left: 3px solid var(--text);
-  padding: var(--sp-sm) var(--sp-md);
-  font-style: italic;
-}
-
 /* Definition list — semantic key/value rows for fact tables, marketing
    bullets, etc. Two columns on wide screens, stacked on narrow. */
 dl.facts {
@@ -1025,4 +995,94 @@ footer {
 
 .settings-content {
   width: 100%;
+}
+
+/* === EVENT HUB — baker event page (dashboard/events/show) ===
+   Two states (draft builder / live monitor) share one layout: a main column
+   plus a quiet action rail. Rail nav links navigate; rail buttons mutate. */
+.event-hub {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+}
+
+@media (min-width: 720px) {
+  .event-hub {
+    display: grid;
+    grid-template-columns: 1fr 18rem;
+    align-items: start;
+  }
+}
+
+.event-hub-rail {
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 720px) {
+  .event-hub-rail {
+    border-left: 1px solid var(--border);
+    padding-left: var(--sp-md);
+  }
+}
+
+/* Rail groups (links above, actions below, split by a divider). Everything
+   renders as a link for a uniform rail; items sit left, sized to content, so
+   the button_to forms don't stretch across the column. */
+.event-hub-group {
+  align-items: flex-start;
+}
+
+/* Event list — the events index. Each row is a name link with a muted meta
+   line beneath and a quiet trailing action. No table chrome. */
+.event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-row {
+  padding: var(--sp-sm) 0;
+  border-bottom: 1px solid var(--bg-subtle);
+}
+
+.event-row:last-child {
+  border-bottom: none;
+}
+
+.event-row small {
+  display: block;
+}
+
+/* Lineup — product rows shared by the draft products list and the live bake
+   list: a bold leading count, a name, and muted info hanging right. */
+.lineup {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lineup li {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-sm);
+  padding: 0.25rem 0;
+  font-size: 1.05rem;
+}
+
+.lineup-qty {
+  font-weight: var(--font-bold);
+  min-width: 2.25rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.lineup-qty::after {
+  content: " ×";
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+.lineup-meta {
+  margin-left: auto;
+  font-size: var(--text-sm);
 }

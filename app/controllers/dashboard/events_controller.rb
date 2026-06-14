@@ -11,6 +11,12 @@ module Dashboard
       @orders = @event.orders
         .includes(user: [], order_items: [:event_product])
         .order(created_at: :asc)
+      @event_products = @event.event_products.order(:name)
+      # Sold-per-product from the already-loaded orders — no extra queries,
+      # no N+1 from calling EventProduct#sold per row in the bake list.
+      @sold_by_product = @orders.flat_map(&:order_items)
+        .group_by(&:event_product_id)
+        .transform_values { |items| items.sum(&:quantity) }
     end
 
     def new

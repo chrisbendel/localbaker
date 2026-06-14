@@ -1,7 +1,7 @@
 <nav class="settings-nav">
   <%= nav_link_to "Dashboard", dashboard_path %>
   <span class="sep"></span>
-  <%= nav_link_to "Events", dashboard_events_path %>
+  <%= nav_link_to "Events", dashboard_events_path, controller: "dashboard/events" %>
   <span class="sep"></span>
   <%= nav_link_to "Store Info", dashboard_store_path %>
   <span class="sep"></span>

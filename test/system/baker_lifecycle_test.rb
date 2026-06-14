@@ -89,7 +89,38 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_button "Publish Event"
 
     # ----------------------------------------------------------------
-    # 6. Publish event
+    # 6. Edit a product (draft — products are editable before publishing;
+    #    the product name is the edit link in the lineup)
+    # ----------------------------------------------------------------
+    click_on "Sourdough Loaf"
+    assert_text "Edit Sourdough Loaf"
+
+    fill_in "Quantity", with: "12"
+    click_on "Save Changes"
+
+    assert_text "Product updated"
+
+    # Back on event page, updated quantity reflected in the lineup
+    within find(".lineup li", text: "Sourdough Loaf") do
+      assert_text "12"
+    end
+
+    # ----------------------------------------------------------------
+    # 7. Delete a product (draft)
+    # ----------------------------------------------------------------
+    product_count_before = all(".lineup li").count
+
+    click_on "Olive Focaccia"
+    accept_confirm do
+      click_on "Delete Product"
+    end
+
+    assert_text "Product removed"
+    assert_no_text "Olive Focaccia"
+    assert_equal product_count_before - 1, all(".lineup li").count
+
+    # ----------------------------------------------------------------
+    # 8. Publish event
     # ----------------------------------------------------------------
     accept_confirm do
       click_on "Publish Event"
@@ -98,44 +129,8 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Event published"
     assert_no_css ".badge.draft"
 
-    # Orders section is present but empty (prep summary only shows when orders exist)
-    assert_text "Orders"
-    assert_text "No orders yet"
-
-    # ----------------------------------------------------------------
-    # 7. Edit a product
-    # ----------------------------------------------------------------
-    within ".product-list" do
-      click_on "Edit", match: :first
-    end
-    assert_text "Edit Sourdough Loaf"
-
-    fill_in "Quantity", with: "12"
-    click_on "Save Changes"
-
-    assert_text "Product updated"
-
-    # Back on event page, updated quantity reflected
-    within find(".product-row", text: "Sourdough Loaf") do
-      assert_text "12"
-    end
-
-    # ----------------------------------------------------------------
-    # 8. Delete a product
-    # ----------------------------------------------------------------
-    product_row_count_before = all(".product-row").count
-
-    within find(".product-row", text: "Olive Focaccia") do
-      click_on "Edit"
-    end
-
-    accept_confirm do
-      click_on "Delete Product"
-    end
-
-    assert_text "Product removed"
-    assert_no_text "Olive Focaccia"
-    assert_equal product_row_count_before - 1, all(".product-row").count
+    # Live page leads with the bake list
+    assert_text "Bake list"
 
     # ----------------------------------------------------------------
     # 9. Store shows event card (not table)
@@ -169,14 +164,13 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_text "Morning Loaf"
 
     # ----------------------------------------------------------------
-    # 12. Duplicate event — Reuse lives on the events index per-row
+    # 12. Duplicate event — Reuse lives on the event detail page
     # ----------------------------------------------------------------
     visit dashboard_events_path
+    click_on "Saturday Bake (Updated)"
 
-    within find("tr", text: "Saturday Bake (Updated)") do
-      accept_confirm do
-        click_on "Reuse"
-      end
+    accept_confirm do
+      click_on "Reuse"
     end
 
     assert_text "Event duplicated. Please verify dates."
@@ -193,7 +187,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_css ".badge.draft"
 
     # Verify product was copied
-    within find(".product-row", text: "Sourdough Loaf") do
+    within find(".lineup li", text: "Sourdough Loaf") do
       assert_text "12"
       assert_text "$14.00"
     end
@@ -238,7 +232,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Add Product"
 
     assert_text "Product added"
-    within find(".product-row", text: "Sourdough Loaf") do
+    within find(".lineup li", text: "Sourdough Loaf") do
       assert_text "15"
       assert_text "$14.00"
     end

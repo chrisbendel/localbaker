@@ -20,37 +20,39 @@
 <% if @orders.any? %>
   <hr class="divider">
 
-  <div class="stack">
-    <% @orders.each do |order| %>
-      <article class="order-card stack-sm">
-        <header class="group justify-between items-baseline">
-          <strong><%= mail_to order.user.email, order.user.email %></strong>
-          <div class="group-sm items-baseline">
-            <strong><%= number_to_currency(order.total_price) %></strong>
-            <small class="text-muted" title="<%= order.created_at.strftime('%Y-%m-%d %H:%M') %>"><%= nice_date(order.created_at) %></small>
-          </div>
-        </header>
-
-        <ul class="order-card-items">
-          <% order.order_items.each do |item| %>
-            <li><%= item.quantity %> &times; <%= item.event_product.name %></li>
-          <% end %>
-        </ul>
-
-        <% if order.notes.present? %>
-          <div class="order-card-note">
-            <strong>Note:</strong> <%= order.notes %>
-          </div>
-        <% end %>
-
-        <% if order.delivery_address.present? %>
-          <div class="order-card-delivery text-muted">
-            <small><strong>Delivery:</strong> <%= order.delivery_address %></small>
-          </div>
-        <% end %>
-      </article>
-    <% end %>
-  </div>
+  <table class="responsive-table">
+    <thead>
+      <tr>
+        <th>Customer</th>
+        <th>Items</th>
+        <th>Qty</th>
+        <th>Total</th>
+        <th>Fulfillment</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td data-label="Customer"><%= mail_to order.user.email, order.user.email %></td>
+          <td data-label="Items">
+            <% order.order_items.each do |item| %>
+              <div><%= item.quantity %> &times; <%= item.event_product.name %></div>
+            <% end %>
+          </td>
+          <td data-label="Qty"><%= order.order_items.sum(&:quantity) %></td>
+          <td data-label="Total"><%= number_to_currency(order.total_price) %></td>
+          <td data-label="Fulfillment">
+            <%= order.delivery_address.present? ? "Delivery" : "Pickup" %>
+            <% if order.delivery_address.present? %>
+              <small class="text-muted"><%= order.delivery_address %></small>
+            <% end %>
+          </td>
+          <td data-label="Notes"><%= order.notes.presence %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% else %>
   <div class="empty-state">
     <p>No orders yet. Share your shop link so customers can place orders.</p>

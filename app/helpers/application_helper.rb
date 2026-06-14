@@ -58,8 +58,11 @@ module ApplicationHelper
     "Pick up #{pickup_window(event)} · #{event_orders_deadline(event)}"
   end
 
-  def nav_link_to(label, path)
-    active = current_page?(path)
+  # Pass `controller:` (a controller_path like "dashboard/events") to keep the
+  # link active across all of that controller's pages, not just the exact path —
+  # e.g. "Events" stays highlighted on an individual event's show/edit/orders.
+  def nav_link_to(label, path, controller: nil)
+    active = current_page?(path) || (controller.present? && controller_path == controller)
     link_to label, path, class: (active ? "active" : nil)
   end
 end
