@@ -90,7 +90,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     # ----------------------------------------------------------------
     # 6. Edit a product (draft — products are editable before publishing;
-    #    the product name is the edit link in the lineup)
+    #    the product name is the edit link in the products table)
     # ----------------------------------------------------------------
     click_on "Sourdough Loaf"
     assert_text "Edit Sourdough Loaf"
@@ -100,15 +100,15 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     assert_text "Product updated"
 
-    # Back on event page, updated quantity reflected in the lineup
-    within find(".lineup li", text: "Sourdough Loaf") do
+    # Back on event page, updated quantity reflected in the products table
+    within find("tr", text: "Sourdough Loaf") do
       assert_text "12"
     end
 
     # ----------------------------------------------------------------
     # 7. Delete a product (draft)
     # ----------------------------------------------------------------
-    product_count_before = all(".lineup li").count
+    product_count_before = all("tbody tr").count
 
     click_on "Olive Focaccia"
     accept_confirm do
@@ -117,7 +117,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
 
     assert_text "Product removed"
     assert_no_text "Olive Focaccia"
-    assert_equal product_count_before - 1, all(".lineup li").count
+    assert_equal product_count_before - 1, all("tbody tr").count
 
     # ----------------------------------------------------------------
     # 8. Publish event
@@ -187,17 +187,16 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     assert_css ".badge.draft"
 
     # Verify product was copied
-    within find(".lineup li", text: "Sourdough Loaf") do
+    within find("tr", text: "Sourdough Loaf") do
       assert_text "12"
       assert_text "$14.00"
     end
 
     # ----------------------------------------------------------------
-    # 13. Delete event
+    # 13. Delete event — a draft with no orders deletes from its show page
     # ----------------------------------------------------------------
-    click_on "Edit", match: :first
     accept_confirm do
-      click_on "Delete Event"
+      click_on "Delete draft"
     end
 
     assert_text "Event deleted."
@@ -232,7 +231,7 @@ class BakerLifecycleTest < ApplicationSystemTestCase
     click_on "Add Product"
 
     assert_text "Product added"
-    within find(".lineup li", text: "Sourdough Loaf") do
+    within find("tr", text: "Sourdough Loaf") do
       assert_text "15"
       assert_text "$14.00"
     end

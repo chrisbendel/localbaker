@@ -65,4 +65,10 @@ module ApplicationHelper
     active = current_page?(path) || (controller.present? && controller_path == controller)
     link_to label, path, class: (active ? "active" : nil)
   end
+
+  # Inline error message under a form field. Nil (renders nothing) when valid.
+  def field_error(record, field)
+    return if record.errors[field].empty?
+    tag.p record.errors[field].join(", "), class: "field-error"
+  end
 end

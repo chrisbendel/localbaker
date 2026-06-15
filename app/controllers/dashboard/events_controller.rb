@@ -34,6 +34,13 @@ module Dashboard
     end
 
     def prep
+      @event_products = @event.event_products.order(:name)
+      # Sold-per-product in one grouped query — avoids calling EventProduct#sold
+      # (a query each) per row in the prep table.
+      @sold_by_product = OrderItem.joins(:order)
+        .where(orders: {event_id: @event.id})
+        .group(:event_product_id)
+        .sum(:quantity)
       render layout: false
     end
 

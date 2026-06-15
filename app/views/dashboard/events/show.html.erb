@@ -1,153 +1,157 @@
 <% content_for :title, @event.name %>
 
-<div class="stack-sm">
-  <div class="group justify-between items-start">
-    <div class="group items-center">
-      <h2><%= @event.name %></h2>
-      <span class="badge <%= "draft" if @event.draft? %>">
-        <% if @event.draft? %>Draft<% elsif @event.past? %>Past<% elsif @event.orders_open? %>Taking orders<% else %>Orders closed<% end %>
-      </span>
-    </div>
-    <% unless @event.past? %>
-      <%= link_to "Edit", edit_event_path(@event) %>
-    <% end %>
-  </div>
-  <% if @event.description.present? %>
-    <p><%= @event.description %></p>
-  <% end %>
-  <%= render "application/address_line", model: @event %>
-  <% if @event.repeat_interval.present? && !@event.no_repeat? %>
-    <small class="text-muted">Repeats <%= @event.repeat_interval.humanize %></small>
-  <% end %>
-</div>
-
-<div class="event-hub">
-  <%# ===== MAIN ===== %>
-  <div class="stack">
-    <% if @event.draft? %>
-      <%# Builder. The bold number is the planned quantity; the name is the edit
-          link; price hangs right. Same row shape as the live bake list. %>
-      <div class="stack-sm">
-        <h4>Products</h4>
-        <% if @event_products.any? %>
-          <ul class="lineup">
-            <% @event_products.each do |product| %>
-              <li>
-                <span class="lineup-qty"><%= product.quantity %></span>
-                <%= link_to product.name, edit_event_product_path(product) %>
-                <span class="lineup-meta text-muted"><%= product.price_formatted %></span>
-              </li>
-            <% end %>
-          </ul>
-          <%= link_to "+ Add Product", new_event_event_product_path(@event) %>
-        <% else %>
-          <div class="empty-state stack-sm">
-            <p>No products yet. Add one to publish.</p>
-            <%= link_to "Add a product", new_event_event_product_path(@event) %>
-          </div>
-        <% end %>
-      </div>
-    <% elsif @event.past? %>
-      <%# Read-only record of what this event sold. No capacity/edit framing —
-          the event is over, nothing here is actionable. %>
-      <div class="stack-sm">
-        <h4>Sold</h4>
-        <ul class="lineup">
-          <% @event_products.each do |product| %>
-            <li>
-              <span class="lineup-qty"><%= @sold_by_product.fetch(product.id, 0) %></span>
-              <span><%= product.name %></span>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    <% else %>
-      <%# The kitchen notepad: how many of each to bake (ordered), of the capacity. %>
-      <div class="stack-sm">
-        <h4>Bake list</h4>
-        <ul class="lineup">
-          <% @event_products.each do |product| %>
-            <% sold = @sold_by_product.fetch(product.id, 0) %>
-            <li>
-              <span class="lineup-qty"><%= sold %></span>
-              <span><%= product.name %></span>
-              <span class="lineup-meta text-muted"><%= sold >= product.quantity ? "sold out" : "of #{product.quantity}" %></span>
-            </li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-  </div>
-
-  <%# ===== RAIL: dates, then links (navigate) above buttons (act) ===== %>
-  <aside class="event-hub-rail stack-sm">
-    <div class="stack-sm text-muted">
-      <small>Pickup <%= pickup_window(@event) %></small>
-      <% if @event.draft? || @event.orders_open? %>
-        <small>Closes <%= nice_date(@event.orders_close_at) %></small>
+<div class="stack">
+  <header class="stack-sm">
+    <div class="group justify-between items-start">
+      <h2>
+        <%= @event.name %>
+        <span class="badge <%= "draft" if @event.draft? %>">
+          <% if @event.draft? %>Draft<% elsif @event.past? %>Past<% elsif @event.orders_open? %>Taking orders<% else %>Orders closed<% end %>
+        </span>
+      </h2>
+      <% unless @event.past? %>
+        <%= link_to "Edit", edit_event_path(@event) %>
       <% end %>
     </div>
 
-    <% if @event.draft? %>
-      <hr class="divider">
-      <%# Actions — change this event. Link-styled for a uniform rail. %>
-      <div class="event-hub-group stack-sm">
-        <% if @event.publishable? %>
-          <%= button_to "Publish Event", publish_event_path(@event), method: :post, class: "button-link",
-              form: {data: {turbo_confirm: "Email all subscribers now?"}} %>
-        <% else %>
-          <small class="text-muted">To publish: <%= @event.publish_blockers.first %></small>
-        <% end %>
-        <%= button_to "Delete draft", event_path(@event), method: :delete, class: "button-link text-danger",
-            form: {data: {turbo_confirm: "Delete this draft?"}} %>
-      </div>
-    <% else %>
-      <%# Links — go elsewhere %>
-      <nav class="event-hub-group stack-sm">
-        <% if @orders.any? %>
-          <%= link_to pluralize(@orders.count, "order"), orders_event_path(@event) %>
-          <%= link_to "Prep list", prep_event_path(@event), target: "_blank", rel: "noopener noreferrer" %>
-        <% end %>
-        <%= link_to "View as customer", shop_event_path(@store.slug, @event), target: "_blank", rel: "noopener noreferrer" %>
-      </nav>
-
-      <hr class="divider">
-
-      <%# Actions — change this event %>
-      <div class="event-hub-group stack-sm">
-        <%= button_to "Reuse", duplicate_event_path(@event), method: :post, class: "button-link",
-            form: {data: {turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft."}} %>
-
-        <% unless @event.past? %>
-          <% if @orders.any? %>
-            <%# Has orders: cancelling emails customers, so confirm with an optional reason. %>
-            <div data-controller="dialog">
-              <button type="button" class="button-link text-danger" data-action="dialog#open">Cancel event</button>
-
-              <dialog class="confirm-dialog" data-dialog-target="dialog" data-action="click->dialog#backdropClose">
-                <%= form_with url: event_path(@event), method: :delete, class: "stack-sm" do |f| %>
-                  <h3>Cancel this event?</h3>
-                  <p>This permanently deletes the event and emails all <%= pluralize(@orders.size, "customer") %> that their order is cancelled. This can't be undone.</p>
-
-                  <label class="stack-sm">
-                    <span>Reason for customers <span class="text-muted">(optional)</span></span>
-                    <%= f.text_area :reason, rows: 3, maxlength: 1000, placeholder: "e.g. Oven repair — so sorry, I'll be back next week!" %>
-                  </label>
-
-                  <div class="group justify-between items-center">
-                    <button type="button" class="button" data-action="dialog#close">Keep event</button>
-                    <%= f.submit "Cancel event & notify", class: "button primary" %>
-                  </div>
-                <% end %>
-              </dialog>
-            </div>
-          <% else %>
-            <%# Published but no orders: silent delete, plain confirm. %>
-            <%= button_to "Delete", event_path(@event), method: :delete, class: "button-link text-danger",
-                form: {data: {turbo_confirm: "Delete this event?"}} %>
-          <% end %>
-        <% end %>
-      </div>
+    <% if @event.description.present? %>
+      <p><%= @event.description %></p>
     <% end %>
-  </aside>
+
+    <%= render "application/address_line", model: @event %>
+
+    <p class="text-muted">
+      <small>
+        Pickup <%= pickup_window(@event) %>
+        <% if @event.draft? || @event.orders_open? %> · Orders close <%= nice_date(@event.orders_close_at) %><% end %>
+        <% if @event.repeat_interval.present? && !@event.no_repeat? %> · Repeats <%= @event.repeat_interval.humanize %><% end %>
+      </small>
+    </p>
+  </header>
+
+  <%# Products (draft) / bake list (live & prep) / sold (past). Same shape:
+      product leads, the number trails. Plain table — no custom CSS. %>
+  <% if @event.draft? %>
+    <section class="stack-sm">
+      <h3>Products</h3>
+      <% if @event_products.any? %>
+        <table>
+          <thead>
+            <tr><th>Product</th><th>Qty</th><th>Price</th></tr>
+          </thead>
+          <tbody>
+            <% @event_products.each do |product| %>
+              <tr>
+                <td><%= link_to product.name, edit_event_product_path(product) %></td>
+                <td><%= product.quantity %></td>
+                <td><%= product.price_formatted %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <%= link_to "+ Add Product", new_event_event_product_path(@event) %>
+      <% else %>
+        <div class="empty-state stack-sm">
+          <p>No products yet. Add one to publish.</p>
+          <%= link_to "Add a product", new_event_event_product_path(@event) %>
+        </div>
+      <% end %>
+    </section>
+  <% elsif @event.past? %>
+    <section class="stack-sm">
+      <h3>Sold</h3>
+      <table>
+        <thead>
+          <tr><th>Product</th><th>Sold</th></tr>
+        </thead>
+        <tbody>
+          <% @event_products.each do |product| %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= @sold_by_product.fetch(product.id, 0) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% else %>
+    <section class="stack-sm">
+      <h3>Bake list</h3>
+      <table>
+        <thead>
+          <tr><th>Product</th><th>Ordered</th></tr>
+        </thead>
+        <tbody>
+          <% @event_products.each do |product| %>
+            <% sold = @sold_by_product.fetch(product.id, 0) %>
+            <tr>
+              <td><%= product.name %></td>
+              <td><%= sold >= product.quantity ? "#{sold} (sold out)" : "#{sold} of #{product.quantity}" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </section>
+  <% end %>
+
+  <%# Navigate — plain links to related views (published events only). %>
+  <% unless @event.draft? %>
+    <nav class="group">
+      <% if @orders.any? %>
+        <%= link_to "View #{pluralize(@orders.count, "order")}", orders_event_path(@event) %>
+        <%= link_to "Prep list", prep_event_path(@event), target: "_blank", rel: "noopener noreferrer" %>
+      <% end %>
+      <%= link_to "View as customer", shop_event_path(@store.slug, @event), target: "_blank", rel: "noopener noreferrer" %>
+    </nav>
+  <% end %>
+
+  <hr class="divider">
+
+  <%# Act — these mutate the event, so they're forms (button_to), styled as
+      buttons to set them apart from the navigation links above. %>
+  <section class="group items-center">
+    <% if @event.draft? %>
+      <% if @event.publishable? %>
+        <%= button_to "Publish Event", publish_event_path(@event), method: :post, class: "button primary",
+            form: {data: {turbo_confirm: "Email all subscribers now?"}} %>
+      <% else %>
+        <small class="text-muted">To publish: <%= @event.publish_blockers.first %></small>
+      <% end %>
+      <%= button_to "Delete draft", event_path(@event), method: :delete, class: "button danger",
+          form: {data: {turbo_confirm: "Delete this draft?"}} %>
+    <% else %>
+      <%= button_to "Reuse", duplicate_event_path(@event), method: :post, class: "button",
+          form: {data: {turbo_confirm: "Duplicate this event? All products and images will be copied to a new draft."}} %>
+
+      <% unless @event.past? %>
+        <% if @orders.any? %>
+          <%# Has orders: cancelling emails customers, so confirm with an optional reason. %>
+          <div data-controller="dialog">
+            <button type="button" class="button danger" data-action="dialog#open">Cancel event</button>
+
+            <dialog class="confirm-dialog" data-dialog-target="dialog" data-action="click->dialog#backdropClose">
+              <%= form_with url: event_path(@event), method: :delete, class: "stack-sm" do |f| %>
+                <h3>Cancel this event?</h3>
+                <p>This permanently deletes the event and emails all <%= pluralize(@orders.size, "customer") %> that their order is cancelled. This can't be undone.</p>
+
+                <label class="stack-sm">
+                  <span>Reason for customers <span class="text-muted">(optional)</span></span>
+                  <%= f.text_area :reason, rows: 3, maxlength: 1000, placeholder: "e.g. Oven repair — so sorry, I'll be back next week!" %>
+                </label>
+
+                <div class="group justify-between items-center">
+                  <button type="button" class="button" data-action="dialog#close">Keep event</button>
+                  <%= f.submit "Cancel event & notify", class: "button primary" %>
+                </div>
+              <% end %>
+            </dialog>
+          </div>
+        <% else %>
+          <%# Published but no orders: silent delete, plain confirm. %>
+          <%= button_to "Delete", event_path(@event), method: :delete, class: "button danger",
+              form: {data: {turbo_confirm: "Delete this event?"}} %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </section>
 </div>

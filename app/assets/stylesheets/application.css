@@ -176,15 +176,6 @@ strong {
   padding-block: var(--sp-md);
 }
 
-/* Narrow reading column — long-form prose, marketing pages.
-   Mirrors GOV.UK two-thirds reading width. */
-.container-narrow {
-  max-width: 640px;
-  margin-inline: auto;
-  padding-inline: var(--sp-md);
-  padding-block: var(--sp-md);
-}
-
 /* Vertical stack */
 .stack {
   display: flex;
@@ -258,27 +249,6 @@ strong {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.img-product-linear {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  flex-shrink: 0;
 }
 
 /* === TYPOGRAPHY HELPERS === */
@@ -420,7 +390,21 @@ a.card {
 form {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-sm);
+  gap: var(--sp-md);
+}
+
+/* Group related fields (e.g. the timing trio) so a long form reads as a few
+   blocks instead of one undifferentiated wall — helps most on narrow screens. */
+.field-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-md);
+}
+
+.field-group legend {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  padding-inline: var(--sp-sm);
 }
 
 label {
@@ -543,6 +527,20 @@ button.secondary,
 .button.secondary {
   color: var(--text-muted);
   border-color: var(--border);
+}
+
+/* Destructive action — outlined in danger, fills on hover. */
+button.danger,
+.button.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+button.danger:hover,
+.button.danger:hover {
+  background: var(--danger);
+  color: var(--bg);
+  border-color: var(--danger);
 }
 
 /* Link-style button (for form-based destructive actions, sign out, etc.) */
@@ -1000,40 +998,8 @@ footer {
 /* === EVENT HUB — baker event page (dashboard/events/show) ===
    Two states (draft builder / live monitor) share one layout: a main column
    plus a quiet action rail. Rail nav links navigate; rail buttons mutate. */
-.event-hub {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-md);
-}
-
-@media (min-width: 720px) {
-  .event-hub {
-    display: grid;
-    grid-template-columns: 1fr 18rem;
-    align-items: start;
-  }
-}
-
-.event-hub-rail {
-  font-size: var(--text-sm);
-}
-
-@media (min-width: 720px) {
-  .event-hub-rail {
-    border-left: 1px solid var(--border);
-    padding-left: var(--sp-md);
-  }
-}
-
-/* Rail groups (links above, actions below, split by a divider). Everything
-   renders as a link for a uniform rail; items sit left, sized to content, so
-   the button_to forms don't stretch across the column. */
-.event-hub-group {
-  align-items: flex-start;
-}
-
 /* Event list — the events index. Each row is a name link with a muted meta
-   line beneath and a quiet trailing action. No table chrome. */
+   line beneath. No table chrome. */
 .event-list {
   list-style: none;
   padding: 0;
@@ -1051,38 +1017,4 @@ footer {
 
 .event-row small {
   display: block;
-}
-
-/* Lineup — product rows shared by the draft products list and the live bake
-   list: a bold leading count, a name, and muted info hanging right. */
-.lineup {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.lineup li {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-sm);
-  padding: 0.25rem 0;
-  font-size: 1.05rem;
-}
-
-.lineup-qty {
-  font-weight: var(--font-bold);
-  min-width: 2.25rem;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.lineup-qty::after {
-  content: " ×";
-  font-weight: normal;
-  color: var(--text-muted);
-}
-
-.lineup-meta {
-  margin-left: auto;
-  font-size: var(--text-sm);
 }

@@ -18,13 +18,11 @@
       <h4>Active bakes</h4>
       <ul class="event-list">
         <% active_events.each do |event| %>
-          <li class="event-row group justify-between items-center" id="<%= dom_id(event) %>">
-            <div>
-              <%= link_to event.name, event_path(event) %>
-              <small class="text-muted">
-                <%= event.orders_open? ? "orders close #{nice_date(event.orders_close_at)}" : "orders closed" %> · pickup <%= nice_date(event.pickup_starts_at) %>
-              </small>
-            </div>
+          <li class="event-row" id="<%= dom_id(event) %>">
+            <%= link_to event.name, event_path(event) %>
+            <small class="text-muted">
+              <%= event.orders_open? ? "orders close #{nice_date(event.orders_close_at)}" : "orders closed" %> · pickup <%= nice_date(event.pickup_starts_at) %>
+            </small>
           </li>
         <% end %>
       </ul>
@@ -37,11 +35,9 @@
       <h4>Drafts</h4>
       <ul class="event-list">
         <% draft_events.each do |event| %>
-          <li class="event-row group justify-between items-center" id="<%= dom_id(event) %>">
-            <div>
-              <%= link_to event.name, event_path(event) %>
-              <small class="text-muted">pickup <%= nice_date(event.pickup_starts_at) %></small>
-            </div>
+          <li class="event-row" id="<%= dom_id(event) %>">
+            <%= link_to event.name, event_path(event) %>
+            <small class="text-muted">pickup <%= nice_date(event.pickup_starts_at) %></small>
           </li>
         <% end %>
       </ul>
@@ -54,11 +50,9 @@
       <summary><strong>Past bakes</strong> <span class="text-muted">(<%= past_events.size %>)</span></summary>
       <ul class="event-list">
         <% past_events.each do |event| %>
-          <li class="event-row group justify-between items-center" id="<%= dom_id(event) %>">
-            <div>
-              <%= link_to event.name, event_path(event) %>
-              <small class="text-muted">pickup <%= nice_date(event.pickup_starts_at) %></small>
-            </div>
+          <li class="event-row" id="<%= dom_id(event) %>">
+            <%= link_to event.name, event_path(event) %>
+            <small class="text-muted">pickup <%= nice_date(event.pickup_starts_at) %></small>
           </li>
         <% end %>
       </ul>
