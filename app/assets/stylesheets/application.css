@@ -176,15 +176,6 @@ strong {
   padding-block: var(--sp-md);
 }
 
-/* Narrow reading column — long-form prose, marketing pages.
-   Mirrors GOV.UK two-thirds reading width. */
-.container-narrow {
-  max-width: 640px;
-  margin-inline: auto;
-  padding-inline: var(--sp-md);
-  padding-block: var(--sp-md);
-}
-
 /* Vertical stack */
 .stack {
   display: flex;
@@ -260,27 +251,6 @@ strong {
   justify-content: space-between;
 }
 
-.justify-center {
-  justify-content: center;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.img-product-linear {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  flex-shrink: 0;
-}
-
 /* === TYPOGRAPHY HELPERS === */
 .text-muted {
   color: var(--text-muted);
@@ -338,36 +308,6 @@ strong {
   padding: var(--sp-lg) var(--sp-md);
   text-align: center;
   color: var(--text-muted);
-}
-
-/* === Order card — baker-side order display ===
-   Replaces the old orders table. One card per order, breathes vertically.
-   Items, notes, delivery address each get their own line — no truncation. */
-.order-card {
-  padding: var(--sp-md) 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.order-card:last-child {
-  border-bottom: none;
-}
-
-.order-card-items {
-  margin: 0;
-  padding-left: var(--sp-md);
-  list-style: disc;
-}
-
-.order-card-items li {
-  list-style: disc;
-  padding: 2px 0;
-}
-
-.order-card-note {
-  background: var(--bg-subtle);
-  border-left: 3px solid var(--text);
-  padding: var(--sp-sm) var(--sp-md);
-  font-style: italic;
 }
 
 /* Definition list — semantic key/value rows for fact tables, marketing
@@ -450,7 +390,21 @@ a.card {
 form {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-sm);
+  gap: var(--sp-md);
+}
+
+/* Group related fields (e.g. the timing trio) so a long form reads as a few
+   blocks instead of one undifferentiated wall — helps most on narrow screens. */
+.field-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-md);
+}
+
+.field-group legend {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  padding-inline: var(--sp-sm);
 }
 
 label {
@@ -575,6 +529,20 @@ button.secondary,
   border-color: var(--border);
 }
 
+/* Destructive action — outlined in danger, fills on hover. */
+button.danger,
+.button.danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+button.danger:hover,
+.button.danger:hover {
+  background: var(--danger);
+  color: var(--bg);
+  border-color: var(--danger);
+}
+
 /* Link-style button (for form-based destructive actions, sign out, etc.) */
 .button-link {
   -webkit-appearance: none;
@@ -666,6 +634,26 @@ button.secondary,
 
 .lightbox::backdrop {
   background: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+/* Confirm dialog — modal <dialog> for confirm-with-input flows (dialog
+   Stimulus controller). Esc closes natively; backdrop click via controller. */
+.confirm-dialog {
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  padding: var(--sp-md);
+  max-width: min(90vw, 32rem);
+  box-shadow: var(--shadow-lift);
+}
+
+.confirm-dialog::backdrop {
+  background: color-mix(in srgb, var(--text) 75%, transparent);
+}
+
+.confirm-dialog textarea {
+  width: 100%;
 }
 
 /* Baker directory — 2-column tile grid */
@@ -1005,4 +993,28 @@ footer {
 
 .settings-content {
   width: 100%;
+}
+
+/* === EVENT HUB — baker event page (dashboard/events/show) ===
+   Two states (draft builder / live monitor) share one layout: a main column
+   plus a quiet action rail. Rail nav links navigate; rail buttons mutate. */
+/* Event list — the events index. Each row is a name link with a muted meta
+   line beneath. No table chrome. */
+.event-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.event-row {
+  padding: var(--sp-sm) 0;
+  border-bottom: 1px solid var(--bg-subtle);
+}
+
+.event-row:last-child {
+  border-bottom: none;
+}
+
+.event-row small {
+  display: block;
 }

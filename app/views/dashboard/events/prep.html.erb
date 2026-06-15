@@ -25,10 +25,10 @@
       </tr>
     </thead>
     <tbody>
-      <% @event.event_products.each do |product| %>
+      <% @event_products.each do |product| %>
         <tr>
           <td><%= product.name %></td>
-          <td><%= product.sold %> / <%= product.quantity %></td>
+          <td><%= @sold_by_product.fetch(product.id, 0) %> / <%= product.quantity %></td>
         </tr>
       <% end %>
     </tbody>

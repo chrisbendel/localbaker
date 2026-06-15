@@ -20,18 +20,19 @@ module Shop
       assert_response :not_found
     end
 
-    test "should give 404 for unknown event" do
+    test "redirects to the storefront for an unknown event" do
       get shop_event_url(@store.slug, "999999")
-      assert_response :not_found
+      assert_redirected_to shop_path(@store.slug)
+      assert_equal "Can't find this event — it may have been cancelled or removed.", flash[:alert]
     end
 
-    test "should give 404 for draft event" do
+    test "redirects to the storefront for a draft event" do
       draft_event = @store.events.create!(name: "Draft Event", orders_close_at: 1.day.from_now, pickup_starts_at: 2.days.from_now, pickup_ends_at: 2.days.from_now + 4.hours)
-      # Create product so it can be published (though we don't publish it, validation might require it if we tried to publish, but here we just need it created)
       draft_event.event_products.create!(name: "Item", price: 10, quantity: 10)
 
       get shop_event_url(@store.slug, draft_event)
-      assert_response :not_found
+      assert_redirected_to shop_path(@store.slug)
+      assert_equal "Can't find this event — it may have been cancelled or removed.", flash[:alert]
     end
 
     test "should still be viewable after orders close" do

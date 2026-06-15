@@ -62,12 +62,12 @@ class BakeryDashboardTest < ApplicationSystemTestCase
     event.publish!
 
     visit dashboard_events_path
-    within "tr", text: "Centralized Bake" do
-      assert_button "Reuse"
+    within find(".event-row", text: "Centralized Bake") do
       click_on "Centralized Bake"
     end
 
     assert_current_path event_path(event)
     assert_link "Edit"
+    assert_button "Reuse"
   end
 end

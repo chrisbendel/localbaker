@@ -167,6 +167,32 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".notice", /deleted/i
   end
 
+  test "DELETE destroy with orders cancels event, deletes orders, and notifies customers" do
+    @event.event_products.create!(name: "Bread", price_cents: 1000, quantity: 10)
+    @event.publish!
+    @event.orders.create!(user: User.create!(email: "c1@example.com"))
+    @event.orders.create!(user: User.create!(email: "c2@example.com"))
+
+    assert_difference "Order.count", -2 do
+      assert_difference "@store.events.count", -1 do
+        assert_enqueued_emails 2 do
+          delete event_path(@event), params: {reason: "Oven repair"}
+        end
+      end
+    end
+
+    assert_redirected_to dashboard_events_path
+    follow_redirect!
+    assert_select ".notice", /cancelled/i
+    assert_select ".notice", /2 customers/i
+  end
+
+  test "DELETE destroy without orders does not enqueue any email" do
+    assert_no_enqueued_emails do
+      delete event_path(@event)
+    end
+  end
+
   # --- plan limit ---
 
   test "POST publish is blocked when free user is at event limit" do
@@ -291,11 +317,11 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     get orders_event_path(@event)
 
     assert_response :success
-    assert_select ".order-card", count: 1
-    assert_select ".order-card", /buyer@example.com/
-    assert_select ".order-card", /Sourdough/
-    assert_select ".order-card-note", /slice please/
-    assert_select ".order-card-delivery", /123 Main St/
+    assert_select "tbody tr", count: 1
+    assert_select "td", /buyer@example.com/
+    assert_select "td", /Sourdough/
+    assert_select "td", /slice please/
+    assert_select "td", /123 Main St/
   end
 
   test "event show page links to full orders view" do
@@ -308,6 +334,6 @@ class Dashboard::EventsControllerTest < ActionDispatch::IntegrationTest
     get event_path(@event)
 
     assert_response :success
-    assert_select "a[href=?]", orders_event_path(@event), text: /View all orders/i
+    assert_select "a[href=?]", orders_event_path(@event), text: /order/i
   end
 end

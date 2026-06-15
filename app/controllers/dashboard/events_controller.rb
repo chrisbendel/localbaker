@@ -11,6 +11,12 @@ module Dashboard
       @orders = @event.orders
         .includes(user: [], order_items: [:event_product])
         .order(created_at: :asc)
+      @event_products = @event.event_products.order(:name)
+      # Sold-per-product from the already-loaded orders — no extra queries,
+      # no N+1 from calling EventProduct#sold per row in the bake list.
+      @sold_by_product = @orders.flat_map(&:order_items)
+        .group_by(&:event_product_id)
+        .transform_values { |items| items.sum(&:quantity) }
     end
 
     def new
@@ -28,6 +34,13 @@ module Dashboard
     end
 
     def prep
+      @event_products = @event.event_products.order(:name)
+      # Sold-per-product in one grouped query — avoids calling EventProduct#sold
+      # (a query each) per row in the prep table.
+      @sold_by_product = OrderItem.joins(:order)
+        .where(orders: {event_id: @event.id})
+        .group(:event_product_id)
+        .sum(:quantity)
       render layout: false
     end
 
@@ -89,18 +102,44 @@ module Dashboard
       end
     end
 
+    # Cancel + delete are one action. With no orders it's a silent delete; with
+    # orders it's a cancellation — snapshot the recipients, delete event + orders
+    # in one transaction, then email customers AFTER commit so we never tell
+    # anyone "cancelled" for a delete that didn't actually happen.
     def destroy
-      if @event.destroy
-        redirect_to dashboard_events_path, notice: "Event deleted."
-      else
-        redirect_to event_path(@event), alert: "Cannot delete event: #{@event.errors.full_messages.to_sentence}"
+      reason = params[:reason].to_s.strip.first(1000)
+      recipients = @event.orders.includes(:user).map { |o| o.user.email }.uniq
+      event_name = @event.name
+      store_name = @store.name
+
+      @event.transaction do
+        @event.orders.destroy_all
+        @event.destroy!
       end
+
+      recipients.each do |email|
+        OrderMailer.with(
+          to: email,
+          event_name: event_name,
+          store_name: store_name,
+          reason: reason
+        ).event_cancellation.deliver_later
+      end
+
+      notice = recipients.any? ? "Event cancelled. #{helpers.pluralize(recipients.size, "customer")} notified." : "Event deleted."
+      redirect_to dashboard_events_path, notice: notice
+    rescue ActiveRecord::RecordNotDestroyed, ActiveRecord::RecordInvalid
+      redirect_to event_path(@event), alert: "Cannot delete event: #{@event.errors.full_messages.to_sentence}"
     end
 
     private
 
     def set_event
       @event = @store.events.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      # Event already gone — e.g. a double-submitted cancel. Land on the list
+      # instead of a bare 404.
+      redirect_to dashboard_events_path, alert: "That event no longer exists."
     end
 
     def ensure_event_not_past!

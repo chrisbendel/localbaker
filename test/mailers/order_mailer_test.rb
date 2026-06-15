@@ -26,6 +26,31 @@ class OrderMailerTest < ActionMailer::TestCase
     assert_match "2", mail.body.encoded
   end
 
+  test "event_cancellation sends to customer with baker reason" do
+    mail = OrderMailer.with(
+      to: @customer.email,
+      event_name: "Big Bake",
+      store_name: "Test Bakery",
+      reason: "Oven repair"
+    ).event_cancellation
+
+    assert_equal "Event cancelled: Big Bake — Test Bakery", mail.subject
+    assert_equal [@customer.email], mail.to
+    assert_match "Test Bakery", mail.body.encoded
+    assert_match "Oven repair", mail.body.encoded
+  end
+
+  test "event_cancellation omits the note block when reason is blank" do
+    mail = OrderMailer.with(
+      to: @customer.email,
+      event_name: "Big Bake",
+      store_name: "Test Bakery",
+      reason: ""
+    ).event_cancellation
+
+    refute_match "note from the baker", mail.body.encoded
+  end
+
   test "pickup_reminder sends to customer with order summary and pickup time" do
     mail = OrderMailer.with(order: @order).pickup_reminder
 
