@@ -1,11 +1,8 @@
 default: &default
   adapter: sqlite3
-  # RAILS_MAX_THREADS is 2 in production and Solid Queue workers run 1 thread,
-  # so 5 is headroom. Each connection carries its own SQLite page cache, and
-  # five processes share this pool config — an oversized pool is wasted RAM.
+  # Per process, and production runs five; each connection holds its own SQLite page cache.
   max_connections: <%= ENV.fetch("DB_POOL") { 5 } %>
-  # busy_timeout, in ms. Measured in wall clock, so it has to cover a VM that
-  # gets frozen by CPU throttling mid-transaction, not just normal contention.
+  # busy_timeout in ms — wall clock, so it must cover a CPU-throttled freeze mid-transaction.
   timeout: 20000
 
 
