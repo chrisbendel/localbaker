@@ -7,6 +7,12 @@ app = 'localbaker'
 primary_region = 'iad'
 console_command = '/rails/bin/rails console'
 
+# Puma drain plus Solid Queue supervisor teardown; the 5s default SIGKILLs them mid-write.
+kill_timeout = '30s'
+
+# Swapfile on the root disk, not billed RAM — memory spikes degrade instead of OOM-killing.
+swap_size_mb = 512
+
 [build]
 
 [env]
@@ -38,6 +44,6 @@ console_command = '/rails/bin/rails console'
       X-Forwarded-Proto = 'https'
 
 [[vm]]
-  memory = '1gb'
+  memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1

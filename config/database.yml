@@ -1,7 +1,9 @@
 default: &default
   adapter: sqlite3
-  max_connections: <%= ENV.fetch("DB_POOL") { 10 } %>
-  timeout: 5000
+  # Per process, and production runs five; each connection holds its own SQLite page cache.
+  max_connections: <%= ENV.fetch("DB_POOL") { 5 } %>
+  # busy_timeout in ms — wall clock, so it must cover a CPU-throttled freeze mid-transaction.
+  timeout: 20000
 
 
 development:
