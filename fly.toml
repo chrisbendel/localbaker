@@ -7,6 +7,15 @@ app = 'localbaker'
 primary_region = 'iad'
 console_command = '/rails/bin/rails console'
 
+# Puma has to stop accepting, drain, and then let the Solid Queue supervisor
+# shut its dispatcher and worker down. The 5s default SIGKILLs them mid-write,
+# which surfaces as `database is locked` at process exit.
+kill_timeout = '30s'
+
+# Swap so a memory spike degrades instead of OOM-killing the machine. A swapfile
+# on the machine's root disk — not billed RAM.
+swap_size_mb = 512
+
 [build]
 
 [env]

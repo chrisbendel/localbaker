@@ -10,6 +10,9 @@
 #     schedule: at 5am every day
 
 production:
+  # Small batches, no sleeps, once a day. Sleeping between batches keeps the job
+  # alive for minutes and holds the write lock on and off the whole time — on one
+  # shared-CPU machine that is a long window for `database is locked`.
   clear_solid_queue_finished_jobs:
-    command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
-    schedule: every hour at minute 12
+    command: "SolidQueue::Job.clear_finished_in_batches(batch_size: 200, sleep_between_batches: 0)"
+    schedule: every day at 4:12am
