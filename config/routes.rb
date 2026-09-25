@@ -70,7 +70,6 @@ Rails.application.routes.draw do
   post "billing/checkout", to: "billing#checkout"
   get "billing/success", to: "billing#success"
   post "billing/portal", to: "billing#portal"
-  resource :contact, only: [:new, :create]
 
   resources :orders, only: [:index]
 
